@@ -1,0 +1,8 @@
+//
+//  nb-xattr-common.xcconfig
+//  nginx-broker
+//
+//  Copyright (c) 2010-2019 Cloudware S.A. All rights reserved.
+//
+
+#include "nginx-broker-common.xcconfig"

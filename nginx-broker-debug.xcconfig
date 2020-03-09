@@ -1,0 +1,8 @@
+//
+//  nginx-broker-debug.xcconfig
+//  nginx-broker
+//
+//  Copyright (c) 2010-2017 Cloudware S.A. All rights reserved.
+//
+
+#include "nginx-broker-common.xcconfig"

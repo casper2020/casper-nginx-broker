@@ -1,0 +1,53 @@
+{
+	"en_US": {
+		"BROKER_MISSING_HEADER_ERROR": "Missing header ''{0}''.",
+		"BROKER_INVALID_CONTENT_TYPE_ERROR": "Invalid content type.",
+		"BROKER_UNSUPPORTED_MEDIA_TYPE_ERROR": "Unsupported media type ''{0}''.",
+		"BROKER_INTERNAL_ERROR": "Internal error.",
+		"BROKER_BAD_REQUEST_ERROR": "Bad request.",
+        "BROKER_FORBIDDEN_ERROR": "Forbidden.",
+        "BROKER_CONFLICT_ERROR": "CONFLICT.",
+        "BROKER_NOT_FOUND_ERROR": "Not Found.",
+        "BROKER_NOT_ALLOWED": "Not Allowed.",
+		"BROKER_MODULE_CONFIG_MISSING_OR_INVALID_DIRECTIVE_VALUE_ERROR": "Missing or invalid value ''{0}'' for module configuration directive named ''{1}''.",
+		"BROKER_MODULE_INITIALIZATION_ERROR": "Module initialization error.",
+		"BROKER_MISSING_OR_INVALID_PARAMETER_ERROR": "Missing or invalid parameter ''{0}''.",
+		"BROKER_MISSING_OR_INVALID_URN_ERROR": "Missing or invalid URN.",
+		"BROKER_MISSING_OR_INVALID_BODY_ERROR": "Missing or invalid body.",
+		"BROKER_UNSUPPORTED_METHOD_ERROR": "Method ''{0}'' is not supported.",
+		"BROKER_METHOD_NOT_IMPLEMENTED_ERROR": "Method ''{0}'' is not implemented.",
+		"BROKER_ASYNC_REQUEST_ERROR": "Asynchronous request replied with error.",
+		"BROKER_REDIS_REQUEST_SCHEDULE_ERROR": "Unable to schedule a in-memory database request.",
+		"BROKER_REDIS_RESPONSE_ERROR": "In-memory database server replied with an error.",
+		"BROKER_POSTGRESQL_REQUEST_SCHEDULE_ERROR": "Unable to schedule a database request.",
+		"BROKER_POSTGRESQL_RESPONSE_ERROR": "Database server replied with an error.",
+		"BROKER_CPP_EXCEPTION_CAUGHT": "A generic exception occurred.",
+		"BROKER_MISSING_OR_INVALID_RESOURCE_FILE": "Resource file named ''{0}'' is missing or invalid.",
+		"BROKER_AN_ERROR_OCCURRED_MESSAGE": "An error occurred while processing your request. Please contact technical support.",
+		"BROKER_AN_ERROR_OCCURRED_MESSAGE_WITH_CODE": "Error {0} occurred while processing your request. Please contact technical support.",
+		
+		"BROKER_ACTION_NOT_IMPLEMENTED_ERROR": "Action ''{0}'' is not implemented.",
+
+		"BROKER_MISSING_AUTHORIZATION_HEADER": "Missing 'Authorization' header!",
+		"BROKER_INVALID_AUTHORIZATION_HEADER": "Invalid 'Authorization' header format!",
+		"BROKER_INVALID_AUTHORIZATION_HEADER_TYPE" : "Invalid authorization type!",
+		"BROKER_INVALID_AUTHORIZATION_HEADER_VALUE" : "Invalid authorization value!",
+
+		"AUTH_AN_ERROR_OCCURRED_MESSAGE": "An error occurred while processing your request. Please contact technical support.",
+		"AUTH_AN_ERROR_OCCURRED_MESSAGE_WITH_CODE": "Error {0} occurred while processing your request. Please contact technical support.",
+		"AUTH_MISSING_OR_INVALID_PARAMETER_ERROR": "Missing or invalid parameter ''{0}''.",
+		"AUTH_OPERATION_NOT_SUPPORTED": "Not supported!",
+		"AUTH_INVALID_SESSION_ID": "Invalid session id.",
+		"AUTH_MISSING_SESSION_ID": "Missing session id.",
+		"AUTH_USER_DENIED_ACCESS_TO_THIRD_PARTY_OAUTH_SERVICE": "User denied this app to access a third-party authorization service.",
+
+		"AUTH_INVALID_SIGN_IN"    : "Invalid email or password.",
+
+		"BROKER_INVALID_OR_MISSING_JSON_OBJECT_FIELD": "Invalid or missing field named ''{0}''!",
+	
+		"UL_INVALID_OR_MISSING_FIELD": "Invalid or missing field named ''{0}''!",
+		"UL_AN_ERROR_OCCURRED_MESSAGE": "An error occurred while processing your request. Please contact technical support."
+
+	}
+}
+

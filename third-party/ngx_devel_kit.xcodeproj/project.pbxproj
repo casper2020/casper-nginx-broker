@@ -1,0 +1,510 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		47E2B3FD1FC454BE0072EBC7 /* ndk_conf_file.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3D21FC454BE0072EBC7 /* ndk_conf_file.h */; };
+		47E2B3FE1FC454BE0072EBC7 /* ndk_set_var.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3D31FC454BE0072EBC7 /* ndk_set_var.c */; settings = {COMPILER_FLAGS = "-Wno-documentation -Wno-shorten-64-to-32"; }; };
+		47E2B3FF1FC454BE0072EBC7 /* ndk_buf.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3D41FC454BE0072EBC7 /* ndk_buf.h */; };
+		47E2B4001FC454BE0072EBC7 /* ndk_regex.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3D51FC454BE0072EBC7 /* ndk_regex.h */; };
+		47E2B4011FC454BE0072EBC7 /* ndk_process.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3D61FC454BE0072EBC7 /* ndk_process.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B4021FC454BE0072EBC7 /* ndk_uri.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3D71FC454BE0072EBC7 /* ndk_uri.h */; };
+		47E2B4031FC454BE0072EBC7 /* ndk_http.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3D81FC454BE0072EBC7 /* ndk_http.h */; };
+		47E2B4041FC454BE0072EBC7 /* ndk_upstream_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3D91FC454BE0072EBC7 /* ndk_upstream_list.c */; settings = {COMPILER_FLAGS = "-Wno-documentation -Wno-unused-function"; }; };
+		47E2B4051FC454BE0072EBC7 /* ndk_string.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3DA1FC454BE0072EBC7 /* ndk_string.h */; };
+		47E2B4061FC454BE0072EBC7 /* ndk_parse.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3DB1FC454BE0072EBC7 /* ndk_parse.h */; };
+		47E2B4071FC454BE0072EBC7 /* ndk_rewrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3DC1FC454BE0072EBC7 /* ndk_rewrite.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B4081FC454BE0072EBC7 /* ndk_path.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3DD1FC454BE0072EBC7 /* ndk_path.h */; };
+		47E2B4091FC454BE0072EBC7 /* ndk_complex_path.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3DE1FC454BE0072EBC7 /* ndk_complex_path.h */; };
+		47E2B40A1FC454BE0072EBC7 /* sha.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3E01FC454BE0072EBC7 /* sha.h */; };
+		47E2B40B1FC454BE0072EBC7 /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3E11FC454BE0072EBC7 /* md5.h */; };
+		47E2B40C1FC454BE0072EBC7 /* murmurhash2.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3E21FC454BE0072EBC7 /* murmurhash2.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B40D1FC454BE0072EBC7 /* ndk_string_util.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3E31FC454BE0072EBC7 /* ndk_string_util.h */; };
+		47E2B40E1FC454BE0072EBC7 /* ndk_log.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3E41FC454BE0072EBC7 /* ndk_log.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B40F1FC454BE0072EBC7 /* ndk_encoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3E51FC454BE0072EBC7 /* ndk_encoding.h */; };
+		47E2B4101FC454BE0072EBC7 /* ndk.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3E61FC454BE0072EBC7 /* ndk.h */; };
+		47E2B4111FC454BE0072EBC7 /* ndk_debug.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3E71FC454BE0072EBC7 /* ndk_debug.h */; };
+		47E2B4121FC454BE0072EBC7 /* ndk_http_headers.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3E81FC454BE0072EBC7 /* ndk_http_headers.h */; };
+		47E2B4131FC454BE0072EBC7 /* ndk_complex_value.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3E91FC454BE0072EBC7 /* ndk_complex_value.h */; };
+		47E2B4141FC454BE0072EBC7 /* ndk_hash.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3EA1FC454BE0072EBC7 /* ndk_hash.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B4151FC454BE0072EBC7 /* ndk_process.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3EB1FC454BE0072EBC7 /* ndk_process.h */; };
+		47E2B4161FC454BE0072EBC7 /* ndk_regex.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3EC1FC454BE0072EBC7 /* ndk_regex.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B4171FC454BE0072EBC7 /* ndk_set_var.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3ED1FC454BE0072EBC7 /* ndk_set_var.h */; };
+		47E2B4181FC454BE0072EBC7 /* ndk_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3EE1FC454BE0072EBC7 /* ndk_buf.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B4191FC454BE0072EBC7 /* ndk_conf_file.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3EF1FC454BE0072EBC7 /* ndk_conf_file.c */; settings = {COMPILER_FLAGS = "-Wno-documentation -Wno-shorten-64-to-32"; }; };
+		47E2B41A1FC454BE0072EBC7 /* ndk_complex_path.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3F01FC454BE0072EBC7 /* ndk_complex_path.c */; settings = {COMPILER_FLAGS = "-Wno-documentation -Wno-uninitialized"; }; };
+		47E2B41B1FC454BE0072EBC7 /* ndk_path.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3F11FC454BE0072EBC7 /* ndk_path.c */; settings = {COMPILER_FLAGS = "-Wno-documentation -Wno-shorten-64-to-32 -Wno-conditional-uninitialized"; }; };
+		47E2B41C1FC454BE0072EBC7 /* ndk_rewrite.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3F21FC454BE0072EBC7 /* ndk_rewrite.h */; };
+		47E2B41D1FC454BE0072EBC7 /* ndk_http.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3F31FC454BE0072EBC7 /* ndk_http.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B41E1FC454BE0072EBC7 /* ndk_uri.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3F41FC454BE0072EBC7 /* ndk_uri.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B41F1FC454BE0072EBC7 /* ndk_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3F51FC454BE0072EBC7 /* ndk_string.c */; settings = {COMPILER_FLAGS = "-Wno-documentation -Wno-shorten-64-to-32"; }; };
+		47E2B4201FC454BE0072EBC7 /* ndk_upstream_list.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3F61FC454BE0072EBC7 /* ndk_upstream_list.h */; };
+		47E2B4211FC454BE0072EBC7 /* ndk_hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3F71FC454BE0072EBC7 /* ndk_hash.h */; };
+		47E2B4221FC454BE0072EBC7 /* ndk.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3F81FC454BE0072EBC7 /* ndk.c */; settings = {COMPILER_FLAGS = "-Wno-documentation -Wno-shorten-64-to-32 -Wno-uninitialized -Wno-sizeof-pointer-memaccess -Wno-conditional-uninitialized"; }; };
+		47E2B4231FC454BE0072EBC7 /* ndk_encoding.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3F91FC454BE0072EBC7 /* ndk_encoding.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B4241FC454BE0072EBC7 /* ndk_log.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B3FA1FC454BE0072EBC7 /* ndk_log.h */; };
+		47E2B4251FC454BE0072EBC7 /* ndk_complex_value.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3FB1FC454BE0072EBC7 /* ndk_complex_value.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B4261FC454BE0072EBC7 /* ndk_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 47E2B3FC1FC454BE0072EBC7 /* ndk_debug.c */; settings = {COMPILER_FLAGS = "-Wno-documentation"; }; };
+		47E2B4281FC455190072EBC7 /* pf_header.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E2B4271FC455190072EBC7 /* pf_header.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		47E2B3C91FC454A50072EBC7 /* libngx_devel_kit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libngx_devel_kit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		47E2B3D01FC454BE0072EBC7 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../ngx_devel_kit/README.md; sourceTree = "<group>"; };
+		47E2B3D21FC454BE0072EBC7 /* ndk_conf_file.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_conf_file.h; sourceTree = "<group>"; };
+		47E2B3D31FC454BE0072EBC7 /* ndk_set_var.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_set_var.c; sourceTree = "<group>"; };
+		47E2B3D41FC454BE0072EBC7 /* ndk_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_buf.h; sourceTree = "<group>"; };
+		47E2B3D51FC454BE0072EBC7 /* ndk_regex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_regex.h; sourceTree = "<group>"; };
+		47E2B3D61FC454BE0072EBC7 /* ndk_process.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_process.c; sourceTree = "<group>"; };
+		47E2B3D71FC454BE0072EBC7 /* ndk_uri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_uri.h; sourceTree = "<group>"; };
+		47E2B3D81FC454BE0072EBC7 /* ndk_http.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_http.h; sourceTree = "<group>"; };
+		47E2B3D91FC454BE0072EBC7 /* ndk_upstream_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_upstream_list.c; sourceTree = "<group>"; };
+		47E2B3DA1FC454BE0072EBC7 /* ndk_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_string.h; sourceTree = "<group>"; };
+		47E2B3DB1FC454BE0072EBC7 /* ndk_parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_parse.h; sourceTree = "<group>"; };
+		47E2B3DC1FC454BE0072EBC7 /* ndk_rewrite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_rewrite.c; sourceTree = "<group>"; };
+		47E2B3DD1FC454BE0072EBC7 /* ndk_path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_path.h; sourceTree = "<group>"; };
+		47E2B3DE1FC454BE0072EBC7 /* ndk_complex_path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_complex_path.h; sourceTree = "<group>"; };
+		47E2B3E01FC454BE0072EBC7 /* sha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha.h; sourceTree = "<group>"; };
+		47E2B3E11FC454BE0072EBC7 /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
+		47E2B3E21FC454BE0072EBC7 /* murmurhash2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = murmurhash2.c; sourceTree = "<group>"; };
+		47E2B3E31FC454BE0072EBC7 /* ndk_string_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_string_util.h; sourceTree = "<group>"; };
+		47E2B3E41FC454BE0072EBC7 /* ndk_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_log.c; sourceTree = "<group>"; };
+		47E2B3E51FC454BE0072EBC7 /* ndk_encoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_encoding.h; sourceTree = "<group>"; };
+		47E2B3E61FC454BE0072EBC7 /* ndk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk.h; sourceTree = "<group>"; };
+		47E2B3E71FC454BE0072EBC7 /* ndk_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_debug.h; sourceTree = "<group>"; };
+		47E2B3E81FC454BE0072EBC7 /* ndk_http_headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_http_headers.h; sourceTree = "<group>"; };
+		47E2B3E91FC454BE0072EBC7 /* ndk_complex_value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_complex_value.h; sourceTree = "<group>"; };
+		47E2B3EA1FC454BE0072EBC7 /* ndk_hash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_hash.c; sourceTree = "<group>"; };
+		47E2B3EB1FC454BE0072EBC7 /* ndk_process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_process.h; sourceTree = "<group>"; };
+		47E2B3EC1FC454BE0072EBC7 /* ndk_regex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_regex.c; sourceTree = "<group>"; };
+		47E2B3ED1FC454BE0072EBC7 /* ndk_set_var.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_set_var.h; sourceTree = "<group>"; };
+		47E2B3EE1FC454BE0072EBC7 /* ndk_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_buf.c; sourceTree = "<group>"; };
+		47E2B3EF1FC454BE0072EBC7 /* ndk_conf_file.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_conf_file.c; sourceTree = "<group>"; };
+		47E2B3F01FC454BE0072EBC7 /* ndk_complex_path.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_complex_path.c; sourceTree = "<group>"; };
+		47E2B3F11FC454BE0072EBC7 /* ndk_path.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_path.c; sourceTree = "<group>"; };
+		47E2B3F21FC454BE0072EBC7 /* ndk_rewrite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_rewrite.h; sourceTree = "<group>"; };
+		47E2B3F31FC454BE0072EBC7 /* ndk_http.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_http.c; sourceTree = "<group>"; };
+		47E2B3F41FC454BE0072EBC7 /* ndk_uri.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_uri.c; sourceTree = "<group>"; };
+		47E2B3F51FC454BE0072EBC7 /* ndk_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_string.c; sourceTree = "<group>"; };
+		47E2B3F61FC454BE0072EBC7 /* ndk_upstream_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_upstream_list.h; sourceTree = "<group>"; };
+		47E2B3F71FC454BE0072EBC7 /* ndk_hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_hash.h; sourceTree = "<group>"; };
+		47E2B3F81FC454BE0072EBC7 /* ndk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk.c; sourceTree = "<group>"; };
+		47E2B3F91FC454BE0072EBC7 /* ndk_encoding.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_encoding.c; sourceTree = "<group>"; };
+		47E2B3FA1FC454BE0072EBC7 /* ndk_log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ndk_log.h; sourceTree = "<group>"; };
+		47E2B3FB1FC454BE0072EBC7 /* ndk_complex_value.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_complex_value.c; sourceTree = "<group>"; };
+		47E2B3FC1FC454BE0072EBC7 /* ndk_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ndk_debug.c; sourceTree = "<group>"; };
+		47E2B4271FC455190072EBC7 /* pf_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pf_header.h; sourceTree = "<group>"; };
+		47E2B4331FC45F6A0072EBC7 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
+		47E2B4351FC45FCC0072EBC7 /* libiconv.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.tbd; path = usr/lib/libiconv.2.tbd; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		47E2B3C61FC454A50072EBC7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		47E2B3C01FC454A50072EBC7 = {
+			isa = PBXGroup;
+			children = (
+				47E2B4271FC455190072EBC7 /* pf_header.h */,
+				47E2B3D01FC454BE0072EBC7 /* README.md */,
+				47E2B3D11FC454BE0072EBC7 /* src */,
+				47E2B3CA1FC454A50072EBC7 /* Products */,
+				47E2B4321FC45F6A0072EBC7 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		47E2B3CA1FC454A50072EBC7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				47E2B3C91FC454A50072EBC7 /* libngx_devel_kit.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		47E2B3D11FC454BE0072EBC7 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				47E2B3D21FC454BE0072EBC7 /* ndk_conf_file.h */,
+				47E2B3D31FC454BE0072EBC7 /* ndk_set_var.c */,
+				47E2B3D41FC454BE0072EBC7 /* ndk_buf.h */,
+				47E2B3D51FC454BE0072EBC7 /* ndk_regex.h */,
+				47E2B3D61FC454BE0072EBC7 /* ndk_process.c */,
+				47E2B3D71FC454BE0072EBC7 /* ndk_uri.h */,
+				47E2B3D81FC454BE0072EBC7 /* ndk_http.h */,
+				47E2B3D91FC454BE0072EBC7 /* ndk_upstream_list.c */,
+				47E2B3DA1FC454BE0072EBC7 /* ndk_string.h */,
+				47E2B3DB1FC454BE0072EBC7 /* ndk_parse.h */,
+				47E2B3DC1FC454BE0072EBC7 /* ndk_rewrite.c */,
+				47E2B3DD1FC454BE0072EBC7 /* ndk_path.h */,
+				47E2B3DE1FC454BE0072EBC7 /* ndk_complex_path.h */,
+				47E2B3DF1FC454BE0072EBC7 /* hash */,
+				47E2B3E31FC454BE0072EBC7 /* ndk_string_util.h */,
+				47E2B3E41FC454BE0072EBC7 /* ndk_log.c */,
+				47E2B3E51FC454BE0072EBC7 /* ndk_encoding.h */,
+				47E2B3E61FC454BE0072EBC7 /* ndk.h */,
+				47E2B3E71FC454BE0072EBC7 /* ndk_debug.h */,
+				47E2B3E81FC454BE0072EBC7 /* ndk_http_headers.h */,
+				47E2B3E91FC454BE0072EBC7 /* ndk_complex_value.h */,
+				47E2B3EA1FC454BE0072EBC7 /* ndk_hash.c */,
+				47E2B3EB1FC454BE0072EBC7 /* ndk_process.h */,
+				47E2B3EC1FC454BE0072EBC7 /* ndk_regex.c */,
+				47E2B3ED1FC454BE0072EBC7 /* ndk_set_var.h */,
+				47E2B3EE1FC454BE0072EBC7 /* ndk_buf.c */,
+				47E2B3EF1FC454BE0072EBC7 /* ndk_conf_file.c */,
+				47E2B3F01FC454BE0072EBC7 /* ndk_complex_path.c */,
+				47E2B3F11FC454BE0072EBC7 /* ndk_path.c */,
+				47E2B3F21FC454BE0072EBC7 /* ndk_rewrite.h */,
+				47E2B3F31FC454BE0072EBC7 /* ndk_http.c */,
+				47E2B3F41FC454BE0072EBC7 /* ndk_uri.c */,
+				47E2B3F51FC454BE0072EBC7 /* ndk_string.c */,
+				47E2B3F61FC454BE0072EBC7 /* ndk_upstream_list.h */,
+				47E2B3F71FC454BE0072EBC7 /* ndk_hash.h */,
+				47E2B3F81FC454BE0072EBC7 /* ndk.c */,
+				47E2B3F91FC454BE0072EBC7 /* ndk_encoding.c */,
+				47E2B3FA1FC454BE0072EBC7 /* ndk_log.h */,
+				47E2B3FB1FC454BE0072EBC7 /* ndk_complex_value.c */,
+				47E2B3FC1FC454BE0072EBC7 /* ndk_debug.c */,
+			);
+			name = src;
+			path = ../../ngx_devel_kit/src;
+			sourceTree = "<group>";
+		};
+		47E2B3DF1FC454BE0072EBC7 /* hash */ = {
+			isa = PBXGroup;
+			children = (
+				47E2B3E01FC454BE0072EBC7 /* sha.h */,
+				47E2B3E11FC454BE0072EBC7 /* md5.h */,
+				47E2B3E21FC454BE0072EBC7 /* murmurhash2.c */,
+			);
+			path = hash;
+			sourceTree = "<group>";
+		};
+		47E2B4321FC45F6A0072EBC7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				47E2B4351FC45FCC0072EBC7 /* libiconv.2.tbd */,
+				47E2B4331FC45F6A0072EBC7 /* libiconv.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		47E2B3C71FC454A50072EBC7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				47E2B40B1FC454BE0072EBC7 /* md5.h in Headers */,
+				47E2B4001FC454BE0072EBC7 /* ndk_regex.h in Headers */,
+				47E2B4151FC454BE0072EBC7 /* ndk_process.h in Headers */,
+				47E2B4101FC454BE0072EBC7 /* ndk.h in Headers */,
+				47E2B4081FC454BE0072EBC7 /* ndk_path.h in Headers */,
+				47E2B41C1FC454BE0072EBC7 /* ndk_rewrite.h in Headers */,
+				47E2B4131FC454BE0072EBC7 /* ndk_complex_value.h in Headers */,
+				47E2B40D1FC454BE0072EBC7 /* ndk_string_util.h in Headers */,
+				47E2B40F1FC454BE0072EBC7 /* ndk_encoding.h in Headers */,
+				47E2B3FF1FC454BE0072EBC7 /* ndk_buf.h in Headers */,
+				47E2B4211FC454BE0072EBC7 /* ndk_hash.h in Headers */,
+				47E2B40A1FC454BE0072EBC7 /* sha.h in Headers */,
+				47E2B4241FC454BE0072EBC7 /* ndk_log.h in Headers */,
+				47E2B4061FC454BE0072EBC7 /* ndk_parse.h in Headers */,
+				47E2B4031FC454BE0072EBC7 /* ndk_http.h in Headers */,
+				47E2B3FD1FC454BE0072EBC7 /* ndk_conf_file.h in Headers */,
+				47E2B4021FC454BE0072EBC7 /* ndk_uri.h in Headers */,
+				47E2B4171FC454BE0072EBC7 /* ndk_set_var.h in Headers */,
+				47E2B4111FC454BE0072EBC7 /* ndk_debug.h in Headers */,
+				47E2B4051FC454BE0072EBC7 /* ndk_string.h in Headers */,
+				47E2B4201FC454BE0072EBC7 /* ndk_upstream_list.h in Headers */,
+				47E2B4091FC454BE0072EBC7 /* ndk_complex_path.h in Headers */,
+				47E2B4121FC454BE0072EBC7 /* ndk_http_headers.h in Headers */,
+				47E2B4281FC455190072EBC7 /* pf_header.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		47E2B3C81FC454A50072EBC7 /* ngx_devel_kit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 47E2B3CD1FC454A50072EBC7 /* Build configuration list for PBXNativeTarget "ngx_devel_kit" */;
+			buildPhases = (
+				47E2B3C51FC454A50072EBC7 /* Sources */,
+				47E2B3C61FC454A50072EBC7 /* Frameworks */,
+				47E2B3C71FC454A50072EBC7 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ngx_devel_kit;
+			productName = ngx_devel_kit;
+			productReference = 47E2B3C91FC454A50072EBC7 /* libngx_devel_kit.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		47E2B3C11FC454A50072EBC7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1130;
+				ORGANIZATIONNAME = "Cloudware S.A.";
+				TargetAttributes = {
+					47E2B3C81FC454A50072EBC7 = {
+						CreatedOnToolsVersion = 9.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 47E2B3C41FC454A50072EBC7 /* Build configuration list for PBXProject "ngx_devel_kit" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 47E2B3C01FC454A50072EBC7;
+			productRefGroup = 47E2B3CA1FC454A50072EBC7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				47E2B3C81FC454A50072EBC7 /* ngx_devel_kit */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		47E2B3C51FC454A50072EBC7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				47E2B41B1FC454BE0072EBC7 /* ndk_path.c in Sources */,
+				47E2B4181FC454BE0072EBC7 /* ndk_buf.c in Sources */,
+				47E2B4141FC454BE0072EBC7 /* ndk_hash.c in Sources */,
+				47E2B4221FC454BE0072EBC7 /* ndk.c in Sources */,
+				47E2B40E1FC454BE0072EBC7 /* ndk_log.c in Sources */,
+				47E2B4261FC454BE0072EBC7 /* ndk_debug.c in Sources */,
+				47E2B41F1FC454BE0072EBC7 /* ndk_string.c in Sources */,
+				47E2B4071FC454BE0072EBC7 /* ndk_rewrite.c in Sources */,
+				47E2B4231FC454BE0072EBC7 /* ndk_encoding.c in Sources */,
+				47E2B41D1FC454BE0072EBC7 /* ndk_http.c in Sources */,
+				47E2B4161FC454BE0072EBC7 /* ndk_regex.c in Sources */,
+				47E2B4251FC454BE0072EBC7 /* ndk_complex_value.c in Sources */,
+				47E2B40C1FC454BE0072EBC7 /* murmurhash2.c in Sources */,
+				47E2B41E1FC454BE0072EBC7 /* ndk_uri.c in Sources */,
+				47E2B4041FC454BE0072EBC7 /* ndk_upstream_list.c in Sources */,
+				47E2B4191FC454BE0072EBC7 /* ndk_conf_file.c in Sources */,
+				47E2B3FE1FC454BE0072EBC7 /* ndk_set_var.c in Sources */,
+				47E2B4011FC454BE0072EBC7 /* ndk_process.c in Sources */,
+				47E2B41A1FC454BE0072EBC7 /* ndk_complex_path.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		47E2B3CB1FC454A50072EBC7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		47E2B3CC1FC454A50072EBC7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		47E2B3CE1FC454A50072EBC7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/pf_header.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"NDK_ALL=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../src/nginx/src",
+					"$(SRCROOT)/../src/nginx/src/core",
+					"$(SRCROOT)/../src/nginx/src/http",
+					"$(SRCROOT)/../src/nginx/src/http/modules",
+					"$(SRCROOT)/../src/nginx/src/http/v2",
+					"$(SRCROOT)/../src/nginx/src/event/modules",
+					"$(SRCROOT)/../src/nginx/src/event",
+					"$(SRCROOT)/../src/nginx/src/os/unix",
+					"$(SRCROOT)/../src/nginx/objs",
+					/usr/local/include,
+					/usr/local/opt/openssl/include,
+					"$(SRCROOT)/../../ngx_devel_kit/src",
+					"$(SRCROOT)/../../ngx_devel_kit/objs",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		47E2B3CF1FC454A50072EBC7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/pf_header.h";
+				GCC_PREPROCESSOR_DEFINITIONS = "NDK_ALL=1";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../src/nginx/src",
+					"$(SRCROOT)/../src/nginx/src/core",
+					"$(SRCROOT)/../src/nginx/src/http",
+					"$(SRCROOT)/../src/nginx/src/http/modules",
+					"$(SRCROOT)/../src/nginx/src/http/v2",
+					"$(SRCROOT)/../src/nginx/src/event/modules",
+					"$(SRCROOT)/../src/nginx/src/event",
+					"$(SRCROOT)/../src/nginx/src/os/unix",
+					"$(SRCROOT)/../src/nginx/objs",
+					/usr/local/include,
+					/usr/local/opt/openssl/include,
+					"$(SRCROOT)/../../ngx_devel_kit/src",
+					"$(SRCROOT)/../../ngx_devel_kit/objs",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		47E2B3C41FC454A50072EBC7 /* Build configuration list for PBXProject "ngx_devel_kit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				47E2B3CB1FC454A50072EBC7 /* Debug */,
+				47E2B3CC1FC454A50072EBC7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		47E2B3CD1FC454A50072EBC7 /* Build configuration list for PBXNativeTarget "ngx_devel_kit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				47E2B3CE1FC454A50072EBC7 /* Debug */,
+				47E2B3CF1FC454A50072EBC7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 47E2B3C11FC454A50072EBC7 /* Project object */;
+}
