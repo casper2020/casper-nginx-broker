@@ -31,7 +31,7 @@ EXECUTABLE_NAME      :=
 EXECUTABLE_MAIN_SRC  :=
 LIBRARY_TYPE         := static
 LIBRARY_NAME         := libbroker.a
-VERSION              := $(shell cat $(PACKAGER_DIR)/nginx-broker/debian/version)
+VERSION              := $(shell cat $(PACKAGER_DIR)/nginx-broker/version)
 CHILD_CWD            := $(THIS_DIR)
 CHILD_MAKEFILE       := $(firstword $(MAKEFILE_LIST))
 
