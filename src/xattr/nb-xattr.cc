@@ -139,9 +139,9 @@ int parse_args (int a_argc, char** a_argv, XAttrAction& o_action,
 #endif
     o_open_args.config_file_uri_ = o_create_args.config_file_uri_;
     
-    if ( a_argc < 1 ) {
+    if ( a_argc < 2 ) {
         // ... show error ...
-        fprintf(stderr, "invalid number of arguments: got %d, expected at least %d!\n", a_argc, 1);
+        fprintf(stderr, "invalid number of arguments\n");
         // ... and help ...
         show_help(a_argv[0]);
         // ... can't proceed ...
