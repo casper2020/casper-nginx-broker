@@ -110,41 +110,63 @@ BROKER_CC_SRC := \
   $(PROJECT_SRC_DIR)/src/ngx/casper/broker/ext/session.cc \
   $(PROJECT_SRC_DIR)/src/ngx/ngx_utils.cc                 \
   $(PROJECT_SRC_DIR)/src/ngx/casper/ev/glue.cc            \
-  $(BROKER_OAUTH_SERVER_MODULE_CC_SRC)                \
-  $(BROKER_UL_MODULE_CC_SRC)                          \
-  $(BROKER_API_MODULE_CC_SRC)                         \
-  $(BROKER_JWT_MODULE_CC_SRC)                         \
-  $(BROKER_JOBIFY_MODULE_CC_SRC)                      \
-  $(BROKER_CDN_COMMON_MODULE_CC_SRC)                  \
-  $(BROKER_CDN_MODULE_CC_SRC)                         \
-  $(BROKER_CDN_ARCHIVE_MODULE_CC_SRC)                 \
-  $(BROKER_CDN_REPLICATOR_MODULE_CC_SRC)              \
-  $(BROKER_CDN_DOWNLOAD_MODULE_CC_SRC)                \
-  $(BROKER_CDN_API_MODULE_CC_SRC)
 
-BROKER_YY_SRC := \
-  $(BROKER_CDN_COMMON_MODULE_YY_SRC)
+BROKER_YY_SRC :=
+BROKER_RL_SRC :=
 
-BROKER_RL_SRC := \
-  $(BROKER_CDN_COMMON_MODULE_RL_SRC) \
-  $(BROKER_CDN_API_MODULE_RL_SRC)
+ifeq (true, $(CASPER_NGINX_BROKER_API_MODULE_DEP_ON))
+  $(warning include API module)
+  BROKER_CC_SRC += $(BROKER_API_MODULE_CC_SRC)
+endif
+
+ifeq (true, $(CASPER_NGINX_BROKER_OAUTH_SERVER_MODULE_DEP_ON))
+  BROKER_CC_SRC += $(BROKER_OAUTH_SERVER_MODULE_CC_SRC)
+endif
+
+ifeq (true, $(CASPER_NGINX_BROKER_UL_MODULE_DEP_ON))
+  BROKER_CC_SRC += $(BROKER_UL_MODULE_CC_SRC)
+endif
+
+ifeq (true, $(CASPER_NGINX_BROKER_JWT_MODULE_DEP_ON))
+  BROKER_CC_SRC += $(BROKER_JWT_MODULE_CC_SRC)
+endif
+
+ifeq (true, $(CASPER_NGINX_BROKER_JOBIFY_MODULE_DEP_ON))
+  BROKER_CC_SRC += $(BROKER_JOBIFY_MODULE_CC_SRC)
+endif
+
+ifeq (true, $(CASPER_NGINX_BROKER_CDN_MODULE_DEP_ON))
+  BROKER_CC_SRC += \
+    $(BROKER_CDN_COMMON_MODULE_CC_SRC)     \
+    $(BROKER_CDN_MODULE_CC_SRC)            \
+    $(BROKER_CDN_ARCHIVE_MODULE_CC_SRC)    \
+    $(BROKER_CDN_REPLICATOR_MODULE_CC_SRC) \
+    $(BROKER_CDN_DOWNLOAD_MODULE_CC_SRC)   \
+    $(BROKER_CDN_API_MODULE_CC_SRC)
+  BROKER_YY_SRC += \
+    $(BROKER_CDN_COMMON_MODULE_YY_SRC)
+  BROKER_RL_SRC += \
+    $(BROKER_CDN_COMMON_MODULE_RL_SRC) \
+    $(BROKER_CDN_API_MODULE_RL_SRC)
+endif
+
+
 
 #### #### #### #### ####
 ### OPTIONAL MODULES 
 #### #### #### #### ####
 
 ### named-imports-nginx-module
+ifeq (true, $(NAMED_IMPORTS_NGINX_MODULE_DEP_ON))
+  include ../named-imports-nginx-module/common.mk
 
-include ../named-imports-nginx-module/common.mk
-
-BROKER_CC_SRC += $(NAMED_IMPORTS_MODULE_CC_SRC)
-BROKER_RL_SRC += $(NAMED_IMPORTS_MODULE_RL_SRC)
-BROKER_INCLUDE_DIRS += $(NAMED_IMPORTS_MODULE_INCLUDE_DIRS)
+  BROKER_CC_SRC += $(NAMED_IMPORTS_MODULE_CC_SRC)
+  BROKER_RL_SRC += $(NAMED_IMPORTS_MODULE_RL_SRC)
+  BROKER_INCLUDE_DIRS += $(NAMED_IMPORTS_MODULE_INCLUDE_DIRS)
+endif
 
 ### cdb
-
-include ../ngx-cdb-modules/common.mk
-
-BROKER_CC_SRC += $(NGX_CDB_MODULES_CC_SRC)
-BROKER_RL_SRC += $(NGX_CDB_MODULES_RL_SRC)
-BROKER_INCLUDE_DIRS += $(NGX_CDB_MODULES_INCLUDE_DIRS)
+ifeq (true, $(NGX_CDB_MODULES_DEP_ON))
+  include $(NGX_CDB_MODULES_SRC_DIR)/common.mk
+  BROKER_INCLUDE_DIRS += $(NGX_CDB_MODULES_INCLUDE_DIRS)
+endif
