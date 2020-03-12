@@ -67,7 +67,20 @@ OBJECTS := \
 
 include $(PACKAGER_DIR)/common/c++/common.mk
 
-set-dependencies: casper-connectors-dep-on casper-osal-dep-on cppcodec-dep-on zlib-dep-on libbcrypt-dep-on beanstalk-client-dep-on postgresql-dep-on icu-dep-on curl-dep-on jsoncpp-dep-on cppcodec-dep-on hiredis-dep-on
+CASPER_NGINX_BROKER_DEPENDENCIES := \
+  casper-connectors-dep-on casper-osal-dep-on cppcodec-dep-on \
+  zlib-dep-on libbcrypt-dep-on beanstalk-client-dep-on postgresql-dep-on icu-dep-on curl-dep-on jsoncpp-dep-on cppcodec-dep-on hiredis-dep-on
+
+.SECONDEXPANSION: update-objects
+update-objects: update-sources
+	@$(eval CC_SRC:=$(BROKER_CC_SRC))
+	@$(eval BISON_SRC:=$(BROKER_YY_SRC))
+	@$(eval RAGEL_SRC:=$(BROKER_RL_SRC))
+	@$(eval OBJECTS:=$(BISON_SRC:.yy=.o) $(RAGEL_SRC:.rl=.o) $(CC_SRC:.cc=.o))
+	@$(foreach o, $(OBJECTS), echo " $(LOG_COMPILING_PREFIX) ~ $(RED_COLOR)$(o)$(RESET_COLOR)";)
+
+.SECONDEXPANSION: set-dependencies
+set-dependencies: $(CASPER_NGINX_BROKER_DEPENDENCIES) update-objects
 
 # version
 version:
