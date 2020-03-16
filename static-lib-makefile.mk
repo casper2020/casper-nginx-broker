@@ -77,10 +77,13 @@ update-objects: update-sources
 	@$(eval BISON_SRC:=$(BROKER_YY_SRC))
 	@$(eval RAGEL_SRC:=$(BROKER_RL_SRC))
 	@$(eval OBJECTS:=$(BISON_SRC:.yy=.o) $(RAGEL_SRC:.rl=.o) $(CC_SRC:.cc=.o))
-	@$(foreach o, $(OBJECTS), echo " $(LOG_COMPILING_PREFIX) ~ $(RED_COLOR)$(o)$(RESET_COLOR)";)
 
 .SECONDEXPANSION: set-dependencies
 set-dependencies: $(CASPER_NGINX_BROKER_DEPENDENCIES) update-objects
+
+.SECONDEXPANSION: clean-objects
+clean-objects:
+	@$(foreach o, $(OBJECTS), echo " $(LOG_COMPILING_PREFIX) ~ $(RED_COLOR)$(o)$(RESET_COLOR)" && rm -f $(o); )
 
 # version
 version:
