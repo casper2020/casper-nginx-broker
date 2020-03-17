@@ -41,13 +41,15 @@
 		47601CC41E6ED98F00E92189 /* module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 47601CC21E6ED98F00E92189 /* module.cc */; };
 		476EF71D1E23CD7D004A13C2 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 476EF71C1E23CD7D004A13C2 /* libz.tbd */; };
 		47732F3F229455F00079A2F3 /* archive.cc in Sources */ = {isa = PBXBuildFile; fileRef = 47732F3E229455F00079A2F3 /* archive.cc */; };
-		477409E124166707009BA9EA /* libngx-cdb-modules.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 477409DE241666F3009BA9EA /* libngx-cdb-modules.a */; };
 		4774469A1EBA4349008F53B1 /* ngx_udp_sendmsg_chain.c in Sources */ = {isa = PBXBuildFile; fileRef = 477446991EBA4349008F53B1 /* ngx_udp_sendmsg_chain.c */; settings = {COMPILER_FLAGS = "-Wno-shorten-64-to-32"; }; };
 		477526B32313EE2100F6FB18 /* synchronization.cc in Sources */ = {isa = PBXBuildFile; fileRef = 477526B22313EE2100F6FB18 /* synchronization.cc */; };
 		4775743823E19829001E7587 /* libcasper-connectors.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4775743323E1980F001E7587 /* libcasper-connectors.a */; };
 		4775AD771EE16687006B9FE3 /* errors.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4775AD751EE16687006B9FE3 /* errors.cc */; };
 		4775AD7B1EE16B33006B9FE3 /* errors.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4775AD791EE16B33006B9FE3 /* errors.cc */; };
 		477793E21E3280E000EE42B1 /* ngx_http_stub_status_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 477793E11E3280E000EE42B1 /* ngx_http_stub_status_module.c */; settings = {COMPILER_FLAGS = "-Wno-shorten-64-to-32"; }; };
+		477B9115241FDA7700DDBB39 /* libngx-cdb-modules.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 477B9112241FDA5D00DDBB39 /* libngx-cdb-modules.a */; };
+		477B9116241FDA7D00DDBB39 /* libvess.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 478381B3241FDA2F000102BE /* libvess.a */; };
+		477B9117241FDA8400DDBB39 /* libnamed-imports-nginx-module.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 478381B8241FDA30000102BE /* libnamed-imports-nginx-module.a */; };
 		478D62961EFD54890000EF4D /* errors.cc in Sources */ = {isa = PBXBuildFile; fileRef = 478D62801EFD54890000EF4D /* errors.cc */; };
 		478D62971EFD54890000EF4D /* ngx_http_casper_broker_oauth_server_module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 478D62851EFD54890000EF4D /* ngx_http_casper_broker_oauth_server_module.cc */; };
 		478D62981EFD54890000EF4D /* module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 478D62891EFD54890000EF4D /* module.cc */; };
@@ -248,8 +250,6 @@
 		47FCA1B223E1967300FB40EF /* libbeanstalk-client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 47FCA1A823E1964800FB40EF /* libbeanstalk-client.a */; };
 		47FCA1B323E1967300FB40EF /* libhiredis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 47FCA1A223E1964800FB40EF /* libhiredis.a */; };
 		47FCA1B423E1967300FB40EF /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 472AD2DF23E195E6000A7391 /* libjsoncpp.a */; };
-		A5CBF6AF2264FF19004744BB /* libnamed-imports-nginx-module.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5CBF6AC2264FECF004744BB /* libnamed-imports-nginx-module.a */; };
-		A5D5E30522C4DD9D00BF1409 /* libvess.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5D5E2FD22C4DCD400BF1409 /* libvess.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -364,20 +364,6 @@
 			remoteGlobalIDString = 471BE09123DEED1500751072;
 			remoteInfo = bcrypt;
 		};
-		477409DD241666F3009BA9EA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 477409D9241666F3009BA9EA /* ngx-cdb-modules.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 471BE12623DF58FA00751072;
-			remoteInfo = "ngx-cdb-modules";
-		};
-		477409DF241666FB009BA9EA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 477409D9241666F3009BA9EA /* ngx-cdb-modules.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 471BE12523DF58FA00751072;
-			remoteInfo = "ngx-cdb-modules";
-		};
 		4775743223E1980F001E7587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 470389AA235F4D98002FA394 /* casper-connectors.xcodeproj */;
@@ -398,6 +384,48 @@
 			proxyType = 1;
 			remoteGlobalIDString = 476EF7C91E23EC91004A13C2;
 			remoteInfo = "casper-connectors";
+		};
+		477B9111241FDA5D00DDBB39 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 477409D9241666F3009BA9EA /* ngx-cdb-modules.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 471BE12623DF58FA00751072;
+			remoteInfo = "ngx-cdb-modules";
+		};
+		477B9113241FDA6500DDBB39 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 477409D9241666F3009BA9EA /* ngx-cdb-modules.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 471BE12523DF58FA00751072;
+			remoteInfo = "ngx-cdb-modules";
+		};
+		478381B2241FDA2F000102BE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A5D5E2F822C4DCD400BF1409 /* vess.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A5D5E2F122C4DC9200BF1409;
+			remoteInfo = vess;
+		};
+		478381B7241FDA30000102BE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A5CBF6A72264FECF004744BB /* named-imports-nginx-module.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A5CBF6882264FD21004744BB;
+			remoteInfo = "named-imports-nginx-module";
+		};
+		478381B9241FDA49000102BE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A5D5E2F822C4DCD400BF1409 /* vess.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = A5D5E2F022C4DC9200BF1409;
+			remoteInfo = vess;
+		};
+		478381BB241FDA4E000102BE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A5CBF6A72264FECF004744BB /* named-imports-nginx-module.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = A5CBF6872264FD21004744BB;
+			remoteInfo = "named-imports-nginx-module";
 		};
 		4797EE1823E198DB00616FE1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -496,34 +524,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = A5598FF519C305F700490EBE;
 			remoteInfo = jsoncpp;
-		};
-		A5CBF6AB2264FECF004744BB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A5CBF6A72264FECF004744BB /* named-imports-nginx-module.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A5CBF6882264FD21004744BB;
-			remoteInfo = "named-imports-nginx-module";
-		};
-		A5CBF6AD2264FF0F004744BB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A5CBF6A72264FECF004744BB /* named-imports-nginx-module.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = A5CBF6872264FD21004744BB;
-			remoteInfo = "named-imports-nginx-module";
-		};
-		A5D5E2FC22C4DCD400BF1409 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A5D5E2F822C4DCD400BF1409 /* vess.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A5D5E2F122C4DC9200BF1409;
-			remoteInfo = vess;
-		};
-		A5D5E30322C4DD9200BF1409 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A5D5E2F822C4DCD400BF1409 /* vess.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = A5D5E2F022C4DC9200BF1409;
-			remoteInfo = vess;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -634,7 +634,7 @@
 		4770F94822D49DF100DCDD2F /* nb-xattr-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "nb-xattr-common.xcconfig"; sourceTree = "<group>"; };
 		47732F3D229455F00079A2F3 /* archive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = archive.h; sourceTree = "<group>"; };
 		47732F3E229455F00079A2F3 /* archive.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = archive.cc; sourceTree = "<group>"; };
-		477409D9241666F3009BA9EA /* ngx-cdb-modules.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ngx-cdb-modules.xcodeproj"; path = "../../cloudware-central-db/ngx-cdb-modules/ngx-cdb-modules.xcodeproj"; sourceTree = "<group>"; };
+		477409D9241666F3009BA9EA /* ngx-cdb-modules.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ngx-cdb-modules.xcodeproj"; path = "../cloudware-central-db/ngx-cdb-modules/ngx-cdb-modules.xcodeproj"; sourceTree = "<group>"; };
 		477446991EBA4349008F53B1 /* ngx_udp_sendmsg_chain.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ngx_udp_sendmsg_chain.c; sourceTree = "<group>"; };
 		477526B12313EE2100F6FB18 /* synchronization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synchronization.h; sourceTree = "<group>"; };
 		477526B22313EE2100F6FB18 /* synchronization.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = synchronization.cc; sourceTree = "<group>"; };
@@ -1039,8 +1039,8 @@
 		47F59DCF1EDED1CC004AFC0C /* ngx_http_casper_broker_ul_module.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ngx_http_casper_broker_ul_module.h; sourceTree = "<group>"; };
 		47F59DD01EDED1CC004AFC0C /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
 		47F59DD11EDED1CC004AFC0C /* version.tpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.tpl.h; sourceTree = "<group>"; };
-		A5CBF6A72264FECF004744BB /* named-imports-nginx-module.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "named-imports-nginx-module.xcodeproj"; path = "../../casper-packager/named-imports-nginx-module/named-imports-nginx-module.xcodeproj"; sourceTree = "<group>"; };
-		A5D5E2F822C4DCD400BF1409 /* vess.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = vess.xcodeproj; path = ../../vess/vess.xcodeproj; sourceTree = "<group>"; };
+		A5CBF6A72264FECF004744BB /* named-imports-nginx-module.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "named-imports-nginx-module.xcodeproj"; path = "../casper-packager/named-imports-nginx-module/named-imports-nginx-module.xcodeproj"; sourceTree = "<group>"; };
+		A5D5E2F822C4DCD400BF1409 /* vess.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = vess.xcodeproj; path = ../vess/vess.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1065,9 +1065,9 @@
 				47FCA1B223E1967300FB40EF /* libbeanstalk-client.a in Frameworks */,
 				4797EE1C23E198EC00616FE1 /* libcasper-osal.a in Frameworks */,
 				4775743823E19829001E7587 /* libcasper-connectors.a in Frameworks */,
-				A5D5E30522C4DD9D00BF1409 /* libvess.a in Frameworks */,
-				477409E124166707009BA9EA /* libngx-cdb-modules.a in Frameworks */,
-				A5CBF6AF2264FF19004744BB /* libnamed-imports-nginx-module.a in Frameworks */,
+				477B9115241FDA7700DDBB39 /* libngx-cdb-modules.a in Frameworks */,
+				477B9117241FDA8400DDBB39 /* libnamed-imports-nginx-module.a in Frameworks */,
+				477B9116241FDA7D00DDBB39 /* libvess.a in Frameworks */,
 				47268EED20484A9700912B5A /* libecho-nginx-module.a in Frameworks */,
 				47E2B42F1FC45F400072EBC7 /* libngx_devel_kit.a in Frameworks */,
 				47E2B4B01FC461310072EBC7 /* libset-misc-nginx-module.a in Frameworks */,
@@ -1130,16 +1130,6 @@
 			);
 			name = "casper-packager-projects";
 			path = "../casper-packager";
-			sourceTree = "<group>";
-		};
-		471BE1AE23DF60AF00751072 /* cldware-party */ = {
-			isa = PBXGroup;
-			children = (
-				477409D9241666F3009BA9EA /* ngx-cdb-modules.xcodeproj */,
-				A5CBF6A72264FECF004744BB /* named-imports-nginx-module.xcodeproj */,
-				A5D5E2F822C4DCD400BF1409 /* vess.xcodeproj */,
-			);
-			path = "cldware-party";
 			sourceTree = "<group>";
 		};
 		47243D6E229C10E500CFAAC0 /* xattr */ = {
@@ -1254,14 +1244,6 @@
 			path = module;
 			sourceTree = "<group>";
 		};
-		477409DA241666F3009BA9EA /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				477409DE241666F3009BA9EA /* libngx-cdb-modules.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		477526AA2313E54A00F6FB18 /* db */ = {
 			isa = PBXGroup;
 			children = (
@@ -1293,6 +1275,30 @@
 				4778A12D229D8711003F42E0 /* scanner.rl */,
 			);
 			path = ast;
+			sourceTree = "<group>";
+		};
+		477B910D241FDA5D00DDBB39 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				477B9112241FDA5D00DDBB39 /* libngx-cdb-modules.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		478381AF241FDA2F000102BE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				478381B3241FDA2F000102BE /* libvess.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		478381B4241FDA30000102BE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				478381B8241FDA30000102BE /* libnamed-imports-nginx-module.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		478D625F1EFD54680000EF4D /* oauth */ = {
@@ -1442,7 +1448,9 @@
 				4791F5B41E81779F00EEF4D3 /* cppcodec */,
 				47CB41971E23FD72004FE268 /* connectors */,
 				47A1AC491E23AFF9009D8F29 /* nginx-broker */,
-				471BE1AE23DF60AF00751072 /* cldware-party */,
+				477409D9241666F3009BA9EA /* ngx-cdb-modules.xcodeproj */,
+				A5CBF6A72264FECF004744BB /* named-imports-nginx-module.xcodeproj */,
+				A5D5E2F822C4DCD400BF1409 /* vess.xcodeproj */,
 				47A1AC481E23AFF9009D8F29 /* Products */,
 				47A1B0391E23B4B1009D8F29 /* Frameworks */,
 			);
@@ -2171,22 +2179,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A5CBF6A82264FECF004744BB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A5CBF6AC2264FECF004744BB /* libnamed-imports-nginx-module.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		A5D5E2F922C4DCD400BF1409 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A5D5E2FD22C4DCD400BF1409 /* libvess.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2232,9 +2224,9 @@
 				47FCA1AC23E1964F00FB40EF /* PBXTargetDependency */,
 				4797EE1B23E198E200616FE1 /* PBXTargetDependency */,
 				4775743723E1981C001E7587 /* PBXTargetDependency */,
-				A5D5E30422C4DD9200BF1409 /* PBXTargetDependency */,
-				477409E0241666FB009BA9EA /* PBXTargetDependency */,
-				A5CBF6AE2264FF0F004744BB /* PBXTargetDependency */,
+				477B9114241FDA6500DDBB39 /* PBXTargetDependency */,
+				478381BC241FDA4E000102BE /* PBXTargetDependency */,
+				478381BA241FDA49000102BE /* PBXTargetDependency */,
 				47268EEC20484A8B00912B5A /* PBXTargetDependency */,
 				47E2B4311FC45F490072EBC7 /* PBXTargetDependency */,
 				47E2B4B21FC4613C0072EBC7 /* PBXTargetDependency */,
@@ -2305,11 +2297,11 @@
 					ProjectRef = 472AD2DA23E195E6000A7391 /* jsoncpp.xcodeproj */;
 				},
 				{
-					ProductGroup = A5CBF6A82264FECF004744BB /* Products */;
+					ProductGroup = 478381B4241FDA30000102BE /* Products */;
 					ProjectRef = A5CBF6A72264FECF004744BB /* named-imports-nginx-module.xcodeproj */;
 				},
 				{
-					ProductGroup = 477409DA241666F3009BA9EA /* Products */;
+					ProductGroup = 477B910D241FDA5D00DDBB39 /* Products */;
 					ProjectRef = 477409D9241666F3009BA9EA /* ngx-cdb-modules.xcodeproj */;
 				},
 				{
@@ -2321,7 +2313,7 @@
 					ProjectRef = 47E2B49F1FC460D50072EBC7 /* set-misc-nginx-module.xcodeproj */;
 				},
 				{
-					ProductGroup = A5D5E2F922C4DCD400BF1409 /* Products */;
+					ProductGroup = 478381AF241FDA2F000102BE /* Products */;
 					ProjectRef = A5D5E2F822C4DCD400BF1409 /* vess.xcodeproj */;
 				},
 			);
@@ -2355,13 +2347,6 @@
 			remoteRef = 472AD2E423E195F7000A7391 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		477409DE241666F3009BA9EA /* libngx-cdb-modules.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libngx-cdb-modules.a";
-			remoteRef = 477409DD241666F3009BA9EA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		4775743323E1980F001E7587 /* libcasper-connectors.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -2374,6 +2359,27 @@
 			fileType = archive.ar;
 			path = "libcasper-connectors-v8.a";
 			remoteRef = 4775743423E1980F001E7587 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		477B9112241FDA5D00DDBB39 /* libngx-cdb-modules.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libngx-cdb-modules.a";
+			remoteRef = 477B9111241FDA5D00DDBB39 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		478381B3241FDA2F000102BE /* libvess.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libvess.a;
+			remoteRef = 478381B2241FDA2F000102BE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		478381B8241FDA30000102BE /* libnamed-imports-nginx-module.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libnamed-imports-nginx-module.a";
+			remoteRef = 478381B7241FDA30000102BE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		4797EE1923E198DB00616FE1 /* libcasper-osal.a */ = {
@@ -2409,20 +2415,6 @@
 			fileType = archive.ar;
 			path = "libbeanstalk-client.a";
 			remoteRef = 47FCA1A723E1964800FB40EF /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A5CBF6AC2264FECF004744BB /* libnamed-imports-nginx-module.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libnamed-imports-nginx-module.a";
-			remoteRef = A5CBF6AB2264FECF004744BB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A5D5E2FD22C4DCD400BF1409 /* libvess.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libvess.a;
-			remoteRef = A5D5E2FC22C4DCD400BF1409 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -2712,15 +2704,25 @@
 			name = "echo-nginx-module";
 			targetProxy = 47268EEB20484A8B00912B5A /* PBXContainerItemProxy */;
 		};
-		477409E0241666FB009BA9EA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "ngx-cdb-modules";
-			targetProxy = 477409DF241666FB009BA9EA /* PBXContainerItemProxy */;
-		};
 		4775743723E1981C001E7587 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "casper-connectors";
 			targetProxy = 4775743623E1981C001E7587 /* PBXContainerItemProxy */;
+		};
+		477B9114241FDA6500DDBB39 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ngx-cdb-modules";
+			targetProxy = 477B9113241FDA6500DDBB39 /* PBXContainerItemProxy */;
+		};
+		478381BA241FDA49000102BE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = vess;
+			targetProxy = 478381B9241FDA49000102BE /* PBXContainerItemProxy */;
+		};
+		478381BC241FDA4E000102BE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "named-imports-nginx-module";
+			targetProxy = 478381BB241FDA4E000102BE /* PBXContainerItemProxy */;
 		};
 		4797EE1B23E198E200616FE1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2766,16 +2768,6 @@
 			isa = PBXTargetDependency;
 			name = jsoncpp;
 			targetProxy = 47FCA1AF23E1964F00FB40EF /* PBXContainerItemProxy */;
-		};
-		A5CBF6AE2264FF0F004744BB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "named-imports-nginx-module";
-			targetProxy = A5CBF6AD2264FF0F004744BB /* PBXContainerItemProxy */;
-		};
-		A5D5E30422C4DD9200BF1409 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = vess;
-			targetProxy = A5D5E30322C4DD9200BF1409 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
