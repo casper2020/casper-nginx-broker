@@ -27,10 +27,11 @@ endif
 include $(PACKAGER_DIR)/common/c++/settings.mk
 
 PROJECT_SRC_DIR     := $(ROOT_DIR)/casper-nginx-broker
-EXECUTABLE_NAME     := nb-xattr
+EXECUTABLE_SUFFIX   ?= -2
+EXECUTABLE_NAME     := nb-xattr$(EXECUTABLE_SUFFIX)
 EXECUTABLE_MAIN_SRC := $(PROJECT_SRC_DIR)/src/xattr/nb-xattr.cc
 LIBRARY_NAME        :=
-VERSION             ?= $(shell cat $(PACKAGER_DIR)/nb-xattr-2/version)
+VERSION             ?= $(shell cat $(PACKAGER_DIR)/nb-xattr$(EXECUTABLE_SUFFIX)/version)
 CHILD_CWD           := $(THIS_DIR)
 CHILD_MAKEFILE      := $(MAKEFILE_LIST)
 
@@ -81,6 +82,7 @@ all: exec
 version:
 	@echo " $(LOG_COMPILING_PREFIX) - patching $(PROJECT_SRC_DIR)/src/xattr/version.h"
 	@cp -f $(PROJECT_SRC_DIR)/src/xattr/version.tpl.h $(PROJECT_SRC_DIR)/src/xattr/version.h
+	@sed -i.bak s#"@b.n.s@"#${EXECUTABLE_SUFFIX}#g $(PROJECT_SRC_DIR)/src/xattr/version.h
 	@sed -i.bak s#"x.x.xx"#$(VERSION)#g $(PROJECT_SRC_DIR)/src/xattr/version.h
 	@rm -f $(PROJECT_SRC_DIR)/src/xattr/version.h.bak
 
