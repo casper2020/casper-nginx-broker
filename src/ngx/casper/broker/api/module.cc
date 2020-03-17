@@ -447,6 +447,11 @@ ngx_int_t ngx::casper::broker::api::Module::PostJob (const ngx_int_t a_method,
 ngx_int_t ngx::casper::broker::api::Module::Factory (ngx_http_request_t* a_r, bool a_at_rewrite_handler)
 {
     //
+    // REJECT KEEP ALIVE
+    //
+    a_r->keepalive = 0;
+
+    //
     // GRAB 'MAIN' CONFIG
     //
     ngx_http_casper_broker_module_loc_conf_t* broker_conf = (ngx_http_casper_broker_module_loc_conf_t*)ngx_http_get_module_loc_conf(a_r, ngx_http_casper_broker_module);
