@@ -27,7 +27,7 @@ endif
 include $(PACKAGER_DIR)/common/c++/settings.mk
 
 PROJECT_SRC_DIR     := $(ROOT_DIR)/casper-nginx-broker
-EXECUTABLE_SUFFIX   ?= -2
+EXECUTABLE_SUFFIX   ?=
 EXECUTABLE_NAME     := nb-xattr$(EXECUTABLE_SUFFIX)
 EXECUTABLE_MAIN_SRC := $(PROJECT_SRC_DIR)/src/xattr/nb-xattr.cc
 LIBRARY_NAME        :=
