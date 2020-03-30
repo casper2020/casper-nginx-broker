@@ -3004,7 +3004,7 @@
 					/usr/local/opt/pcre/lib/libpcre.a,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "$(SRCROOT)/$(NRS_OUT_DIR)/$(CONFIGURATION)";
+				SYMROOT = "$(NRS_OUT_DIR)/$(CONFIGURATION)";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include /usr/local/opt/openssl/include";
 				VALID_ARCHS = "i386 x86_64";
 			};
@@ -3050,7 +3050,7 @@
 					/usr/local/opt/pcre/lib/libpcre.a,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SYMROOT = "$(SRCROOT)/$(NRS_OUT_DIR)/$(CONFIGURATION)";
+				SYMROOT = "$(NRS_OUT_DIR)/$(CONFIGURATION)";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include /usr/local/opt/openssl/include";
 				VALID_ARCHS = "i386 x86_64";
 			};
