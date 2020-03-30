@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		470348DE242E03ED008C004C /* ngx_http_v2_encode.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348DC242E03ED008C004C /* ngx_http_v2_encode.c */; };
+		470348E0242E043B008C004C /* ngx_event_udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348DF242E043B008C004C /* ngx_event_udp.c */; };
+		470348E2242E0479008C004C /* ngx_http_try_files_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348E1242E0479008C004C /* ngx_http_try_files_module.c */; };
+		470348E5242E0491008C004C /* ngx_http_mirror_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348E3242E0491008C004C /* ngx_http_mirror_module.c */; };
+		470348E6242E0491008C004C /* ngx_http_grpc_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348E4242E0491008C004C /* ngx_http_grpc_module.c */; };
+		470348E8242E04A6008C004C /* ngx_http_upstream_random_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348E7242E04A6008C004C /* ngx_http_upstream_random_module.c */; };
 		471351C81F13895500EC4B97 /* scope.cc in Sources */ = {isa = PBXBuildFile; fileRef = 471351C71F13895500EC4B97 /* scope.cc */; };
 		471640F31EDEEF560081101B /* ngx_utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 471640F11EDEEF560081101B /* ngx_utils.cc */; };
 		471BE08523DEEC9200751072 /* errors.cc in Sources */ = {isa = PBXBuildFile; fileRef = 471BE07C23DEEC9200751072 /* errors.cc */; };
@@ -549,6 +555,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		470348DC242E03ED008C004C /* ngx_http_v2_encode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ngx_http_v2_encode.c; sourceTree = "<group>"; };
+		470348DF242E043B008C004C /* ngx_event_udp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ngx_event_udp.c; sourceTree = "<group>"; };
+		470348E1242E0479008C004C /* ngx_http_try_files_module.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ngx_http_try_files_module.c; sourceTree = "<group>"; };
+		470348E3242E0491008C004C /* ngx_http_mirror_module.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ngx_http_mirror_module.c; sourceTree = "<group>"; };
+		470348E4242E0491008C004C /* ngx_http_grpc_module.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ngx_http_grpc_module.c; sourceTree = "<group>"; };
+		470348E7242E04A6008C004C /* ngx_http_upstream_random_module.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ngx_http_upstream_random_module.c; sourceTree = "<group>"; };
 		470389AA235F4D98002FA394 /* casper-connectors.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "casper-connectors.xcodeproj"; path = "connectors/casper-connectors.xcodeproj"; sourceTree = "<group>"; };
 		470733F42350CBE700D916DA /* hiredis.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = hiredis.xcodeproj; path = hiredis/hiredis.xcodeproj; sourceTree = "<group>"; };
 		470733FA2350CBFD00D916DA /* beanstalk-client.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "beanstalk-client.xcodeproj"; path = "beanstalk-client/beanstalk-client.xcodeproj"; sourceTree = "<group>"; };
@@ -1666,6 +1678,7 @@
 			children = (
 				47A1ADAC1E23B052009D8F29 /* modules */,
 				47A1ADB41E23B052009D8F29 /* ngx_event.c */,
+				470348DF242E043B008C004C /* ngx_event_udp.c */,
 				47A1ADB51E23B052009D8F29 /* ngx_event.h */,
 				47A1ADB61E23B052009D8F29 /* ngx_event_accept.c */,
 				47A1ADB71E23B052009D8F29 /* ngx_event_connect.c */,
@@ -1728,6 +1741,10 @@
 		47A1ADC31E23B052009D8F29 /* modules */ = {
 			isa = PBXGroup;
 			children = (
+				470348E7242E04A6008C004C /* ngx_http_upstream_random_module.c */,
+				470348E4242E0491008C004C /* ngx_http_grpc_module.c */,
+				470348E3242E0491008C004C /* ngx_http_mirror_module.c */,
+				470348E1242E0479008C004C /* ngx_http_try_files_module.c */,
 				477793E11E3280E000EE42B1 /* ngx_http_stub_status_module.c */,
 				47A1ADC41E23B052009D8F29 /* ngx_http_access_module.c */,
 				47A1ADC51E23B052009D8F29 /* ngx_http_addition_filter_module.c */,
@@ -1911,6 +1928,7 @@
 		47A1B03E1E23B4CD009D8F29 /* v2 */ = {
 			isa = PBXGroup;
 			children = (
+				470348DC242E03ED008C004C /* ngx_http_v2_encode.c */,
 				47A1B03F1E23B4CD009D8F29 /* ngx_http_v2.c */,
 				47A1B0401E23B4CD009D8F29 /* ngx_http_v2.h */,
 				47A1B0411E23B4CD009D8F29 /* ngx_http_v2_filter_module.c */,
@@ -2495,6 +2513,7 @@
 				47A1AE9C1E23B053009D8F29 /* ngx_modules.c in Sources */,
 				47A1AF2A1E23B053009D8F29 /* ngx_regex.c in Sources */,
 				47A1AF531E23B053009D8F29 /* ngx_http_gunzip_filter_module.c in Sources */,
+				470348DE242E03ED008C004C /* ngx_http_v2_encode.c in Sources */,
 				47A1AF821E23B053009D8F29 /* ngx_http_special_response.c in Sources */,
 				47A1B02C1E23B186009D8F29 /* ngx_setproctitle.c in Sources */,
 				47A1B04A1E23B4CD009D8F29 /* ngx_http_v2_huff_encode.c in Sources */,
@@ -2502,6 +2521,7 @@
 				475B479A233248CF0068DE54 /* module.cc in Sources */,
 				47A1AF2F1E23B053009D8F29 /* ngx_slab.c in Sources */,
 				47A1AF191E23B053009D8F29 /* ngx_file.c in Sources */,
+				470348E5242E0491008C004C /* ngx_http_mirror_module.c in Sources */,
 				47A1AF1E1E23B053009D8F29 /* ngx_md5.c in Sources */,
 				47A1AFCD1E23B053009D8F29 /* ngx_stream_upstream.c in Sources */,
 				47A1B0381E23B186009D8F29 /* ngx_writev_chain.c in Sources */,
@@ -2517,6 +2537,7 @@
 				47A1AF611E23B053009D8F29 /* ngx_http_random_index_module.c in Sources */,
 				478D62A91EFD54F70000EF4D /* access_token.cc in Sources */,
 				4721F5E122930A860006A192 /* act.cc in Sources */,
+				470348E0242E043B008C004C /* ngx_event_udp.c in Sources */,
 				478D62AB1EFD54F70000EF4D /* object.cc in Sources */,
 				47A1AF2E1E23B053009D8F29 /* ngx_shmtx.c in Sources */,
 				47A1B01C1E23B186009D8F29 /* ngx_dlopen.c in Sources */,
@@ -2567,6 +2588,7 @@
 				47A1AF1F1E23B053009D8F29 /* ngx_module.c in Sources */,
 				473FC35323BA6A9B00EFE4FE /* sideline.cc in Sources */,
 				47A1AF131E23B053009D8F29 /* ngx_conf_file.c in Sources */,
+				470348E2242E0479008C004C /* ngx_http_try_files_module.c in Sources */,
 				47A1AF861E23B053009D8F29 /* ngx_http_write_filter_module.c in Sources */,
 				47A1B0331E23B186009D8F29 /* ngx_thread_mutex.c in Sources */,
 				47A1B0371E23B186009D8F29 /* ngx_user.c in Sources */,
@@ -2631,7 +2653,9 @@
 				47A1AF1B1E23B053009D8F29 /* ngx_inet.c in Sources */,
 				47A1AFCA1E23B053009D8F29 /* ngx_stream_script.c in Sources */,
 				477526B32313EE2100F6FB18 /* synchronization.cc in Sources */,
+				470348E6242E0491008C004C /* ngx_http_grpc_module.c in Sources */,
 				47A1AF691E23B053009D8F29 /* ngx_http_split_clients_module.c in Sources */,
+				470348E8242E04A6008C004C /* ngx_http_upstream_random_module.c in Sources */,
 				47C6C15122DF7E5100A2EBF3 /* ngx_http_casper_broker_cdn_replicator_module.cc in Sources */,
 				47A1AF791E23B053009D8F29 /* ngx_http_copy_filter_module.c in Sources */,
 				47A1B0271E23B186009D8F29 /* ngx_process_cycle.c in Sources */,
@@ -2957,12 +2981,15 @@
 					/usr/local/casper/postgresql/include,
 					"$(SRCROOT)/../casper-packager/curl/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/curl/include",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/include",
+					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/libevent2/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../v8/out.gn/x64.$(CONFIGURATION::rfc1034identifier:lower)/obj/third_party/icu",
 					"$(SRCROOT)/../casper-packager/curl/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/curl/lib",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/lib",
+					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/libevent2/usr/local/casper/libevent2/lib",
+					"$(SRCROOT)/../casper-packager/postgresql/darwin/pkg/$(CONFIGURATION)/postgresql/usr/local/casper/postgresql/lib",
 					/usr/local/lib,
 				);
 				OTHER_LDFLAGS = (
@@ -2971,10 +2998,10 @@
 					"$(SRCROOT)/../casper-packager/curl/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/curl/lib/libcurl.a",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/lib/libssl.a",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/lib/libcrypto.a",
-					/usr/local/opt/libevent/lib/libevent_pthreads.a,
-					/usr/local/opt/libevent/lib/libevent.a,
+					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/libevent2/usr/local/casper/libevent2/lib/libevent_pthreads.a",
+					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/libevent2/usr/local/casper/libevent2/lib/libevent.a",
+					"$(SRCROOT)/../casper-packager/postgresql/darwin/pkg/$(CONFIGURATION)/postgresql/usr/local/casper/postgresql/lib/libpq.a",
 					/usr/local/opt/pcre/lib/libpcre.a,
-					/usr/local/casper/postgresql/lib/libpq.a,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = "$(SRCROOT)/$(NRS_OUT_DIR)/$(CONFIGURATION)";
@@ -3000,12 +3027,15 @@
 					/usr/local/casper/postgresql/include,
 					"$(SRCROOT)/../casper-packager/curl/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/curl/include",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/include",
+					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/libevent2/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../v8/out.gn/x64.$(CONFIGURATION::rfc1034identifier:lower)/obj/third_party/icu",
 					"$(SRCROOT)/../casper-packager/curl/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/curl/lib",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/lib",
+					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/libevent2/usr/local/casper/libevent2/lib",
+					"$(SRCROOT)/../casper-packager/postgresql/darwin/pkg/$(CONFIGURATION)/postgresql/usr/local/casper/postgresql/lib",
 					/usr/local/lib,
 				);
 				OTHER_LDFLAGS = (
@@ -3014,10 +3044,10 @@
 					"$(SRCROOT)/../casper-packager/curl/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/curl/lib/libcurl.a",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/lib/libssl.a",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/lib/libcrypto.a",
-					/usr/local/opt/libevent/lib/libevent_pthreads.a,
-					/usr/local/opt/libevent/lib/libevent.a,
+					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/libevent2/usr/local/casper/libevent2/lib/libevent_pthreads.a",
+					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/libevent2/usr/local/casper/libevent2/lib/libevent.a",
+					"$(SRCROOT)/../casper-packager/postgresql/darwin/pkg/$(CONFIGURATION)/postgresql/usr/local/casper/postgresql/lib/libpq.a",
 					/usr/local/opt/pcre/lib/libpcre.a,
-					/usr/local/casper/postgresql/lib/libpq.a,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = "$(SRCROOT)/$(NRS_OUT_DIR)/$(CONFIGURATION)";
