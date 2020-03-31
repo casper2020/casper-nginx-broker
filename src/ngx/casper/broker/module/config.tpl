@@ -25,7 +25,6 @@ CORE_LIBS+=" \
 -L @ICU4C_LIB_DIR@ -licuuc -licui18n \
 -L @OPENSSL_LIB_DIR@ -lssl -lcrypto \
 -L @POSTGRESQL_LIB_DIR@ -lpq \
+-L @LIBEVENT2_LIB_DIR@ -levent -levent_pthreads \
 @OTHER_LIBS@ \
--levent \
--levent_pthreads \
 @SECURITY_FRAMEWORK@"
