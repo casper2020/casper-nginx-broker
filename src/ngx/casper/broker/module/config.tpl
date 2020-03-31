@@ -20,8 +20,8 @@ CORE_LIBS+=" \
 -L @PACKAGER_DIR@/beanstalk-client/out/@PLATFORM@/@TARGET@ \
 -L @PACKAGER_DIR@/../casper-osal/out/@PLATFORM@/@TARGET@ -losal \
 -L @PACKAGER_DIR@/../casper-connectors/out/@PLATFORM@/@TARGET@ -lconnectors \
--L @PACKAGER_DIR@/curl/@PLATFORM@/pkg/@TARGET@/curl/usr/local/casper/curl/lib -lcurl \
--L @PACKAGER_DIR@/libunwind/@PLATFORM@/pkg/@TARGET@/libunwind/usr/local/casper/libunwind/lib -lunwind-x86_64 -lunwind -llzma \
+-L @LIBCURL_LIB_DIR@ -lcurl \
+-L @LIBUNWIND_LIB_DIR@ -lunwind-x86_64 -lunwind -llzma \
 -L @ICU4C_LIB_DIR@ -licuuc -licui18n \
 -L @OPENSSL_LIB_DIR@ -lssl -lcrypto \
 -L @POSTGRESQL_LIB_DIR@ -lpq \
