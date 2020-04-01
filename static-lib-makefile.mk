@@ -81,10 +81,6 @@ update-objects: update-sources
 .SECONDEXPANSION: set-dependencies
 set-dependencies: $(CASPER_NGINX_BROKER_DEPENDENCIES) update-objects
 
-.SECONDEXPANSION: clean-objects
-clean-objects:
-	@$(foreach o, $(OBJECTS), echo " $(LOG_COMPILING_PREFIX) ~ $(RED_COLOR)$(o)$(RESET_COLOR)" && rm -f $(o); )
-
 # version
 version:
 	@echo " $(LOG_COMPILING_PREFIX) - patching $(PROJECT_SRC_DIR)/src/ngx/version.h"
