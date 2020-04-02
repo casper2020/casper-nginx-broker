@@ -70,7 +70,9 @@ OBJECTS := \
 include $(PACKAGER_DIR)/common/c++/common.mk
 
 CASPER_NGINX_BROKER_DEPENDENCIES := \
-  casper-connectors-dep-on casper-osal-dep-on cppcodec-dep-on \
+  casper-connectors-dep-on casper-osal-dep-on \
+  openssl-dep-on \
+  cppcodec-dep-on \
   zlib-dep-on libbcrypt-dep-on beanstalk-client-dep-on postgresql-dep-on icu-dep-on curl-dep-on jsoncpp-dep-on cppcodec-dep-on hiredis-dep-on
 
 .SECONDEXPANSION: update-objects

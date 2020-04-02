@@ -23,8 +23,6 @@ CORE_LIBS+=" \
 -L @LIBCURL_LIB_DIR@ -lcurl \
 -L @ICU4C_LIB_DIR@ -licui18n \
 -L @ICU4C_LIB_DIR@ -licuuc \
--L @OPENSSL_LIB_DIR@ -lssl \
--L @OPENSSL_LIB_DIR@ -lcrypto \
 -L @POSTGRESQL_LIB_DIR@ -lpq \
 -L @LIBEVENT2_LIB_DIR@ -levent \
 -L @LIBEVENT2_LIB_DIR@ -levent_pthreads \
