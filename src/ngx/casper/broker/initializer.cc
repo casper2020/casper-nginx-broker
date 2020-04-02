@@ -220,6 +220,7 @@ void ngx::casper::broker::Initializer::PreStartup (const ngx_core_conf_t* a_conf
             /* version_   */ NGX_VERSION,
             /* rel_date_  */ NGX_REL_DATE,
             /* info_      */ NGX_INFO,
+            /* banner_    */ NGX_BANNER,
             /* pid_       */ getpid(),
             /* is_master_ */ a_master
         },
