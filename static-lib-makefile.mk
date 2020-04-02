@@ -85,7 +85,7 @@ set-dependencies: $(CASPER_NGINX_BROKER_DEPENDENCIES) update-objects
 version:
 	@echo " $(LOG_COMPILING_PREFIX) - patching $(PROJECT_SRC_DIR)/src/ngx/version.h"
 	@cp -f $(PROJECT_SRC_DIR)/src/ngx/version.tpl.h $(PROJECT_SRC_DIR)/src/ngx/version.h
-	@sed -i.bak s#"x.x.xx"#$(VERSION)#g $(PROJECT_SRC_DIR)/src/ngx/version.h
+	@sed -i.bak s#"x.x.x"#$(VERSION)#g $(PROJECT_SRC_DIR)/src/ngx/version.h
 	@rm -f $(PROJECT_SRC_DIR)/src/ngx/version.h.bak
 
 all: lib
