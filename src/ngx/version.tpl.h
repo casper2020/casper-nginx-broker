@@ -36,6 +36,10 @@
 #define NGX_VERSION "x.x.x"
 #endif
 
+#ifndef NGX_REL_DATE
+#define NGX_REL_DATE "d.d.d"
+#endif
+
 #ifndef NGX_INFO
 #define NGX_INFO NGX_NAME " v" NGX_VERSION "/" NGINX_VERSION
 #endif

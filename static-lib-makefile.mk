@@ -32,6 +32,7 @@ EXECUTABLE_MAIN_SRC  :=
 LIBRARY_TYPE         := static
 LIBRARY_NAME         := libbroker.a
 VERSION              := $(shell cat $(PACKAGER_DIR)/nginx-broker/version)
+REL_DATE             := $(shell date -u)
 CHILD_CWD            := $(THIS_DIR)
 CHILD_MAKEFILE       := $(firstword $(MAKEFILE_LIST))
 
@@ -86,6 +87,7 @@ version:
 	@echo " $(LOG_COMPILING_PREFIX) - patching $(PROJECT_SRC_DIR)/src/ngx/version.h"
 	@cp -f $(PROJECT_SRC_DIR)/src/ngx/version.tpl.h $(PROJECT_SRC_DIR)/src/ngx/version.h
 	@sed -i.bak s#"x.x.x"#$(VERSION)#g $(PROJECT_SRC_DIR)/src/ngx/version.h
+	@sed -i.bak s#"d.d.d"#"$(REL_DATE)"#g $(PROJECT_SRC_DIR)/src/ngx/version.h
 	@rm -f $(PROJECT_SRC_DIR)/src/ngx/version.h.bak
 
 all: lib
