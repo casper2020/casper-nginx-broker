@@ -199,8 +199,18 @@ void ngx::casper::ev::Glue::Startup (const ::ev::Loggable::Data& a_loggable_data
     );
     
     // ... signals ...
-    ::ev::Signals::GetInstance().Append({ SIGTTIN },[](int a_signo) {
-        ::ev::auth::route::Gatekeeper::GetInstance().Reload(a_signo);
+    ::ev::Signals::GetInstance().Append({
+        {
+            /* signal_      */ SIGTTIN,
+            /* description_ */ "Gatekeeper config reload",
+            /* callback_    */ [] () -> std::string {
+                if ( true == ::ev::auth::route::Gatekeeper::GetInstance().Reload(SIGTTIN) ) {
+                    return "Gatekeeper config reloaded";
+                } else {
+                    return "Gatekeeper config reload skipped - is not configured";
+                }
+            }
+        }
     });
     
     //

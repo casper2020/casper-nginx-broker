@@ -9,21 +9,28 @@
          <BreakpointContent
             uuid = "261A3F98-A830-4856-A161-9AEEF8E23387"
             shouldBeEnabled = "Yes"
+            nameForDebugger = "SIGNALS"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ngx/casper/broker/initializer.cc"
             timestampString = "576428604.415547"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "ngx::casper::broker::Initializer::Startup(a_r, a_configs)"
+            startingLineNumber = "170"
+            endingLineNumber = "170"
+            landmarkName = "ngx::casper::broker::Initializer::PreStartup(a_config, a_cycle, a_master)"
             landmarkType = "7">
             <Actions>
                <BreakpointActionProxy
                   ActionExtensionID = "Xcode.BreakpointAction.DebuggerCommand">
                   <ActionContent
                      consoleCommand = "process handle -s0 -p1 SIGTERM">
+                  </ActionContent>
+               </BreakpointActionProxy>
+               <BreakpointActionProxy
+                  ActionExtensionID = "Xcode.BreakpointAction.DebuggerCommand">
+                  <ActionContent
+                     consoleCommand = "process handle -s0 -p1 SIGQUIT">
                   </ActionContent>
                </BreakpointActionProxy>
                <BreakpointActionProxy
