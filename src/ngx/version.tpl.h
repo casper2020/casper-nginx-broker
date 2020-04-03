@@ -29,7 +29,7 @@
 #endif
 
 #ifndef NGX_NAME
-#define NGX_NAME "nginx-broker"
+#define NGX_NAME "n.n.n"
 #endif
 
 #ifndef NGX_VERSION
