@@ -446,10 +446,10 @@
 					"$(SRCROOT)/../src/nginx/src/event",
 					"$(SRCROOT)/../src/nginx/src/os/unix",
 					"$(SRCROOT)/../src/nginx/objs",
-					/usr/local/include,
-					/usr/local/opt/openssl/include,
+					"$(SRCROOT)/../../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/include",
 					"$(SRCROOT)/../../ngx_devel_kit/src",
 					"$(SRCROOT)/../../ngx_devel_kit/objs",
+					/usr/local/include,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -474,10 +474,10 @@
 					"$(SRCROOT)/../src/nginx/src/event",
 					"$(SRCROOT)/../src/nginx/src/os/unix",
 					"$(SRCROOT)/../src/nginx/objs",
-					/usr/local/include,
-					/usr/local/opt/openssl/include,
+					"$(SRCROOT)/../../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/include",
 					"$(SRCROOT)/../../ngx_devel_kit/src",
 					"$(SRCROOT)/../../ngx_devel_kit/objs",
+					/usr/local/include,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

@@ -2978,10 +2978,10 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/casper/postgresql/include,
 					"$(SRCROOT)/../casper-packager/curl/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/curl/include",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/include",
 					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/libevent2/include",
+					"$(SRCROOT)/../casper-packager/postgresql/darwin/pkg/$(CONFIGURATION)/postgresql/usr/local/casper/postgresql/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3005,7 +3005,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = "$(NRS_OUT_DIR)/$(CONFIGURATION)";
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include /usr/local/opt/openssl/include";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include";
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
@@ -3024,10 +3024,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "NGX_THREADS=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/casper/postgresql/include,
 					"$(SRCROOT)/../casper-packager/curl/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/curl/include",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/include",
 					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/libevent2/include",
+					"$(SRCROOT)/../casper-packager/postgresql/darwin/pkg/$(CONFIGURATION)/postgresql/usr/local/casper/postgresql/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3051,7 +3051,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = "$(NRS_OUT_DIR)/$(CONFIGURATION)";
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include /usr/local/opt/openssl/include";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include";
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;

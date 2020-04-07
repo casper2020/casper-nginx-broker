@@ -34,4 +34,13 @@
 #define NRS_CASPER_NGINX_BROKER_XATTR_INFO NRS_CASPER_NGINX_BROKER_XATTR_NAME " v" NRS_CASPER_NGINX_BROKER_XATTR_VERSION
 #endif
 
+#ifndef NGX_BANNER
+  #define NGX_BANNER \
+    " _   _   ____           __  __     _      _____   _____   ____  " \
+    "\n| \\ | | | __ )          \\ \\/ /    / \\    |_   _| |_   _| |  _ \\ " \
+    "\n|  \\| | |  _ \\   _____   \\  /    / _ \\     | |     | |   | |_) |" \
+    "\n| |\\  | | |_) | |_____|  /  \\   / ___ \\    | |     | |   |  _ < " \
+    "\n|_| \\_| |____/          /_/\\_\\ /_/   \\_\\   |_|     |_|   |_| \\_\\"
+#endif
+
 #endif // NRS_XATTR_VERSION_H_
