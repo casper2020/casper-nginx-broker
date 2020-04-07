@@ -9,7 +9,7 @@ NGX_ADDON_DEPS="$NGX_ADDON_DEPS \
 $ngx_addon_dir/ngx_http_casper_broker_module.h \
 $ngx_addon_dir/version.h"
 
-CORE_LIBS="$CORE_LIBS -lstdc++ -lm"
+CORE_LIBS="-lstdc++ -lm -ldl"
 CORE_LIBS+=" \
 @OTHER_LIBS@ \
 -L @PACKAGER_DIR@/../casper-nginx-broker/out/@PLATFORM@/@TARGET@ -lbroker \
