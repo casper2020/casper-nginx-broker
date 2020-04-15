@@ -39,6 +39,19 @@
 
 #include "cc/debug/types.h"
 
+#include "cc/logs/basic.h"
+
+#ifdef CC_BROKER_INITIALIZER_LOG
+    #undef CC_BROKER_INITIALIZER_LOG
+#endif
+#define CC_BROKER_INITIALIZER_LOG(a_token, a_format, ...) \
+    if ( false == ::cc::global::Initializer::GetInstance().IsBeingDebugged() ) { \
+        cc::logs::Basic::GetInstance().Log(a_token, a_format, __VA_ARGS__); \
+    } else { \
+        fprintf(stdout, a_format, __VA_ARGS__); \
+        fflush(stdout); \
+    }
+
 //
 // STATIC CONST DATA
 //
@@ -62,10 +75,14 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
     try {
           // ... all other stuff ...
           ngx::casper::ev::Glue::GetInstance().Startup(::cc::global::Initializer::GetInstance().loggable_data(), a_configs, glue_callbacks);
+    } catch (const ngx::casper::broker::Exception& a_broker_exception) {
+        CC_BROKER_INITIALIZER_LOG("cc-status", "\nBROKER_MODULE_INITIALIZATION_ERROR: %s\n", a_broker_exception.what());
+        throw a_broker_exception;
     } catch (const ::ev::Exception& a_ev_exception) {
-      throw ngx::casper::broker::Exception("BROKER_MODULE_INITIALIZATION_ERROR",
+        CC_BROKER_INITIALIZER_LOG("cc-status", "\nBROKER_MODULE_INITIALIZATION_ERROR: %s\n", a_ev_exception.what());
+        throw ngx::casper::broker::Exception("BROKER_MODULE_INITIALIZATION_ERROR",
                                            "Unable to initialize ev::Glue!"
-      );
+        );
     }
     
     // ... casper-connectors // third party libraries ...
@@ -111,6 +128,11 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
     }
     
     if ( true == ngx::casper::broker::Tracker::GetInstance().ContainsErrors(a_r) ) {
+        
+        const std::string msg = ngx::casper::broker::Tracker::GetInstance().errors_ptr(a_r)->Serialize2JSON();
+        
+        CC_BROKER_INITIALIZER_LOG("cc-status", "\nBROKER_MODULE_INITIALIZATION_ERROR: %s\n", msg.c_str());
+        
         throw ngx::casper::broker::Exception("BROKER_MODULE_INITIALIZATION_ERROR",
                                              "Unable to initialize i18!"
         );
