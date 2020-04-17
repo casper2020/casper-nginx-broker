@@ -570,7 +570,7 @@ ngx_int_t ngx_http_casper_broker_ul_module_content_handler (ngx_http_request_t* 
         
         context->read_callback_again_ = ( NGX_AGAIN == rc );
         
-        return rc;
+        return ( NGX_AGAIN == rc ? NGX_DONE : rc );
     }
 
     // ... if no multipart ...
