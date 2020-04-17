@@ -615,12 +615,7 @@ static char* ngx_http_casper_broker_module_merge_loc_conf (ngx_conf_t* a_cf, voi
     ngx_conf_merge_str_value (conf->cdn.directories.archive_prefix     , prev->cdn.directories.archive_prefix  , "/tmp"        );
     
     // ... gatekeeper ...
-#ifdef __APPLE__
-    const char* const gcfu = "/usr/local/share/" NGX_NAME "/gatekeeper.json";
-#else
-    const char* const gcfu = "/usr/share/" NGX_NAME "/gatekeeper.json";
-#endif
-    ngx_conf_merge_str_value (conf->gatekeeper.config_file_uri         , prev->gatekeeper.config_file_uri      ,          gcfu );
+    ngx_conf_merge_str_value (conf->gatekeeper.config_file_uri         , prev->gatekeeper.config_file_uri      ,            "" );
 
     // ... cc log ...
     ngx_conf_merge_value     (conf->cc_log.set                         , prev->cc_log.set                      ,             0 ); /* 0 - not set */
