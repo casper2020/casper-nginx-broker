@@ -126,34 +126,14 @@ namespace ngx
                         const ContentLength&      content_length () const;
                         const ContentDisposition& content_disposition () const;
                         
-                        int                Method ();
-                        
-                        const char*        StringAttr            (const char* a_attribute, const char* a_default);
-                        bool               BooleanAttr           (const char* a_attribute, bool        a_default);
-                        const char*        BooleanAttrStr        (const char* a_attribute, bool        a_default);
-                        int                IntegerAttr           (const char* a_attribute, int         a_default);
-                        double             DoubleAttr            (const char* a_attribute, double      a_default);
-                        
-                        const char*        RequireStringAttr     (const char* a_attribute);
-                        bool               RequireBooleanAttr    (const char* a_attribute);
-                        const char*        RequireBooleanAttrStr (const char* a_attribute);
-                        int                RequireIntegerAttr    (const char* a_attribute);
-                        double             RequireDoubletAttr    (const char* a_attribute);
-                        
-                        void               StartUpdate           (const char* a_query = "", ...)  __attribute__((format(printf, 2, 3)));
-                        void               UpdateStringAttr      (const char* a_attribute, const char* a_column = nullptr);
-                        void               UpdateBooleanAttr     (const char* a_attribute, const char* a_column = nullptr);
-                        void               UpdateIntegerAttr     (const char* a_attribute, const char* a_column = nullptr);
-                        void               UpdateDoubleAttr      (const char* a_attribute, const char* a_column = nullptr);
-                        std::stringstream& SubqueryForUpdate     ();
-                        
-                        const char*        UserEmail             ();
-                        int                UserId                ();
-                        int                EntityId              ();
-                        void               SendSqlResponse       (const char* a_query, ...)  __attribute__((format(printf, 2, 3)));
-                        void               SendResponse          (int a_status_code, const char* a_response);
-                        void               SendResponse          (const ::ev::Exception& a_ev_exception);
+                    public: // Static Method(s) / Function(s)
 
+                        static ngx_int_t ContentPhaseTackleResponse (ngx_http_request_t* a_r, ngx_module_t& a_module_t,
+                                                                     const char* const a_token);
+
+                        static ngx_int_t RewritePhaseTackleResponse (ngx_http_request_t* a_r, ngx_module_t& a_module_t,
+                                                                     const char* const a_token,
+                                                                     const std::function<ngx_int_t()> a_factory);
                         
                     }; // end of class 'Module'
                     

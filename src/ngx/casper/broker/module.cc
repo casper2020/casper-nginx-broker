@@ -502,8 +502,24 @@ ngx_int_t ngx::casper::broker::Module::ValidateRequest (std::function<void()> a_
             ctx_.request_.body_read_completed_ = [a_callback, validate_body] () {
                 validate_body();
             };
+            ngx_int_t rc;
             // ... signal async ...
-            return NGX_AGAIN;
+            const char* handler;
+            if ( true == ctx_.at_rewrite_handler_ ) {
+                handler = "rewrite";
+                rc      = NGX_AGAIN;
+            } else {
+                handler = ( true == ctx_.at_content_handler_ ? "content" : "???" );
+                rc      = NGX_DONE;
+            }
+            // ... log ...
+            ::ev::LoggerV2::GetInstance().Log(logger_client_, "cc-modules",
+                                              NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT ",at %s - async reading ( %2ld )",
+                                              "ST : BODY",
+                                              handler, rc
+            );
+            // ... we're done ...
+            return rc;
         }
         
         validate_body();
@@ -843,7 +859,7 @@ ngx_int_t ngx::casper::broker::Module::Initialize (const ngx::casper::broker::Mo
         a_config.ngx_ptr_->casper_request = 1;
         
         // ... validate request & read body ...
-        module_ptr->ValidateRequest([async_or_finalize, module_ptr]() {
+        const ngx_int_t vr_rc = module_ptr->ValidateRequest([async_or_finalize, module_ptr]() {
 
             // ... we're ready to run now  ...
             ngx_int_t ngx_return_code  = module_ptr->Run();
@@ -865,7 +881,7 @@ ngx_int_t ngx::casper::broker::Module::Initialize (const ngx::casper::broker::Mo
         // ... validation or body reading pending?
         if ( NGX_AGAIN == module_ptr->ctx_.response_.return_code_ ) {
             // ... yes ...
-            return NGX_AGAIN;
+            return vr_rc;
         }
                 
         // ... we're ready to run now  ...

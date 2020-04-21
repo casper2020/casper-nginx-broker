@@ -21,6 +21,7 @@
 
 #include "ngx/casper/broker/cdn-api/module/ngx_http_casper_broker_cdn_api_module.h"
 
+#include "ngx/casper/broker/cdn-common/module.h"
 #include "ngx/casper/broker/cdn-api/module.h"
 
 #include <sys/stat.h>
@@ -224,7 +225,7 @@ static ngx_int_t ngx_http_casper_broker_cdn_api_module_filter_init (ngx_conf_t* 
     if ( NGX_OK != rv ) {
         return rv;
     }
-    
+
     /**
      * Install content handler.
      */
@@ -247,29 +248,9 @@ ngx_int_t ngx_http_casper_broker_cdn_api_module_content_handler (ngx_http_reques
     NGX_BROKER_MODULE_CONTENT_HANDLER_BARRIER(a_r, ngx_http_casper_broker_cdn_api_module, ngx_http_casper_broker_cdn_api_module_loc_conf_t,
                                               "cdn_api_module");
     /*
-     * This module is enabled.
+     * This module is enabled, handle request.
      */
-    ngx::casper::broker::cdn::api::Module* module = (ngx::casper::broker::cdn::api::Module*) ngx_http_get_module_ctx(a_r, ngx_http_casper_broker_cdn_api_module);
-    if ( nullptr == module ) {
-        // ... wtf?
-        return NGX_ERROR;
-    }
-    
-    module->SetAtContentHandler();
-    
-    // ... if not ready yet ...
-    if ( false == module->SynchronousResponse() ) {
-        return NGX_DECLINED;
-    }
-    
-    if ( true == module->InternalRedirect() ) {
-        return NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_INTERNAL_REDIRECT(module);
-    } else if ( true == module->NoContentResponse() ) {
-        return NGX_HTTP_NO_CONTENT;
-    }
-    
-    // ... wtf - this module shouldn't reach here ! ...
-    return NGX_HTTP_INTERNAL_SERVER_ERROR;
+    return ngx::casper::broker::cdn::common::Module::ContentPhaseTackleResponse(a_r, ngx_http_casper_broker_cdn_api_module, "cdn_api_module");
 }
 
 /**
@@ -285,52 +266,13 @@ ngx_int_t ngx_http_casper_broker_cdn_api_module_rewrite_handler (ngx_http_reques
     NGX_BROKER_MODULE_REWRITE_HANDLER_BARRIER(a_r, ngx_http_casper_broker_cdn_api_module, ngx_http_casper_broker_cdn_api_module_loc_conf_t,
                                               "cdn_api_module");
     
-    const auto tackle_response = [] (ngx_http_request_t* a_r, ngx::casper::broker::cdn::api::Module* a_module) -> ngx_int_t {
-        //
-        if ( true == a_module->SynchronousResponse() ) {
-            // ... synchronous response ...
-            if ( true == a_module->InternalRedirect() ) {
-                NGX_BROKER_MODULE_DEBUG_LOG(ngx_http_casper_broker_cdn_api_module, a_r, "cdn_api_module",
-                                            "RW", "LEAVING",
-                                            "%s", "synchronous response - internal redirect!"
-                );
-                // ... internal redirect and we're done ...
-                return NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_INTERNAL_REDIRECT(a_module);
-            } else {
-                NGX_BROKER_MODULE_DEBUG_LOG(ngx_http_casper_broker_cdn_api_module, a_r, "cdn_api_module",
-                                            "RW", "LEAVING",
-                                            "%s", "synchronous response - not handled where!"
-                );
-                // ... so, next phase ( content ) by returning ...
-                return NGX_DECLINED;
-            }
-        } else {
-            // ... asynchronous response: stall rewrite phase ...
-            return NGX_DONE;
-        }
-    };
-    
-    //
-    // NOTICE: any return code rather han NGX_DECLINED or NGX_DONE will finalize request ...
-    //
-    ngx_int_t rv = NGX_HTTP_INTERNAL_SERVER_ERROR;
-    
-    ngx::casper::broker::cdn::api::Module* module = (ngx::casper::broker::cdn::api::Module*) ngx_http_get_module_ctx(a_r, ngx_http_casper_broker_cdn_api_module);
-    if ( nullptr == module ) {
-        // ... first time this handler is called, it's time to create this request module's context ...
-        rv = ngx::casper::broker::cdn::api::Module::Factory(a_r, /* a_at_rewrite_handler */true);
-        if ( NGX_OK == rv ) {
-            rv = tackle_response(a_r, (ngx::casper::broker::cdn::api::Module*) ngx_http_get_module_ctx(a_r, ngx_http_casper_broker_cdn_api_module));
-        } else if ( NGX_DONE == rv ) {
-            ngx_http_finalize_request(a_r, NGX_DONE);
-            rv = NGX_DECLINED;
-        }
-    } else {
-        module->SetAtRewriteHandler();
-        // ... returning from a previous stalled rewrite phase ...
-        rv = tackle_response(a_r, module);
-    }
-    
-    // ... we're done ...
-    return rv;
+    /**
+     * This module is enabled, handle request.
+     */
+    return ngx::casper::broker::cdn::common::Module::RewritePhaseTackleResponse(a_r, ngx_http_casper_broker_cdn_api_module,
+                                                                              "cdn_api_module",
+                                                                              [a_r] () -> ngx_int_t {
+                                                                                return ngx::casper::broker::cdn::api::Module::Factory(a_r, /* a_at_rewrite_handler */ true);
+                                                                              }
+    );
 }

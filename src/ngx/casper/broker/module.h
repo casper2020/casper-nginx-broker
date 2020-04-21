@@ -864,6 +864,7 @@ namespace ngx
 
             public: // Inline Method(s) / Function(s)
                 
+                bool ReadingBody         () const;
                 bool SynchronousResponse () const;
                 bool InternalRedirect    () const;
                 bool NoContentResponse   () const;
@@ -871,6 +872,11 @@ namespace ngx
                 void SetAtRewriteHandler ();
                 
             }; // end of class 'Module'
+
+            inline bool Module::ReadingBody () const
+            {
+                return ( NGX_AGAIN == ctx_.response_.return_code_ );
+            }
 
             inline bool Module::SynchronousResponse () const
             {

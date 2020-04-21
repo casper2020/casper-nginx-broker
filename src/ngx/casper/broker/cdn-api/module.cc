@@ -177,7 +177,7 @@ ngx_int_t ngx::casper::broker::cdn::api::Module::Run ()
     } catch (const ngx::casper::broker::cdn::InternalServerError& a_internal_server_error) {
         NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_, a_internal_server_error.what());
     } catch (const ngx::casper::broker::cdn::Exception& a_cdn_exception) {
-            NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_, a_cdn_exception.what());
+        NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_, a_cdn_exception.what());
     } catch (const ::cc::Exception& a_ev_exception) {
         NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_, a_ev_exception.what());
     } catch (...) {
