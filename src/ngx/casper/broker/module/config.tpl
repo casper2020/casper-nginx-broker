@@ -16,7 +16,7 @@ CORE_LIBS+=" \
 -L @PACKAGER_DIR@/../casper-connectors/out/@PLATFORM@/@TARGET@ -lconnectors \
 -L @PACKAGER_DIR@/../casper-osal/out/@PLATFORM@/@TARGET@ -losal \
 -L @PACKAGER_DIR@/jsoncpp/out/@PLATFORM@/@TARGET@ -ljsoncpp \
--L @PACKAGER_DIR@/zlib/out/@PLATFORM@/@TARGET@ -lzlib \
+-L @ZLIB_LIB_DIR@ -lzlib \
 -L @PACKAGER_DIR@/hiredis/out/@PLATFORM@/@TARGET@ -lhiredis \
 -L @PACKAGER_DIR@/beanstalk-client/out/@PLATFORM@/@TARGET@ -lbeanstalkc \
 -L @PACKAGER_DIR@/libbcrypt/out/@PLATFORM@/@TARGET@ -lbcrypt \
