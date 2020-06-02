@@ -360,6 +360,18 @@ namespace ngx
 }()
 #endif // NGX_BROKER_MODULE_SET_NOT_ALLOWED
                 
+#ifndef NGX_BROKER_MODULE_SET_SERVICE_UNAVAILABLE
+#define NGX_BROKER_MODULE_SET_SERVICE_UNAVAILABLE(a_ctx, a_internal_msg) [&] () -> ngx_int_t { \
+    a_ctx.response_.status_code_ = NGX_HTTP_SERVICE_UNAVAILABLE; \
+    a_ctx.response_.return_code_ = NGX_ERROR; \
+     a_ctx.response_.errors_tracker_.add_i18n_i_(NGX_BROKER_MODULE_HTTP_SHORT_STATUS_CODE_STR(a_ctx.response_.status_code_), a_ctx.response_.status_code_, \
+           "BROKER_SERVICE_UNAVAILABLE", \
+           a_internal_msg \
+       ); \
+    return a_ctx.response_.return_code_; \
+}()
+#endif // NGX_BROKER_MODULE_SET_SERVICE_UNAVAILABLE
+                
 #ifndef NGX_BROKER_MODULE_SET_SERVER_ERROR
 #define NGX_BROKER_MODULE_SET_SERVER_ERROR(a_ctx, a_code, a_internal_msg) [&] () -> ngx_int_t { \
     a_ctx.response_.status_code_ = a_code; \

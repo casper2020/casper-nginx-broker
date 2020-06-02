@@ -68,7 +68,9 @@ ngx::casper::broker::jobify::Module::~Module ()
  */
 ngx_int_t ngx::casper::broker::jobify::Module::Run ()
 {
-    const ::ev::casper::Session invalid_session(ctx_.loggable_data_ref_, /* a_iss */ "<invalid_iss>", /* a_token_prefix */ "<invalid_prefix>");
+    const ::ev::casper::Session invalid_session(ctx_.loggable_data_ref_, /* a_iss */ "<invalid_iss>", /* a_sid */ "<invalid_sid>",  /* a_token_prefix */ "<invalid_prefix>",
+                                                /* a_test_maintenance_flag */ false
+    );
     
     // ... starts as a bad request ...
     ctx_.response_.status_code_ = NGX_HTTP_BAD_REQUEST;

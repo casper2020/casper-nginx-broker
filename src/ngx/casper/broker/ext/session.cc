@@ -33,9 +33,11 @@
 ngx::casper::broker::ext::Session::Session (ngx::casper::broker::Module::CTX& a_ctx, ngx::casper::broker::Module* a_module,
                                             const ngx::casper::broker::Module::Params& a_params)
     : ngx::casper::broker::ext::Base(a_ctx, a_module),
-      session_( /* a_loggable_data */ a_ctx.loggable_data_ref_,
-                /* a_iss           */ "nginx-broker",
-                /* a_token_prefix  */  module_ptr_->service_id_ + ":oauth:access_token:"
+      session_( /* a_loggable_data        */ a_ctx.loggable_data_ref_,
+                /* a_iss                  */ "nginx-broker",
+                /* a_sid                  */ module_ptr_->service_id_,
+                /* a_token_prefix         */ module_ptr_->service_id_ + ":oauth:access_token:",
+               /* a_test_maintenance_flag */ true
       )
 {
     // ... if no error set ...

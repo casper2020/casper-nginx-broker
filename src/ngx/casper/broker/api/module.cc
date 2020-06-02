@@ -194,56 +194,63 @@ void ngx::casper::broker::api::Module::OnSessionFetchSucceeded (const bool a_asy
     
     access_token_ = a_session.Data().token_;
     
-    // ... first check with gatekeeper ...
-    const ev::auth::route::Gatekeeper::Status& status = ::ev::auth::route::Gatekeeper::GetInstance().Allow(
-            ctx_.request_.method_, uri_, a_session,
-            {
-                std::bind(&ngx::casper::broker::api::Module::OnOnGatekeeperDeflectToJob, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                nullptr
-            },
-            ctx_.loggable_data_ref_
-    );
-    if ( NGX_HTTP_OK != status.code_ ) {
-        // ... gatekeeper access denied or an error occurred ...
-        NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_RESPONSE(this, status.code_, ctx_.response_.content_type_, json_writer_.write(status.data_));
-    } else if ( false == status.deflected_ ) {
-        // ... now perform request with JSON API ...
-        try {
-            switch (ctx_.ngx_ptr_->method) {
-                case NGX_HTTP_GET:
-                    json_api_.Get(ctx_.loggable_data_ref_,
-                                  uri_,
-                                  std::bind(&ngx::casper::broker::api::Module::OnJSONAPIReply, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)
-                    );
-                    break;
-                case NGX_HTTP_POST:
-                    json_api_.Post(ctx_.loggable_data_ref_,
-                                   uri_, ctx_.request_.body_,
-                                   std::bind(&ngx::casper::broker::api::Module::OnJSONAPIReply, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)
-                    );
-                    break;
-                case NGX_HTTP_DELETE:
-                    json_api_.Delete(ctx_.loggable_data_ref_,
-                                     uri_, nullptr != ctx_.request_.body_ ? ctx_.request_.body_ : "",
-                                     std::bind(&ngx::casper::broker::api::Module::OnJSONAPIReply, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)
-                    );
-                    break;
-                case NGX_HTTP_PATCH:
-                    json_api_.Patch(ctx_.loggable_data_ref_,
-                                    uri_, ctx_.request_.body_,
-                                    std::bind(&ngx::casper::broker::api::Module::OnJSONAPIReply, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)
-                    );
-                    break;
-                default:
-                    NGX_BROKER_MODULE_SET_HTTP_METHOD_NOT_IMPLEMENTED(ctx_);
-                    break;
+    // ... first check if under maintenance flag is set ...
+    if ( true == a_session.Data().maintenance_ ) {
+        // ... session's entity is under maintenance ...
+        NGX_BROKER_MODULE_SET_SERVICE_UNAVAILABLE(ctx_, "Session's entity is under maintenance.");
+        NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_ERRORS_SERIALIZATION_RESPONSE(this);
+    } else {
+        // ... now check with gatekeeper ...
+        const ev::auth::route::Gatekeeper::Status& status = ::ev::auth::route::Gatekeeper::GetInstance().Allow(
+                ctx_.request_.method_, uri_, a_session,
+                {
+                    std::bind(&ngx::casper::broker::api::Module::OnOnGatekeeperDeflectToJob, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                    nullptr
+                },
+                ctx_.loggable_data_ref_
+        );
+        if ( NGX_HTTP_OK != status.code_ ) {
+            // ... gatekeeper access denied or an error occurred ...
+            NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_RESPONSE(this, status.code_, ctx_.response_.content_type_, json_writer_.write(status.data_));
+        } else if ( false == status.deflected_ ) {
+            // ... now perform request with JSON API ...
+            try {
+                switch (ctx_.ngx_ptr_->method) {
+                    case NGX_HTTP_GET:
+                        json_api_.Get(ctx_.loggable_data_ref_,
+                                      uri_,
+                                      std::bind(&ngx::casper::broker::api::Module::OnJSONAPIReply, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)
+                        );
+                        break;
+                    case NGX_HTTP_POST:
+                        json_api_.Post(ctx_.loggable_data_ref_,
+                                       uri_, ctx_.request_.body_,
+                                       std::bind(&ngx::casper::broker::api::Module::OnJSONAPIReply, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)
+                        );
+                        break;
+                    case NGX_HTTP_DELETE:
+                        json_api_.Delete(ctx_.loggable_data_ref_,
+                                         uri_, nullptr != ctx_.request_.body_ ? ctx_.request_.body_ : "",
+                                         std::bind(&ngx::casper::broker::api::Module::OnJSONAPIReply, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)
+                        );
+                        break;
+                    case NGX_HTTP_PATCH:
+                        json_api_.Patch(ctx_.loggable_data_ref_,
+                                        uri_, ctx_.request_.body_,
+                                        std::bind(&ngx::casper::broker::api::Module::OnJSONAPIReply, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)
+                        );
+                        break;
+                    default:
+                        NGX_BROKER_MODULE_SET_HTTP_METHOD_NOT_IMPLEMENTED(ctx_);
+                        break;
+                }
+            } catch (const ::ev::Exception& a_ev_exception) {
+                NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR_I18N(ctx_, "BROKER_POSTGRESQL_REQUEST_SCHEDULE_ERROR", a_ev_exception.what());
             }
-        } catch (const ::ev::Exception& a_ev_exception) {
-            NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR_I18N(ctx_, "BROKER_POSTGRESQL_REQUEST_SCHEDULE_ERROR", a_ev_exception.what());
-        }
-        // ... if an error is set ...
-        if ( NGX_OK != ctx_.response_.return_code_ ) {
-            NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_ERRORS_SERIALIZATION_RESPONSE(this);
+            // ... if an error is set ...
+            if ( NGX_OK != ctx_.response_.return_code_ ) {
+                NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_ERRORS_SERIALIZATION_RESPONSE(this);
+            }
         }
     }
 }

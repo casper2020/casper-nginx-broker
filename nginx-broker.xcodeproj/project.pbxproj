@@ -461,6 +461,13 @@
 			remoteGlobalIDString = 476EF7C91E23EC91004A13C2;
 			remoteInfo = "casper-connectors";
 		};
+		47CBDED2247D2E1900AE0231 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 470389AA235F4D98002FA394 /* casper-connectors.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 47DDAD162452EFF20056D703;
+			remoteInfo = "casper-connectors-icu";
+		};
 		47E2B42D1FC45F120072EBC7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 47E2B4291FC45F120072EBC7 /* ngx_devel_kit.xcodeproj */;
@@ -1270,6 +1277,7 @@
 			children = (
 				4775743323E1980F001E7587 /* libcasper-connectors.a */,
 				4775743523E1980F001E7587 /* libcasper-connectors-v8.a */,
+				47CBDED3247D2E1900AE0231 /* libcasper-connectors-icu.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2407,6 +2415,13 @@
 			remoteRef = 4797EE1823E198DB00616FE1 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		47CBDED3247D2E1900AE0231 /* libcasper-connectors-icu.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libcasper-connectors-icu.a";
+			remoteRef = 47CBDED2247D2E1900AE0231 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		47E2B42E1FC45F120072EBC7 /* libngx_devel_kit.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -2980,7 +2995,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../casper-packager/curl/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/curl/include",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/include",
-					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/libevent2/include",
+					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/libevent2/usr/local/casper/libevent2/include",
 					"$(SRCROOT)/../casper-packager/postgresql/darwin/pkg/$(CONFIGURATION)/postgresql/usr/local/casper/postgresql/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
@@ -3029,7 +3044,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../casper-packager/curl/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/curl/include",
 					"$(SRCROOT)/../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/include",
-					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/curl/usr/local/casper/libevent2/include",
+					"$(SRCROOT)/../casper-packager/libevent2/darwin/pkg/$(CONFIGURATION)/libevent2/usr/local/casper/libevent2/include",
 					"$(SRCROOT)/../casper-packager/postgresql/darwin/pkg/$(CONFIGURATION)/postgresql/usr/local/casper/postgresql/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
