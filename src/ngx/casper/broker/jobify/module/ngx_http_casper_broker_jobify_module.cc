@@ -186,5 +186,15 @@ ngx_int_t ngx_http_casper_broker_jobify_module_content_handler (ngx_http_request
     /*
      * This module is enabled.
      */
-    return ngx::casper::broker::jobify::Module::Factory(a_r, /* a_at_rewrite_handler */ false);
+    const auto rv = ngx::casper::broker::jobify::Module::Factory(a_r, /* a_at_rewrite_handler */ false);
+    if ( NGX_OK == rv ) {
+        ngx::casper::broker::jobify::Module* module = (ngx::casper::broker::jobify::Module*) ngx_http_get_module_ctx(a_r, ngx_http_casper_broker_jobify_module);
+        if ( nullptr == module ) {
+            // ... wtf?
+            return NGX_ERROR;
+        }
+        module->SetAtContentHandler();
+    }
+    // ... we're done ...
+    return rv;
 }
