@@ -52,6 +52,7 @@ namespace ngx
                         
                         std::string granted_scope_;
                         bool        generate_new_refresh_token_;
+                        std::string new_access_token_;
                         std::string new_refresh_token_;
                         int64_t     new_refresh_token_ttl_;
 
@@ -66,7 +67,7 @@ namespace ngx
                         
                     public: // Inherited Pure Virtual Method(s) / Function(s)
                         
-                        virtual void AsyncRun (PreloadCallback a_preload_callback, RedirectCallback a_redirect_callback, JSONCallback a_json_callback);
+                        virtual void AsyncRun (PreloadCallback a_preload_callback, RedirectCallback a_redirect_callback, JSONCallback a_json_callback, LogCallback a_log_callback);
                         
                     }; // end of class 'RefreshToken'
                     

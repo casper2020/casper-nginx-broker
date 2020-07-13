@@ -211,6 +211,13 @@ ngx_int_t ngx::casper::broker::oauth::server::Module::Run ()
                                           if ( true == ctx_.response_.asynchronous_ ) {
                                               NGX_BROKER_MODULE_FINALIZE_REQUEST(this);
                                           }
+                                      },
+                                      /* a_log_callback */
+                                      [this] (const std::string& a_message) {
+                                          ngx::casper::broker::Module::Log(ctx_.module_, ctx_.ngx_ptr_, NGX_LOG_ERR, ctx_.log_token_.c_str(),
+                                                                           "CH", "ERROR",
+                                                                           a_message.c_str()
+                                          );
                                       }
         );
         
@@ -290,6 +297,13 @@ ngx_int_t ngx::casper::broker::oauth::server::Module::Run ()
                                             if ( true == ctx_.response_.asynchronous_ ) {
                                                 NGX_BROKER_MODULE_FINALIZE_REQUEST(this);
                                             }
+                                        },
+                                        /* a_log_callback */
+                                        [this] (const std::string& a_message) {
+                                            ngx::casper::broker::Module::Log(ctx_.module_, ctx_.ngx_ptr_, NGX_LOG_ERR, ctx_.log_token_.c_str(),
+                                                                             "CH", "ERROR",
+                                                                             a_message.c_str()
+                                            );
                                         }
                 );
                 break;
@@ -323,6 +337,13 @@ ngx_int_t ngx::casper::broker::oauth::server::Module::Run ()
                                              if ( true == ctx_.response_.asynchronous_ ) {
                                                  NGX_BROKER_MODULE_FINALIZE_REQUEST(this);
                                              }
+                                         },
+                                         /* a_log_callback */
+                                         [this] (const std::string& a_message) {
+                                             ngx::casper::broker::Module::Log(ctx_.module_, ctx_.ngx_ptr_, NGX_LOG_ERR, ctx_.log_token_.c_str(),
+                                                                              "CH", "ERROR",
+                                                                              a_message.c_str()
+                                             );
                                          }
                 );
                 break;
@@ -387,7 +408,7 @@ ngx_int_t ngx::casper::broker::oauth::server::Module::Factory (ngx_http_request_
         /* in_headers_              */ {},
         /* config_                  */ {},
         /* locale_                  */ "",
-        /* supported_content_types_ */ { "application/json", "application/text", "application/x-www-form-urlencoded" }
+        /* supported_content_types_ */ { "application/json", "application/text", "application/x-www-form-urlencoded", "application/x-www-form-urlencoded;charset=UTF-8" }
     };
     
     ngx_int_t rv = ngx::casper::broker::Module::WarmUp(ngx_http_casper_broker_oauth_server_module, a_r, loc_conf->log_token,

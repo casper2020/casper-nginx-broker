@@ -50,6 +50,7 @@ namespace ngx
                         typedef std::function<void()>                                                                                                             PreloadCallback;
                         typedef std::function<void(const std::string& a_uri)>                                                                                     RedirectCallback;
                         typedef std::function<void(const uint16_t a_status_code, const std::map<std::string, std::string>& a_headers, const Json::Value& a_body)> JSONCallback;
+                        typedef std::function<void(const std::string&)>                                                                                           LogCallback;
                                                 
                     private: // Static Const Data
                         
@@ -78,7 +79,7 @@ namespace ngx
                         
                     public: // Method(s) / Function(s)
                         
-                        void AsyncRun (PreloadCallback a_preload_callback, RedirectCallback a_redirect_callback, JSONCallback a_json_callback);
+                        void AsyncRun (PreloadCallback a_preload_callback, RedirectCallback a_redirect_callback, JSONCallback a_json_callback, LogCallback a_log_callback);
                         
                     }; // end of class 'AuthorizationCode'
                     

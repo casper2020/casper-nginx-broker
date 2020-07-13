@@ -74,10 +74,12 @@ ngx::casper::broker::oauth::server::RefreshToken::~RefreshToken ()
  * @param a_preload_callback
  * @param a_redirect_callback
  * @param a_json_callback
+ * @param a_log_callback
  */
 void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::broker::oauth::server::RefreshToken::PreloadCallback a_preload_callback,
                                                                  ngx::casper::broker::oauth::server::RefreshToken::RedirectCallback a_redirect_callback,
-                                                                 ngx::casper::broker::oauth::server::RefreshToken::JSONCallback a_json_callback)
+                                                                 ngx::casper::broker::oauth::server::RefreshToken::JSONCallback a_json_callback,
+                                                                 ngx::casper::broker::oauth::server::RefreshToken::LogCallback a_log_callback)
 {
     
     /**
@@ -128,9 +130,6 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
     
     // ... notify that request will be run in background ...
     a_preload_callback();
-    
-    // ... generate code ...
-    const std::string access_token = RandomString(64);
     
     // ... run REDIS tasks ...
     NewTask([this] () -> ::ev::Object* {
@@ -244,6 +243,11 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
         args_.push_back("created_at")         ; args_.push_back(cc::UTCTime::NowISO8601WithTZ());
         
         //
+        // GENERATE NEW ACCESS TOKEN
+        //
+        GenNewToken(/* a_name*/ "access", /* a_error_code*/ "unauthorized_client" , /* o_value */ new_access_token_);
+         
+        //
         // Get settings
         //
         return new ::ev::redis::Request(loggable_data_ref_, "HMGET", {
@@ -253,7 +257,7 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
             /* field  */ k_client_secret_field_
         });
         
-    })->Then([this, access_token] (::ev::Object* a_object) -> ::ev::Object* {
+    })->Then([this] (::ev::Object* a_object) -> ::ev::Object* {
         
         //
         // HMGET:
@@ -291,10 +295,10 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
         // Check if 'access' token already exists
         //
         return new ::ev::redis::Request(loggable_data_ref_, "EXISTS", {
-            /* key */ ( access_token_hash_prefix_ + ':' + access_token )
+            /* key */ ( access_token_hash_prefix_ + ':' + new_access_token_ )
         });
         
-    })->Then([this, access_token] (::ev::Object* a_object) -> ::ev::Object* {
+    })->Then([this] (::ev::Object* a_object) -> ::ev::Object* {
         
         //
         // EXISTS:
@@ -314,18 +318,22 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
         //
         // Set 'access token' properties....
         //
-        args_.insert(args_.begin(), ( access_token_hash_prefix_ + ':' + access_token ));
         if ( true == generate_new_refresh_token_ ) {
             // ... generate new refresh token ...
-            new_refresh_token_ = RandomString(64);
+            GenNewToken(/* a_name*/ "refresh", /* a_error_code*/ "unauthorized_client" , /* o_value */ new_refresh_token_);
+            // ... temporarily keep track of 'refresh_token' ...
             args_.push_back("refresh_token") ; args_.push_back(new_refresh_token_);
         } else {
+            // ... temporarily keep track of 'refresh_token' ...
             args_.push_back("refresh_token") ; args_.push_back(refresh_token_);
         }
         
+        // ... temporarily set 'access token' value as REDIS key ...
+        args_.insert(args_.begin(), ( access_token_hash_prefix_ + ':' + new_access_token_ ));
+        
         return new ::ev::redis::Request(loggable_data_ref_, "HMSET", args_);
         
-    })->Then([this, access_token] (::ev::Object* a_object) -> ::ev::Object* {
+    })->Then([this] (::ev::Object* a_object) -> ::ev::Object* {
         
         //
         // HMSET:
@@ -336,6 +344,7 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
         //
         ev::redis::Reply::EnsureIsStatusReply(a_object, "OK");
         
+        // ... erase temporarily data ...
         args_.erase(args_.begin());
         args_.erase(args_.end()-1);
         args_.erase(args_.end()-1);
@@ -344,11 +353,11 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
         // EXPIRE code.
         //
         return new ::ev::redis::Request(loggable_data_ref_, "EXPIRE", {
-            /* key */ ( access_token_hash_prefix_ + ':' + access_token ),
+            /* key */ ( access_token_hash_prefix_ + ':' + new_access_token_ ),
             /* ttl */ std::to_string(ttl_)
         });
         
-    })->Then([this, access_token] (::ev::Object* a_object) -> ::ev::Object* {
+    })->Then([this] (::ev::Object* a_object) -> ::ev::Object* {
         
         //
         // EXPIRE:
@@ -379,7 +388,7 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
             /* key    */ ( refresh_token_hash_prefix_ + ':' + new_refresh_token_ )
         });
         
-    })->Then([this, access_token] (::ev::Object* a_object) -> ::ev::Object* {
+    })->Then([this] (::ev::Object* a_object) -> ::ev::Object* {
         
         // ... if a new refresh is not required ...
         if ( false == generate_new_refresh_token_ ) {
@@ -435,7 +444,7 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
             /* ttl */ std::to_string(new_refresh_token_ttl_)
         });
         
-    })->Finally([this, access_token, a_redirect_callback, a_json_callback] (::ev::Object* /* a_object */) {
+    })->Finally([this, a_redirect_callback, a_json_callback] (::ev::Object* /* a_object */) {
         
         /*
          * 5.1.  Successful Response
@@ -458,7 +467,7 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
         body_.removeMember("error");
         
         // ... not following rfc, send a JSON response ...
-        body_["access_token"] = access_token;
+        body_["access_token"] = new_access_token_;
         if ( true == generate_new_refresh_token_ ) {
             body_["refresh_token"] = new_refresh_token_;
         }
@@ -467,9 +476,9 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
                 
         a_json_callback(200 /* NGX_HTTP_OK */, headers_, body_);
         
-    })->Catch([this, a_json_callback] (const ::ev::Exception& /* a_ev_exception */) {
+    })->Catch([this, a_json_callback, a_log_callback] (const ::ev::Exception& a_ev_exception) {
         
-        SetAndCallStandardJSONErrorResponse(body_["error"].asString(), a_json_callback);
+        SetAndCallStandardJSONErrorResponse(body_["error"].asString(), /* a_error_description */ "", a_json_callback, a_log_callback, a_ev_exception);
         
     });
 }

@@ -53,6 +53,9 @@ namespace ngx
                         int64_t     refresh_token_ttl_;
                         std::string scope_;
                         
+                        std::string access_token_;
+                        std::string refresh_token_;
+                        
                     public: // Constructor(s) / Destructor
                         
                         AccessToken (const ::ev::Loggable::Data& a_loggable_data_ref,
@@ -64,7 +67,7 @@ namespace ngx
                         
                     public: // Inherited Pure Virtual Method(s) / Function(s)
                         
-                        virtual void AsyncRun (PreloadCallback a_preload_callback, RedirectCallback a_redirect_callback, JSONCallback a_json_callback);
+                        virtual void AsyncRun (PreloadCallback a_preload_callback, RedirectCallback a_redirect_callback, JSONCallback a_json_callback, LogCallback a_log_callback);
                         
                     }; // end of class 'AccessToken'
                     

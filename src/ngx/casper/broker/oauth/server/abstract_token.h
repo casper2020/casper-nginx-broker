@@ -54,6 +54,7 @@ namespace ngx
 
                         typedef std::function<void(const std::string& a_uri)>                                                                                     RedirectCallback;
                         typedef std::function<void(const uint16_t a_status_code, const std::map<std::string, std::string>& a_headers, const Json::Value& a_body)> JSONCallback;
+                        typedef std::function<void(const std::string&)>                                                                                           LogCallback;
                         
                     protected: // Static Const Data
                         
@@ -82,12 +83,14 @@ namespace ngx
                         
                     public: // Pure Virtual Method(s) / Function(s)
                         
-                        virtual void AsyncRun (PreloadCallback a_preload_callback, RedirectCallback a_redirect_callback, JSONCallback a_json_callback) = 0;
+                        virtual void AsyncRun (PreloadCallback a_preload_callback, RedirectCallback a_redirect_callback, JSONCallback a_json_callback, LogCallback a_log_callback) = 0;
                         
                     protected: // Method(s) / Function(s)
                         
-                        void SetAndCallStandardJSONErrorResponse   (const std::string& a_error,
-                                                                    JSONCallback a_callback);
+                        void SetAndCallStandardJSONErrorResponse   (const std::string& a_error, const std::string a_error_description,
+                                                                    JSONCallback a_callback, LogCallback a_log_callback,
+                                                                    const ::cc::Exception& a_cc_exception);
+                        void GenNewToken                           (const char* const a_name, const char* const a_error_code, std::string& o_value);
                         
                     }; // end of class 'AbstractToken'
                     

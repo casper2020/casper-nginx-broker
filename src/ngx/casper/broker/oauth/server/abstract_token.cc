@@ -61,10 +61,14 @@ ngx::casper::broker::oauth::server::AbstractToken::~AbstractToken ()
  * @brief 5.2.  Error Response - https://tools.ietf.org/html/rfc6749#section-5.2
  *
  * @param a_error
+ * @param a_error_description
  * @param a_callback
+ * @param a_log_callback
  */
-void ngx::casper::broker::oauth::server::AbstractToken::SetAndCallStandardJSONErrorResponse (const std::string& a_error,
-                                                                                             ngx::casper::broker::oauth::server::AbstractToken::JSONCallback a_callback)
+void ngx::casper::broker::oauth::server::AbstractToken::SetAndCallStandardJSONErrorResponse (const std::string& a_error, const std::string a_error_description,
+                                                                                             ngx::casper::broker::oauth::server::AbstractToken::JSONCallback a_callback,
+                                                                                             ngx::casper::broker::oauth::server::AbstractToken::LogCallback a_log_callback,
+                                                                                             const cc::Exception& a_cc_exception)
 {    
     /*
      * 5.2.  Error Response - https://tools.ietf.org/html/rfc6749#section-5.2
@@ -96,6 +100,9 @@ void ngx::casper::broker::oauth::server::AbstractToken::SetAndCallStandardJSONEr
      */
     
     body_["error"] = a_error;
+    if ( 0 != a_error_description.length() ) {
+        body_["error_description"] = a_error;
+    }
 
     // ... not following rfc, send a JSON response ...
     if ( 0 == a_error.compare("invalid_request") || 0 == a_error.compare("invalid_scope") ) {
@@ -111,4 +118,39 @@ void ngx::casper::broker::oauth::server::AbstractToken::SetAndCallStandardJSONEr
     } else { /* server_error */
         a_callback(500 /* NGX_HTTP_INTERNAL_SERVER_ERROR */, headers_, body_);
     }
+    
+    // ... log exception ...
+    a_log_callback(a_cc_exception.what());
+}
+
+/**
+ * @brief Generate a new token.
+ *
+ * @param a_type       Token type: access or refresh.
+ * @param a_error_code On error set thos code.
+ * @param o_value      New token value.
+ */
+void ngx::casper::broker::oauth::server::AbstractToken::GenNewToken (const char* const /* a_name */, const char* const a_error_code, std::string& o_value)
+{
+    //
+    // ENSURE WE HAVE 'NEW' MANDATORY TEMPLATE VALUES
+    //
+    std::map<std::string, std::string> tmp;
+    for ( auto key : { "cluster", "entity_id", "user_id" } ) {
+        for ( size_t idx = 0 ; idx < args_.size() ; idx += 2 ) {
+            if ( 0 == args_[idx].compare(key) ) {
+                tmp[key] = args_[idx + 1];
+                break;
+            }
+        }
+    }
+    // ... if mandatory parameters are not present ...
+    if ( 3 != tmp.size() ) {
+        // ... set error code ...
+        body_["error"] = a_error_code;
+        // ... notify ...
+        throw ev::Exception("Unable to confirm the following values: 'cluster', 'entity_id' and / or 'user_id'!");
+    }
+    // ... generate new token ...
+    o_value  = tmp["cluster"] + '-' + tmp["entity_id"] + '-' + tmp["user_id"] + '-' + RandomString(64);
 }

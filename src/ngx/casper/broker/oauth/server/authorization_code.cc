@@ -71,10 +71,12 @@ ngx::casper::broker::oauth::server::AuthorizationCode::~AuthorizationCode ()
  * @param a_preload_callback
  * @param a_redirect_callback
  * @param a_json_callback
+ * @param a_log_callback
  */
 void ngx::casper::broker::oauth::server::AuthorizationCode::AsyncRun (ngx::casper::broker::oauth::server::AuthorizationCode::PreloadCallback a_preload_callback,
                                                                       ngx::casper::broker::oauth::server::AuthorizationCode::RedirectCallback a_redirect_callback,
-                                                                      ngx::casper::broker::oauth::server::AuthorizationCode::JSONCallback a_json_callback)
+                                                                      ngx::casper::broker::oauth::server::AuthorizationCode::JSONCallback a_json_callback,
+                                                                      ngx::casper::broker::oauth::server::AuthorizationCode::LogCallback a_log_callback)
 {
     /*
      * 4.1.1.  Authorization Request
@@ -346,7 +348,7 @@ void ngx::casper::broker::oauth::server::AuthorizationCode::AsyncRun (ngx::caspe
             a_json_callback(200 /* NGX_HTTP_OK */, headers_, body_);
         }
         
-    })->Catch([this, a_json_callback, a_redirect_callback] (const ::ev::Exception& a_ev_exception) {
+    })->Catch([this, a_json_callback, a_redirect_callback, a_log_callback] (const ::ev::Exception& a_ev_exception) {
         
         OSAL_DEBUG_STD_EXCEPTION(a_ev_exception);
         
@@ -433,7 +435,9 @@ void ngx::casper::broker::oauth::server::AuthorizationCode::AsyncRun (ngx::caspe
                 a_json_callback(500 /* NGX_HTTP_INTERNAL_SERVER_ERROR */, headers_, body_);
             }
         }
-
+        
+        // ... log exception ...
+        a_log_callback(a_ev_exception.what());
     });
     
 }
