@@ -126,15 +126,6 @@ namespace ngx
                         const ContentLength&      content_length () const;
                         const ContentDisposition& content_disposition () const;
                         
-                    public: // Static Method(s) / Function(s)
-
-                        static ngx_int_t ContentPhaseTackleResponse (ngx_http_request_t* a_r, ngx_module_t& a_module_t,
-                                                                     const char* const a_token);
-
-                        static ngx_int_t RewritePhaseTackleResponse (ngx_http_request_t* a_r, ngx_module_t& a_module_t,
-                                                                     const char* const a_token,
-                                                                     const std::function<ngx_int_t()> a_factory);
-                        
                     }; // end of class 'Module'
                     
                     /**

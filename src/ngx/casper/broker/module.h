@@ -808,7 +808,16 @@ namespace ngx
                 
                 static ngx_int_t Initialize (const Config& a_config, Params& a_params,
                                              const std::function<::ngx::casper::broker::Module*()>& a_module);
-			public:
+                
+            public: // Static Method(s) / Function(s)
+
+                static ngx_int_t ContentPhaseTackleResponse (ngx_http_request_t* a_r, ngx_module_t& a_module_t,
+                                                             const char* const a_token);
+
+                static ngx_int_t RewritePhaseTackleResponse (ngx_http_request_t* a_r, ngx_module_t& a_module_t,
+                                                             const char* const a_token,
+                                                             const std::function<ngx_int_t()> a_factory);
+            public: // Static Method(s) / Function(s)
 				
                 static void ReadBody      (ngx_module_t& a_module, ngx_http_request_t* a_r);
                 static void WriteResponse (ngx_module_t& a_module, ngx_http_request_t* a_r);
