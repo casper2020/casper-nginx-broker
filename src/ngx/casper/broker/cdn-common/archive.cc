@@ -1018,7 +1018,7 @@ void ngx::casper::broker::cdn::Archive::IDFromURLPath (const std::string& a_path
     const char* start_ptr = strrchr(a_path.c_str(), '/');
     if ( nullptr == start_ptr ) {
         throw ngx::casper::broker::cdn::BadRequest(
-            ("Unable to extract archive ID from URI path '" + a_path + "' - path must start with '/'!").c_str()
+            "Unable to extract archive ID from URI path '%s' - path must start with '/'!", a_path.c_str()
         );
     }
     start_ptr += sizeof(char);
@@ -1029,7 +1029,7 @@ void ngx::casper::broker::cdn::Archive::IDFromURLPath (const std::string& a_path
     // ... can't extract file ID from URI path?
     if ( 0 == ( end_ptr - start_ptr ) ) {
         throw ngx::casper::broker::cdn::BadRequest(
-            ("Unable to extract archive ID from URI path '" + a_path + "'!").c_str()
+            "Unable to extract archive ID from URI path '%s'!", a_path.c_str()
         );
     }
     
@@ -1048,7 +1048,7 @@ void ngx::casper::broker::cdn::Archive::IDFromURLPath (const std::string& a_path
     std::smatch match;
     if ( false == std::regex_search(o_id, match, id_expr) || match.size() < 5 ) {
         throw ngx::casper::broker::cdn::BadRequest(
-            ("Unable to extract archive ID from URI path '" + a_path + "' - invalid ID format '" + o_id + "'!").c_str()
+            "Unable to extract archive ID from URI path '%s' - invalid ID format '%s'!", a_path.c_str(), o_id.c_str()
         );
     }
     
@@ -1596,19 +1596,19 @@ void ngx::casper::broker::cdn::Archive::SetLocalInfoFromURLPath (const std::stri
     
     // ... ensure xhvn exist on map ...
     if ( 0 == o_local.xhvn_.length() ) {
-        throw ngx::casper::broker::cdn::BadRequest((std::string("Unrecognized h2e prefix '") + o_local.id_[0] + "'!").c_str());
+        throw ngx::casper::broker::cdn::BadRequest("Unrecognized h2e prefix '%c'!", o_local.id_[0]);
     }
     
     // ... an X-CASPER-<> header must be present ...
     const auto it = std::find_if(a_archive.headers_.begin(), a_archive.headers_.end(), ngx::casper::broker::cdn::Header<std::string>::KeyComparator(o_local.xhvn_));
     if ( a_archive.headers_.end() == it ) {
-        throw ngx::casper::broker::cdn::BadRequest(("Missing or invalid h2e header value for prefix " + o_local.xhvn_).c_str());
+        throw ngx::casper::broker::cdn::BadRequest("Missing or invalid h2e header value for prefix %s", o_local.xhvn_.c_str());
     }
     
     // ... ensure xhvn value ...
     const std::string xhvn_value = it->second;
     if ( 0 == xhvn_value.length() || xhvn_value.length() > 12 ) {
-        throw ngx::casper::broker::cdn::BadRequest(("Invalid h2e prefix value " + xhvn_value + "!").c_str());
+        throw ngx::casper::broker::cdn::BadRequest("Invalid h2e prefix value %s!", xhvn_value.c_str());
     }
     
     // ... build path component ...

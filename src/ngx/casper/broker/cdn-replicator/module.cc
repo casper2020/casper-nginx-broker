@@ -177,7 +177,7 @@ ngx_int_t ngx::casper::broker::cdn::replicator::Module::Setup ()
                 try {
                     x_replaces_id_.Set(ctx_.request_.headers_);
                 } catch (const ::cc::Exception& a_cc_exception) {
-                    throw ngx::casper::broker::cdn::BadRequest(a_cc_exception.what());
+                    throw ngx::casper::broker::cdn::BadRequest("%s", a_cc_exception.what());
                 }
                 const std::string fake_uri = '/' + (const std::string&)x_replaces_id_;
                 // ... ensure file exists and get 'id' header name ...
@@ -248,7 +248,7 @@ ngx_int_t ngx::casper::broker::cdn::replicator::Module::Setup ()
                 const std::string key = XATTR_ARCHIVE_PREFIX "com.cldware.archive.id";
                 const auto reserved_id_it = replication_.old_.xattrs_.find(key);
                 if ( replication_.old_.xattrs_.end() == reserved_id_it || 0 == reserved_id_it->second.length() ) {
-                    throw ngx::casper::broker::cdn::BadRequest(("Missing or invalid header '" + key + "' value!").c_str());
+                    throw ngx::casper::broker::cdn::BadRequest("Missing or invalid header '%s' value!", key.c_str());
                 }
                 reserved_id = reserved_id_it->second;
             } else {

@@ -43,9 +43,12 @@ namespace ngx
                 class Exception: public std::exception, public ::cc::NonMovable
                 {
                     
-                private: // Const Data
+                public: // Const Data
                     
                     const uint16_t    code_;
+                    
+                private: // Const Data
+                    
                     const std::string fallback_;
                     
                 private: // Data
@@ -182,7 +185,7 @@ namespace ngx
                     
                 public: // Constructor(s) / Destructor
                     
-                    BadRequest (const char* const a_format, ...)
+                    BadRequest (const char* const a_format, ...)  __attribute__((format(printf, 2, 3)))
                         : Exception(403, "403 - Bad Request", nullptr)
                     {
                         va_list  args;
