@@ -237,8 +237,9 @@ void ngx::casper::broker::Initializer::PreStartup (const ngx_core_conf_t* a_conf
     ::cc::global::Initializer::GetInstance().WarmUp(
         /* a_process */
         {
-            /* alt_name_  */ alt_process_name.c_str(),
             /* name_      */ NGX_NAME,
+            /* alt_name_  */ alt_process_name.c_str(),
+            /* abbr_      */ NGX_NAME,
             /* version_   */ NGX_VERSION,
             /* rel_date_  */ NGX_REL_DATE,
             /* info_      */ NGX_INFO,
