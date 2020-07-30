@@ -768,8 +768,8 @@ ngx_int_t ngx::utls::nrs_ngx_get_args (ngx_http_request_t* a_r, ngx_str_t* a_arg
                 p = a_args->data + a_args->len;
             }
             
-            value.len = p - value.data;
-            
+            value.len = MAX(p - value.data, 0);
+
             o_map[std::string(reinterpret_cast<const char*>(name.data), name.len)] = std::string(reinterpret_cast<const char*>(value.data), value.len);
             
         } else {
