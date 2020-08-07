@@ -185,8 +185,10 @@ void ngx::casper::broker::Initializer::Shutdown (bool a_for_cleanup_only)
  * @param a_config
  * @param a_cycle
  * @param a_master
+ * @param a_standalone
  */
-void ngx::casper::broker::Initializer::PreStartup (const ngx_core_conf_t* a_config, const ngx_cycle_t* a_cycle, const bool a_master)
+void ngx::casper::broker::Initializer::PreStartup (const ngx_core_conf_t* a_config, const ngx_cycle_t* a_cycle, const bool a_master,
+                                                   const bool a_standalone)
 {
     // ... reset 'forked' instances ...
     if ( false == a_master ) {
@@ -237,15 +239,16 @@ void ngx::casper::broker::Initializer::PreStartup (const ngx_core_conf_t* a_conf
     ::cc::global::Initializer::GetInstance().WarmUp(
         /* a_process */
         {
-            /* name_      */ NGX_NAME,
-            /* alt_name_  */ alt_process_name.c_str(),
-            /* abbr_      */ NGX_NAME,
-            /* version_   */ NGX_VERSION,
-            /* rel_date_  */ NGX_REL_DATE,
-            /* info_      */ NGX_INFO,
-            /* banner_    */ NGX_BANNER,
-            /* pid_       */ getpid(),
-            /* is_master_ */ a_master
+            /* name_       */ NGX_NAME,
+            /* alt_name_   */ alt_process_name.c_str(),
+            /* abbr_       */ NGX_NAME,
+            /* version_    */ NGX_VERSION,
+            /* rel_date_   */ NGX_REL_DATE,
+            /* info_       */ NGX_INFO,
+            /* banner_     */ NGX_BANNER,
+            /* pid_        */ getpid(),
+            /* standalone_ */ a_standalone,
+            /* is_master_  */ a_master
         },
         /* a_directories */
         nullptr, /* using defaults */
@@ -350,10 +353,14 @@ extern "C" void ngx_http_casper_broker_main_hook (const ngx_core_conf_t* a_confi
 #ifdef NGX_CASPER_BROKER_ENABLE_SIGV_HANDLER
     signal(SIGSEGV, ngx_http_casper_broker_sig_segv_handler);
 #endif // NGX_CASPER_BROKER_ENABLE_SIGV_HANDLER
-	ngx::casper::broker::Initializer::GetInstance().PreStartup(a_config, a_cycle, /* a_master*/ true);
+	ngx::casper::broker::Initializer::GetInstance().PreStartup(a_config, a_cycle, /* a_master*/ true,
+                                                               /* a_standalone */ ( 0 == a_config->master && 0 == a_config->daemon )
+    );
 }
 
 extern "C" void ngx_http_casper_broker_worker_hook (const ngx_core_conf_t* a_config, const ngx_cycle_t* a_cycle)
 {
-    ngx::casper::broker::Initializer::GetInstance().PreStartup(a_config, a_cycle, /* a_master*/ false);
+    ngx::casper::broker::Initializer::GetInstance().PreStartup(a_config, a_cycle, /* a_master*/ false,
+                                                               /* a_standalone */ ( 0 == a_config->master && 0 == a_config->daemon )
+    );
 }
