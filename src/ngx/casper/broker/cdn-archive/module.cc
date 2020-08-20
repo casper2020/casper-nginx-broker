@@ -1470,7 +1470,7 @@ void ngx::casper::broker::cdn::archive::Module::SetSuccessResponse (const ngx::c
     //
     json_value_               = Json::Value(Json::ValueType::objectValue);
     json_value_["id"  ]       = a_info.new_id_;
-    json_value_["type"]       = "cdn-replicator";
+    json_value_["type"]       = "cdn-archive";
     json_value_["attributes"] = Json::Value(Json::ValueType::objectValue);
     
     Json::Value& attributes = json_value_["attributes"];
