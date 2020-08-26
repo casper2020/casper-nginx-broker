@@ -74,7 +74,7 @@ OBJECTS := \
 
 include $(PACKAGER_DIR)/common/c++/common.mk
 
-set-dependencies: jsoncpp-dep-on casper-osal-dep-on casper-connectors-dep-on cppcodec-dep-on
+set-dependencies: jsoncpp-dep-on casper-osal-dep-on casper-connectors-dep-on cppcodec-dep-on openssl-dep-on
 
 all: exec
 
