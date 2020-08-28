@@ -35,6 +35,7 @@
 		473FC35323BA6A9B00EFE4FE /* sideline.cc in Sources */ = {isa = PBXBuildFile; fileRef = 473FC35223BA6A9A00EFE4FE /* sideline.cc */; };
 		4741220D1E2CEE6B00213543 /* initializer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4741220B1E2CEE6B00213543 /* initializer.cc */; };
 		474EE08322A6AD3100EF5B6D /* archive.cc in Sources */ = {isa = PBXBuildFile; fileRef = 474EE08122A6AB6600EF5B6D /* archive.cc */; };
+		4757373F24F8F31600D40CC5 /* libcasper-ragel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4757373C24F8F2B400D40CC5 /* libcasper-ragel.a */; };
 		475B479A233248CF0068DE54 /* module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 475B4791233248CE0068DE54 /* module.cc */; };
 		475B479B233248CF0068DE54 /* ngx_http_casper_broker_cdn_api_module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 475B4797233248CE0068DE54 /* ngx_http_casper_broker_cdn_api_module.cc */; };
 		475B47A023328A750068DE54 /* object.cc in Sources */ = {isa = PBXBuildFile; fileRef = 475B479F23328A750068DE54 /* object.cc */; };
@@ -342,6 +343,13 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
+		4712B97824F41226001C4EA0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4775743923E198AF001E7587 /* casper-osal.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 47482EC824EFDEFF009D224C;
+			remoteInfo = "casper-osal-icu";
+		};
 		47268ED620484A0200912B5A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 47268ED220484A0200912B5A /* echo-nginx-module.xcodeproj */;
@@ -369,6 +377,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 471BE09123DEED1500751072;
 			remoteInfo = bcrypt;
+		};
+		4757373B24F8F2B400D40CC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4775743923E198AF001E7587 /* casper-osal.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1579E70F24F7B6A000F6D139;
+			remoteInfo = "casper-ragel";
+		};
+		4757373D24F8F30400D40CC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4775743923E198AF001E7587 /* casper-osal.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1579E70E24F7B6A000F6D139;
+			remoteInfo = "casper-osal-ragel";
 		};
 		4775743223E1980F001E7587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1083,6 +1105,7 @@
 				47FCA1B323E1967300FB40EF /* libhiredis.a in Frameworks */,
 				47FCA1B223E1967300FB40EF /* libbeanstalk-client.a in Frameworks */,
 				4797EE1C23E198EC00616FE1 /* libcasper-osal.a in Frameworks */,
+				4757373F24F8F31600D40CC5 /* libcasper-ragel.a in Frameworks */,
 				4775743823E19829001E7587 /* libcasper-connectors.a in Frameworks */,
 				477B9115241FDA7700DDBB39 /* libngx-cdb-modules.a in Frameworks */,
 				477B9117241FDA8400DDBB39 /* libnamed-imports-nginx-module.a in Frameworks */,
@@ -1427,6 +1450,8 @@
 			isa = PBXGroup;
 			children = (
 				4797EE1923E198DB00616FE1 /* libcasper-osal.a */,
+				4712B97924F41226001C4EA0 /* libcasper-osal-icu.a */,
+				4757373C24F8F2B400D40CC5 /* libcasper-ragel.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2249,6 +2274,7 @@
 				47FCA1AA23E1964F00FB40EF /* PBXTargetDependency */,
 				47FCA1AC23E1964F00FB40EF /* PBXTargetDependency */,
 				4797EE1B23E198E200616FE1 /* PBXTargetDependency */,
+				4757373E24F8F30400D40CC5 /* PBXTargetDependency */,
 				4775743723E1981C001E7587 /* PBXTargetDependency */,
 				477B9114241FDA6500DDBB39 /* PBXTargetDependency */,
 				478381BC241FDA4E000102BE /* PBXTargetDependency */,
@@ -2278,7 +2304,7 @@
 					};
 					47A1AC461E23AFF9009D8F29 = {
 						CreatedOnToolsVersion = 8.2.1;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -2352,6 +2378,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		4712B97924F41226001C4EA0 /* libcasper-osal-icu.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libcasper-osal-icu.a";
+			remoteRef = 4712B97824F41226001C4EA0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		47268ED720484A0200912B5A /* libecho-nginx-module.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -2371,6 +2404,13 @@
 			fileType = archive.ar;
 			path = libbcrypt.a;
 			remoteRef = 472AD2E423E195F7000A7391 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4757373C24F8F2B400D40CC5 /* libcasper-ragel.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libcasper-ragel.a";
+			remoteRef = 4757373B24F8F2B400D40CC5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		4775743323E1980F001E7587 /* libcasper-connectors.a */ = {
@@ -2743,6 +2783,11 @@
 			name = "echo-nginx-module";
 			targetProxy = 47268EEB20484A8B00912B5A /* PBXContainerItemProxy */;
 		};
+		4757373E24F8F30400D40CC5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "casper-osal-ragel";
+			targetProxy = 4757373D24F8F30400D40CC5 /* PBXContainerItemProxy */;
+		};
 		4775743723E1981C001E7587 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "casper-connectors";
@@ -2980,9 +3025,11 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3018,7 +3065,9 @@
 					"$(SRCROOT)/../casper-packager/postgresql/darwin/pkg/$(CONFIGURATION)/postgresql/usr/local/casper/postgresql/lib/libpq.a",
 					/usr/local/opt/pcre/lib/libpcre.a,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.cldware.nginx-broker";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYMROOT = "$(NRS_OUT_DIR)/$(CONFIGURATION)";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include";
 				VALID_ARCHS = "i386 x86_64";
@@ -3033,7 +3082,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
+				DEVELOPMENT_TEAM = "";
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3067,7 +3118,9 @@
 					"$(SRCROOT)/../casper-packager/postgresql/darwin/pkg/$(CONFIGURATION)/postgresql/usr/local/casper/postgresql/lib/libpq.a",
 					/usr/local/opt/pcre/lib/libpcre.a,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.cldware.nginx-broker";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYMROOT = "$(NRS_OUT_DIR)/$(CONFIGURATION)";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include";
 				VALID_ARCHS = "i386 x86_64";
