@@ -253,23 +253,8 @@ ngx_int_t ngx::casper::broker::ext::Job::Submit (const std::string& a_jwt)
     ctx_.response_.status_code_ = NGX_HTTP_BAD_REQUEST;
     ctx_.response_.return_code_ = NGX_ERROR;
     
-    // ... if the JWT had three dots it means a file extension was added to make the browsers fell happy, in this case we need to get rid of the extension ...
-    int dot_count = 0;
-    const char* last_dot = nullptr;
-    const char* ptr;
-    std::string jwt_b64;
-    for ( ptr = a_jwt.c_str(); *ptr; ++ptr) {
-        if ( '.' == *ptr ) {
-            last_dot = ptr;
-            dot_count++;
-        }
-    }
-    if ( 3 == dot_count && nullptr != last_dot ) {
-        jwt_b64 = a_jwt.substr(0, a_jwt.size() - (ptr - last_dot));
-    } else {
-        jwt_b64 = a_jwt;
-    }
-    
+    const std::string jwt_b64 = cc::auth::JWT::MakeBrowsersUnhappy(a_jwt);
+        
     // ... decode and send job to beanstalk queue ...
     const int64_t now = cc::UTCTime::Now();
         
