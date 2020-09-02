@@ -20,6 +20,8 @@ src/ngx/casper/broker/cdn-archive/module/config
 src/ngx/casper/broker/cdn-archive/module/version.h
 src/ngx/casper/broker/cdn-replicator/module/config
 src/ngx/casper/broker/cdn-replicator/module/version.h
+src/ngx/casper/broker/cdn-public/module/config
+src/ngx/casper/broker/cdn-public/module/version.h
 src/ngx/casper/broker/jwt/encoder/module/config
 src/ngx/casper/broker/jwt/encoder/module/version.h
 src/ngx/casper/broker/module/version.h

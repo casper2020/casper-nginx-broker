@@ -58,6 +58,9 @@ BROKER_CDN_API_MODULE_RL_SRC := \
 BROKER_CDN_REPLICATOR_MODULE_CC_SRC := \
   $(PROJECT_SRC_DIR)/src/ngx/casper/broker/cdn-replicator/module.cc
 
+BROKER_CDN_PUBLIC_MODULE_CC_SRC := \
+  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/cdn-public/module.cc
+
 BROKER_CDN_DOWNLOAD_MODULE_CC_SRC := \
   $(PROJECT_SRC_DIR)/src/ngx/casper/broker/cdn-download/module.cc
 
@@ -148,7 +151,7 @@ update-sources:
 	))
 
 	@$(eval BROKER_CC_SRC+=$(shell if [ true = $(CASPER_NGINX_BROKER_CDN_ARCHIVE_MODULES_DEP_ON) ] ; then \
-		echo "$(BROKER_CDN_API_MODULE_CC_SRC) $(BROKER_CDN_ARCHIVE_MODULE_CC_SRC) $(BROKER_CDN_REPLICATOR_MODULE_CC_SRC)" ; \
+		echo "$(BROKER_CDN_API_MODULE_CC_SRC) $(BROKER_CDN_ARCHIVE_MODULE_CC_SRC) $(BROKER_CDN_REPLICATOR_MODULE_CC_SRC) $(BROKER_CDN_PUBLIC_MODULE_CC_SRC)" ; \
 		fi \
 	))
 

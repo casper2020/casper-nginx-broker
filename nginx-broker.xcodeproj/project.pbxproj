@@ -35,7 +35,7 @@
 		473FC35323BA6A9B00EFE4FE /* sideline.cc in Sources */ = {isa = PBXBuildFile; fileRef = 473FC35223BA6A9A00EFE4FE /* sideline.cc */; };
 		4741220D1E2CEE6B00213543 /* initializer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4741220B1E2CEE6B00213543 /* initializer.cc */; };
 		474EE08322A6AD3100EF5B6D /* archive.cc in Sources */ = {isa = PBXBuildFile; fileRef = 474EE08122A6AB6600EF5B6D /* archive.cc */; };
-		4757373F24F8F31600D40CC5 /* libcasper-ragel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4757373C24F8F2B400D40CC5 /* libcasper-ragel.a */; };
+		4757373F24F8F31600D40CC5 /* libcasper-osal-ragel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4757373C24F8F2B400D40CC5 /* libcasper-osal-ragel.a */; };
 		475B479A233248CF0068DE54 /* module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 475B4791233248CE0068DE54 /* module.cc */; };
 		475B479B233248CF0068DE54 /* ngx_http_casper_broker_cdn_api_module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 475B4797233248CE0068DE54 /* ngx_http_casper_broker_cdn_api_module.cc */; };
 		475B47A023328A750068DE54 /* object.cc in Sources */ = {isa = PBXBuildFile; fileRef = 475B479F23328A750068DE54 /* object.cc */; };
@@ -57,6 +57,8 @@
 		477B9115241FDA7700DDBB39 /* libngx-cdb-modules.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 477B9112241FDA5D00DDBB39 /* libngx-cdb-modules.a */; };
 		477B9116241FDA7D00DDBB39 /* libvess.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 478381B3241FDA2F000102BE /* libvess.a */; };
 		477B9117241FDA8400DDBB39 /* libnamed-imports-nginx-module.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 478381B8241FDA30000102BE /* libnamed-imports-nginx-module.a */; };
+		4785DA1824FFA2780001AC8E /* module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4785DA0C24FFA2780001AC8E /* module.cc */; };
+		4785DA1924FFA2780001AC8E /* ngx_http_casper_broker_cdn_public_module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4785DA1224FFA2780001AC8E /* ngx_http_casper_broker_cdn_public_module.cc */; };
 		478D62961EFD54890000EF4D /* errors.cc in Sources */ = {isa = PBXBuildFile; fileRef = 478D62801EFD54890000EF4D /* errors.cc */; };
 		478D62971EFD54890000EF4D /* ngx_http_casper_broker_oauth_server_module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 478D62851EFD54890000EF4D /* ngx_http_casper_broker_oauth_server_module.cc */; };
 		478D62981EFD54890000EF4D /* module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 478D62891EFD54890000EF4D /* module.cc */; };
@@ -690,6 +692,14 @@
 		4778A12B229D8711003F42E0 /* parser.yy */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp.preprocessed; fileEncoding = 4; path = parser.yy; sourceTree = "<group>"; };
 		4778A12C229D8711003F42E0 /* scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scanner.h; sourceTree = "<group>"; };
 		4778A12D229D8711003F42E0 /* scanner.rl */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp.preprocessed; fileEncoding = 4; path = scanner.rl; sourceTree = "<group>"; };
+		4785DA0C24FFA2780001AC8E /* module.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = module.cc; sourceTree = "<group>"; };
+		4785DA0E24FFA2780001AC8E /* ngx_http_casper_broker_cdn_public_module.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ngx_http_casper_broker_cdn_public_module.h; sourceTree = "<group>"; };
+		4785DA0F24FFA2780001AC8E /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
+		4785DA1024FFA2780001AC8E /* config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config; sourceTree = "<group>"; };
+		4785DA1124FFA2780001AC8E /* config.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.tpl; sourceTree = "<group>"; };
+		4785DA1224FFA2780001AC8E /* ngx_http_casper_broker_cdn_public_module.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ngx_http_casper_broker_cdn_public_module.cc; sourceTree = "<group>"; };
+		4785DA1324FFA2780001AC8E /* version.tpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.tpl.h; sourceTree = "<group>"; };
+		4785DA1424FFA2780001AC8E /* module.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = module.h; sourceTree = "<group>"; };
 		478D62801EFD54890000EF4D /* errors.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = errors.cc; sourceTree = "<group>"; };
 		478D62811EFD54890000EF4D /* errors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = errors.h; sourceTree = "<group>"; };
 		478D62831EFD54890000EF4D /* config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config; sourceTree = "<group>"; };
@@ -1105,7 +1115,7 @@
 				47FCA1B323E1967300FB40EF /* libhiredis.a in Frameworks */,
 				47FCA1B223E1967300FB40EF /* libbeanstalk-client.a in Frameworks */,
 				4797EE1C23E198EC00616FE1 /* libcasper-osal.a in Frameworks */,
-				4757373F24F8F31600D40CC5 /* libcasper-ragel.a in Frameworks */,
+				4757373F24F8F31600D40CC5 /* libcasper-osal-ragel.a in Frameworks */,
 				4775743823E19829001E7587 /* libcasper-connectors.a in Frameworks */,
 				477B9115241FDA7700DDBB39 /* libngx-cdb-modules.a in Frameworks */,
 				477B9117241FDA8400DDBB39 /* libnamed-imports-nginx-module.a in Frameworks */,
@@ -1344,6 +1354,29 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4785DA0B24FFA2780001AC8E /* cdn-public */ = {
+			isa = PBXGroup;
+			children = (
+				4785DA1424FFA2780001AC8E /* module.h */,
+				4785DA0C24FFA2780001AC8E /* module.cc */,
+				4785DA0D24FFA2780001AC8E /* module */,
+			);
+			path = "cdn-public";
+			sourceTree = "<group>";
+		};
+		4785DA0D24FFA2780001AC8E /* module */ = {
+			isa = PBXGroup;
+			children = (
+				4785DA0F24FFA2780001AC8E /* version.h */,
+				4785DA1324FFA2780001AC8E /* version.tpl.h */,
+				4785DA1024FFA2780001AC8E /* config */,
+				4785DA1124FFA2780001AC8E /* config.tpl */,
+				4785DA0E24FFA2780001AC8E /* ngx_http_casper_broker_cdn_public_module.h */,
+				4785DA1224FFA2780001AC8E /* ngx_http_casper_broker_cdn_public_module.cc */,
+			);
+			path = module;
+			sourceTree = "<group>";
+		};
 		478D625F1EFD54680000EF4D /* oauth */ = {
 			isa = PBXGroup;
 			children = (
@@ -1451,7 +1484,7 @@
 			children = (
 				4797EE1923E198DB00616FE1 /* libcasper-osal.a */,
 				4712B97924F41226001C4EA0 /* libcasper-osal-icu.a */,
-				4757373C24F8F2B400D40CC5 /* libcasper-ragel.a */,
+				4757373C24F8F2B400D40CC5 /* libcasper-osal-ragel.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1566,6 +1599,7 @@
 				475B4790233248CE0068DE54 /* cdn-api */,
 				47E9FA5F228EB10A007A4DB2 /* cdn-archive */,
 				47C6C14322DF77FF00A2EBF3 /* cdn-replicator */,
+				4785DA0B24FFA2780001AC8E /* cdn-public */,
 				475D5E9420109DA10006570B /* cdn-download */,
 				47DB97E61ED725B4002B8E88 /* cdn */,
 				47A0A50A1E6D76F600EFFE05 /* api */,
@@ -2406,10 +2440,10 @@
 			remoteRef = 472AD2E423E195F7000A7391 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		4757373C24F8F2B400D40CC5 /* libcasper-ragel.a */ = {
+		4757373C24F8F2B400D40CC5 /* libcasper-osal-ragel.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libcasper-ragel.a";
+			path = "libcasper-osal-ragel.a";
 			remoteRef = 4757373B24F8F2B400D40CC5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -2716,6 +2750,7 @@
 				47A1B0271E23B186009D8F29 /* ngx_process_cycle.c in Sources */,
 				4774469A1EBA4349008F53B1 /* ngx_udp_sendmsg_chain.c in Sources */,
 				475D5EA320109DA20006570B /* module.cc in Sources */,
+				4785DA1924FFA2780001AC8E /* ngx_http_casper_broker_cdn_public_module.cc in Sources */,
 				47A1AFCB1E23B053009D8F29 /* ngx_stream_split_clients_module.c in Sources */,
 				47A1AF301E23B053009D8F29 /* ngx_spinlock.c in Sources */,
 				47A1AF161E23B053009D8F29 /* ngx_crc32.c in Sources */,
@@ -2744,6 +2779,7 @@
 				47A1AF341E23B053009D8F29 /* ngx_times.c in Sources */,
 				47A1AFC01E23B053009D8F29 /* ngx_stream_core_module.c in Sources */,
 				47A1AFC41E23B053009D8F29 /* ngx_stream_limit_conn_module.c in Sources */,
+				4785DA1824FFA2780001AC8E /* module.cc in Sources */,
 				47A1AFBF1E23B053009D8F29 /* ngx_stream_access_module.c in Sources */,
 				47A1AF251E23B053009D8F29 /* ngx_parse_time.c in Sources */,
 				47A1B04C1E23B4CD009D8F29 /* ngx_http_v2_table.c in Sources */,
