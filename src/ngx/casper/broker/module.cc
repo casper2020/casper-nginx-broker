@@ -1357,7 +1357,13 @@ void ngx::casper::broker::Module::WriteResponse (ngx_module_t& a_module, ngx_htt
             if ( rc == NGX_OK ) {
                 rc = ngx_http_send_header(a_r);
                 if ( rc == NGX_OK ) {
-                    rc = ngx_http_output_filter(a_r, chain);
+                    if ( NGX_HTTP_HEAD == a_r->method && 0 == payload->len ) {
+                        // ... nothing to send ...
+                        rc = NGX_OK;
+                    } else {
+                        // ... there's data to send ...
+                        rc = ngx_http_output_filter(a_r, chain);
+                    }
                     if ( not ( NGX_OK == rc || NGX_AGAIN == rc ) ) {
                         throw ngx::casper::broker::Exception("BROKER_INTERNAL_ERROR",
                                                              "Failed to send body - rc = %ld.",
