@@ -277,7 +277,7 @@ ngx_int_t ngx::casper::broker::cdn::pub::Module::Setup ()
                 
             }  catch (const ::cc::auth::Exception& a_cc_auth_exception) {
                 // ... track exception ...
-                NGX_BROKER_MODULE_TRACK_EXCEPTION(ctx_, a_cc_auth_exception);
+                NGX_BROKER_MODULE_SET_BAD_REQUEST_EXCEPTION(ctx_, a_cc_auth_exception);
             }
             
             // ... 'ISS' not accepted, try next one ...
