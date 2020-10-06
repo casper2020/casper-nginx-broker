@@ -340,7 +340,7 @@
 				"-Wno-unreachable-code",
 				"",
 			);
-			script = "#!/bin/bash\nmkdir -p ${DERIVED_FILES_DIR} \\\n&& \\\n/usr/local/Cellar/bison/3.5/bin/bison ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.yy -v --locations -o ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc \\\n&& \\\ncp ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*stack.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*parser.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*location.hh ${DERIVED_FILES_DIR}\n";
+			script = "#!/bin/bash\nmkdir -p ${DERIVED_FILES_DIR} \\\n&& \\\n/usr/local/Cellar/bison/3.7.2/bin/bison ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.yy -v --locations -o ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc \\\n&& \\\ncp ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*stack.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*parser.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*location.hh ${DERIVED_FILES_DIR}\n";
 		};
 /* End PBXBuildRule section */
 
@@ -393,6 +393,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1579E70E24F7B6A000F6D139;
 			remoteInfo = "casper-osal-ragel";
+		};
+		475B6D06252376DE008E405C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 470389AA235F4D98002FA394 /* casper-connectors.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 472C199F251A15FC00811559;
+			remoteInfo = "casper-cc";
 		};
 		4775743223E1980F001E7587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1311,6 +1318,7 @@
 				4775743323E1980F001E7587 /* libcasper-connectors.a */,
 				4775743523E1980F001E7587 /* libcasper-connectors-v8.a */,
 				47CBDED3247D2E1900AE0231 /* libcasper-connectors-icu.a */,
+				475B6D07252376DE008E405C /* libcasper-cc.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2445,6 +2453,13 @@
 			fileType = archive.ar;
 			path = "libcasper-osal-ragel.a";
 			remoteRef = 4757373B24F8F2B400D40CC5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		475B6D07252376DE008E405C /* libcasper-cc.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libcasper-cc.a";
+			remoteRef = 475B6D06252376DE008E405C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		4775743323E1980F001E7587 /* libcasper-connectors.a */ = {
