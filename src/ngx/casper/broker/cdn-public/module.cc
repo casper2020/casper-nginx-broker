@@ -240,9 +240,9 @@ ngx_int_t ngx::casper::broker::cdn::pub::Module::Setup ()
                 // expected payload object 'archive'
                 // ...
                 // "archive": {
-                //    "entity_id": <numeric>,
-                //     "user_id": <numeric>,
-                //     "file_id:" <string>
+                //     "id:" <string>,
+                //     "entity_id": <numeric>,
+                //     "user_id": <numeric>
                 // }
                 // ....
                 //
@@ -259,15 +259,15 @@ ngx_int_t ngx::casper::broker::cdn::pub::Module::Setup ()
                         fake_headers_["x-casper-" + key] = archive[member].asString();
                     }
                 }
-                fake_headers_["X-CASPER-ROLE-MASK"] = "0x20000000";
+                fake_headers_["X-CASPER-MODULE-MASK"] = "0x20000000";
                 
-                const Json::Value& file_id = archive.get("file_id", Json::Value::null);
-                if ( true == file_id.isNull() || false == file_id.isString()|| 0 == file_id.asString().length() ) {
-                    NGX_BROKER_MODULE_THROW_EXCEPTION(ctx_, "Invalid or missing '%s': field!", "file_id");
+                const Json::Value& id = archive.get("id", Json::Value::null);
+                if ( true == id.isNull() || false == id.isString()|| 0 == id.asString().length() ) {
+                    NGX_BROKER_MODULE_THROW_EXCEPTION(ctx_, "Invalid or missing '%s': field!", "id");
                 }
                 
                 // ... simulate uri ...
-                uri_ = '/' + file_id.asString();
+                uri_ = '/' + id.asString();
                 
                 // ... x_id_ is set ...
                 ctx_.response_.return_code_ = NGX_OK;
