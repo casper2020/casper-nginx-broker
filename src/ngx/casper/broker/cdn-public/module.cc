@@ -206,8 +206,18 @@ ngx_int_t ngx::casper::broker::cdn::pub::Module::Setup ()
     while ( '/' == ptr[0] && '\0' != ptr[0] ) {
         ptr++;
     }
+    const char* end = ptr;
+    while ( '?' != end[0] && '\0' != end[0] ) {
+        end++;
+    }
+    if ( nullptr == end ) {
+        // ... rejected ...
+        NGX_BROKER_MODULE_SET_BAD_REQUEST_ERROR_I18N(ctx_, "BROKER_MISSING_OR_INVALID_URN_ERROR");
+        // ... done ...
+        return ctx_.response_.return_code_;
+    }
 
-    const std::string b64 = ::cc::auth::JWT::MakeBrowsersUnhappy(ptr);
+    const std::string b64 = ::cc::auth::JWT::MakeBrowsersUnhappy(std::string(ptr, end - ptr));
  
     // ... verify JWT signature ...
     const int64_t now = cc::UTCTime::Now();
