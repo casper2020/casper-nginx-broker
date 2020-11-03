@@ -158,17 +158,26 @@ void ngx::casper::broker::cdn::api::Router::Process (const ngx_uint_t a_method, 
     }
     
     if ( -1 != error_column || p != pe ) {
+        int   cnt;
+        const char* tail;
+        
         if ( p != pe ) {
             error_column = (int)(p - input);
         }
-       throw cdn::BadRequest("Invalid route: %*.*s <~ ??? ~> %*.*s",
-                             (int) error_column,
-                             (int) error_column,
-                             input,
-                             (int)(pe - p),
-                             (int)(pe - p),
-                             input + error_column
-        );
+        if ( (pe - p) <= 0 ) {
+            cnt  = 0;
+            tail = "";
+        } else {
+            cnt = (int) (pe - p);
+            tail = input + error_column;
+        }
+        throw cdn::BadRequest("Invalid route: %*.*s <~ ??? ~> %*.*s",
+                              (int) error_column,
+                              (int) error_column,
+                              input,
+                              cnt,
+                              cnt,
+                              tail);
     }
     
     (void)cdn_api_error;
