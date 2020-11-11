@@ -1,4 +1,4 @@
-/**
+˙/**
  * @file job.cc
  *
  * Copyright (c) 2017-2020 Cloudware S.A. All rights reserved.
@@ -368,9 +368,10 @@ ngx_int_t ngx::casper::broker::ext::Job::Submit (const Json::Value& a_object,
     }
     
     // ... set ttr && expires in ...
-    job_ttr_        = static_cast<size_t>(job_object_.get("ttr", static_cast<Json::Value::UInt64>(job_ttr_)).asUInt64());             // in seconds
-    job_expires_in_ = static_cast<size_t>(job_object_.get("validity", static_cast<Json::Value::UInt64>(job_expires_in_)).asUInt64()); // in seconds
-    job_tube_      = job_object_["tube"].asString();
+    job_ttr_         = static_cast<size_t>(job_object_.get("ttr", static_cast<Json::Value::UInt64>(job_ttr_)).asUInt64());             // in seconds
+    job_expires_in_  = static_cast<size_t>(job_object_.get("validity", static_cast<Json::Value::UInt64>(job_expires_in_)).asUInt64()); // in seconds
+    job_expires_in_ += job_ttr_;
+    job_tube_        = job_object_["tube"].asString();
 
     // ... yes ... run a task to reserve it ...
     module_ptr_->NewTask([this] () -> ::ev::Object* {
