@@ -284,7 +284,7 @@
 				"-Wno-unreachable-code",
 				"",
 			);
-			script = "#!/bin/bash\nmkdir -p ${DERIVED_FILES_DIR} \\\n&& \\\n/usr/local/Cellar/bison/3.7.3/bin/bison ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.yy -v --locations -o ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc \\\n&& \\\ncp ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*stack.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*parser.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*location.hh ${DERIVED_FILES_DIR}\n";
+			script = "#!/bin/bash\nBISON_VERSION=$(brew ls --versions bison | cut -d' ' -f2-)\nmkdir -p ${DERIVED_FILES_DIR} \\\n&& \\\n/usr/local/Cellar/bison/${BISON_VERSION}/bin/bison ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.yy -v --locations -o ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc \\\n&& \\\ncp ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*stack.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*parser.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*location.hh ${DERIVED_FILES_DIR}\n";
 		};
 		47385B6022B7F6A3004877BE /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -340,7 +340,7 @@
 				"-Wno-unreachable-code",
 				"",
 			);
-			script = "#!/bin/bash\nmkdir -p ${DERIVED_FILES_DIR} \\\n&& \\\n/usr/local/Cellar/bison/3.7.3/bin/bison ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.yy -v --locations -o ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc \\\n&& \\\ncp ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*stack.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*parser.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*location.hh ${DERIVED_FILES_DIR}\n";
+			script = "#!/bin/bash\nBISON_VERSION=$(brew ls --versions bison | cut -d' ' -f2-)\nmkdir -p ${DERIVED_FILES_DIR} \\\n&& \\\n/usr/local/Cellar/bison/${BISON_VERSION}/bin/bison ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.yy -v --locations -o ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc \\\n&& \\\ncp ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*stack.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*parser.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*location.hh ${DERIVED_FILES_DIR}\n";
 		};
 /* End PBXBuildRule section */
 
