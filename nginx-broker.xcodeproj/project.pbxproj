@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		470348DE242E03ED008C004C /* ngx_http_v2_encode.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348DC242E03ED008C004C /* ngx_http_v2_encode.c */; };
-		470348E0242E043B008C004C /* ngx_event_udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348DF242E043B008C004C /* ngx_event_udp.c */; };
-		470348E2242E0479008C004C /* ngx_http_try_files_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348E1242E0479008C004C /* ngx_http_try_files_module.c */; };
+		470348E0242E043B008C004C /* ngx_event_udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348DF242E043B008C004C /* ngx_event_udp.c */; settings = {COMPILER_FLAGS = "-Wno-deprecated-declarations -Wno-shorten-64-to-32"; }; };
+		470348E2242E0479008C004C /* ngx_http_try_files_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348E1242E0479008C004C /* ngx_http_try_files_module.c */; settings = {COMPILER_FLAGS = "-Wno-shorten-64-to-32"; }; };
 		470348E5242E0491008C004C /* ngx_http_mirror_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348E3242E0491008C004C /* ngx_http_mirror_module.c */; };
-		470348E6242E0491008C004C /* ngx_http_grpc_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348E4242E0491008C004C /* ngx_http_grpc_module.c */; };
+		470348E6242E0491008C004C /* ngx_http_grpc_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348E4242E0491008C004C /* ngx_http_grpc_module.c */; settings = {COMPILER_FLAGS = "-Wno-shorten-64-to-32"; }; };
 		470348E8242E04A6008C004C /* ngx_http_upstream_random_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 470348E7242E04A6008C004C /* ngx_http_upstream_random_module.c */; };
 		471351C81F13895500EC4B97 /* scope.cc in Sources */ = {isa = PBXBuildFile; fileRef = 471351C71F13895500EC4B97 /* scope.cc */; };
 		471640F31EDEEF560081101B /* ngx_utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 471640F11EDEEF560081101B /* ngx_utils.cc */; };
@@ -224,7 +224,7 @@
 		47A1B0371E23B186009D8F29 /* ngx_user.c in Sources */ = {isa = PBXBuildFile; fileRef = 47A1B0141E23B186009D8F29 /* ngx_user.c */; };
 		47A1B0381E23B186009D8F29 /* ngx_writev_chain.c in Sources */ = {isa = PBXBuildFile; fileRef = 47A1B0161E23B186009D8F29 /* ngx_writev_chain.c */; settings = {COMPILER_FLAGS = "-Wno-shorten-64-to-32"; }; };
 		47A1B0471E23B4CD009D8F29 /* ngx_http_v2.c in Sources */ = {isa = PBXBuildFile; fileRef = 47A1B03F1E23B4CD009D8F29 /* ngx_http_v2.c */; };
-		47A1B0481E23B4CD009D8F29 /* ngx_http_v2_filter_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 47A1B0411E23B4CD009D8F29 /* ngx_http_v2_filter_module.c */; };
+		47A1B0481E23B4CD009D8F29 /* ngx_http_v2_filter_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 47A1B0411E23B4CD009D8F29 /* ngx_http_v2_filter_module.c */; settings = {COMPILER_FLAGS = "-Wno-shorten-64-to-32"; }; };
 		47A1B0491E23B4CD009D8F29 /* ngx_http_v2_huff_decode.c in Sources */ = {isa = PBXBuildFile; fileRef = 47A1B0421E23B4CD009D8F29 /* ngx_http_v2_huff_decode.c */; };
 		47A1B04A1E23B4CD009D8F29 /* ngx_http_v2_huff_encode.c in Sources */ = {isa = PBXBuildFile; fileRef = 47A1B0431E23B4CD009D8F29 /* ngx_http_v2_huff_encode.c */; };
 		47A1B04B1E23B4CD009D8F29 /* ngx_http_v2_module.c in Sources */ = {isa = PBXBuildFile; fileRef = 47A1B0441E23B4CD009D8F29 /* ngx_http_v2_module.c */; };
