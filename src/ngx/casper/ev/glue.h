@@ -44,7 +44,28 @@ namespace ngx
         namespace ev
         {
             
-            class Glue final : public ::ev::ngx::SharedGlue, public osal::Singleton<Glue>
+            // ---- //
+            class Glue;
+            class GlueInitializer final : public ::osal::Initializer<Glue>
+            {
+                
+            public: // Constructor(s) / Destructor
+                
+                GlueInitializer (Glue& a_instance)
+                    : ::osal::Initializer<Glue>(a_instance)
+                {
+                    /* empty */
+                }
+                virtual ~GlueInitializer ()
+                {
+                    /* empty */
+                }
+                
+            }; // end of class 'GlueInitializer'
+
+            // ---- //
+            
+            class Glue final : public ::ev::ngx::SharedGlue, public osal::Singleton<Glue, GlueInitializer>
             {
                 
             private: // Static Data

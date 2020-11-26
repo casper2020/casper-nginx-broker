@@ -16,8 +16,8 @@
             timestampString = "576428604.415547"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "194"
-            endingLineNumber = "194"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
             landmarkName = "ngx::casper::broker::Initializer::PreStartup(a_config, a_cycle, a_master, a_standalone)"
             landmarkType = "7">
             <Actions>

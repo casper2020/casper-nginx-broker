@@ -41,7 +41,27 @@ namespace ngx
         namespace broker
         {
 
-            class Initializer final : public osal::Singleton<Initializer>
+            // ---- //
+            class Initializer;
+            class OneShotInitializer final : public ::osal::Initializer<broker::Initializer>
+            {
+                
+            public: // Constructor(s) / Destructor
+                
+                OneShotInitializer (broker::Initializer& a_instance)
+                    : ::osal::Initializer<broker::Initializer>(a_instance)
+                {
+                    /* empty */
+                }
+                virtual ~OneShotInitializer ()
+                {
+                    /* empty */
+                }
+                
+            }; // end of class 'BridgeInitializer'
+
+            // ---- //
+            class Initializer final : public osal::Singleton<Initializer, OneShotInitializer>
             {
 
             public: // Static Const Data
@@ -54,7 +74,7 @@ namespace ngx
 
             private: // Static Data
 
-                static bool                  s_initialized_;
+                static bool             s_initialized_;
 
             public: // One-shot Call Method(s) / Function(s)
 

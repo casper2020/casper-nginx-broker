@@ -46,7 +46,27 @@ namespace ngx
         namespace broker
         {
 
-            class Tracker final : public osal::Singleton<Tracker>
+            // ---- //
+            class Tracker;
+            class TrackerInitializer final : public ::osal::Initializer<Tracker>
+            {
+                
+            public: // Constructor(s) / Destructor
+                
+                TrackerInitializer (Tracker& a_instance)
+                    : ::osal::Initializer<Tracker>(a_instance)
+                {
+                    /* empty */
+                }
+                virtual ~TrackerInitializer ()
+                {
+                    /* empty */
+                }
+                
+            }; // end of class 'TrackerInitializer'
+            
+            // ---- //
+            class Tracker final : public osal::Singleton<Tracker, TrackerInitializer>
             {
                 
             public: // Data Type(s)

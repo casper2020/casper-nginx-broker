@@ -235,7 +235,6 @@ void ngx::casper::ev::Glue::Shutdown (int a_sig_no)
     OSALITE_DEBUG_TRACE("ev_glue", "~> Shutdown()");
     // ... first shutdown 'redis' subscriptions ...
     ::ev::redis::subscriptions::Manager::GetInstance().Shutdown();
-    ::ev::redis::subscriptions::Manager::Destroy();
     // ... then shutdown 'scheduler' ...
     ::ev::scheduler::Scheduler::GetInstance().Stop([]() {
 #if 0
@@ -248,12 +247,10 @@ void ngx::casper::ev::Glue::Shutdown (int a_sig_no)
 #endif
     // ... finally, shutdown 'ev::SharedHandler' ...
     ::ev::ngx::Bridge::GetInstance().Shutdown();
-    ::ev::ngx::Bridge::Destroy();
     // ... forget configs ...
     config_map_.clear();
     
     ::ev::scheduler::UniqueIDGenerator::GetInstance().Shutdown();
-    ::ev::scheduler::UniqueIDGenerator::Destroy();
     
     ::ev::Signals::GetInstance().Unregister();
     

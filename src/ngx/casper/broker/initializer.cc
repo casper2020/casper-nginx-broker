@@ -97,7 +97,6 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
                                      case SIGTERM:
                                      {
                                          ngx::casper::broker::Initializer::GetInstance().Shutdown(/* a_for_cleanup_only */ false);
-                                         ngx::casper::broker::Initializer::Destroy();
                                      }
                                          return true;
                                      default:
@@ -159,22 +158,6 @@ void ngx::casper::broker::Initializer::Shutdown (bool a_for_cleanup_only)
     // ... casper-connectors // third party libraries cleanup ...
     ::cc::global::Initializer::GetInstance().Shutdown(a_for_cleanup_only);
 
-    //
-    // ... destructive?
-    //
-	if ( false == a_for_cleanup_only ) {
-        // ... ev glue ...
-		ngx::casper::ev::Glue::Destroy();
-        // ... i18 ...
-		ngx::casper::broker::I18N::Destroy();
-        // ... tracker ...
-        ngx::casper::broker::Tracker::Destroy();
-        // ... casper-connectors // third party libraries ...
-        ::cc::global::Initializer::Destroy();
-        // ... casper-connectors // third party libraries cleanup ...
-        ::cc::global::Initializer::Destroy();
-	}
-    
     // ... reset initialized flag ...
     s_initialized_ = false;
 }
