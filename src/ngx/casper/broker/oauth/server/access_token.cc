@@ -269,7 +269,7 @@ void ngx::casper::broker::oauth::server::AccessToken::AsyncRun (ngx::casper::bro
         // GENERATE NEW ACCESS AND REFRESH TOKENS
         //
         GenNewToken(/* a_name*/ "access" , /* a_error_code*/ "unauthorized_client" , /* o_value */ access_token_);
-        GenNewToken(/* a_name*/ "regresh", /* a_error_code*/ "unauthorized_client" , /* o_value */ refresh_token_);
+        GenNewToken(/* a_name*/ "refresh", /* a_error_code*/ "unauthorized_client" , /* o_value */ refresh_token_);
         
         //
         // Get settings
