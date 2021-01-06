@@ -31,6 +31,8 @@
 
 #include <sys/stat.h>
 
+#include "curl/curl.h"
+
 #ifdef __APPLE__
 #pragma mark -
 #pragma mark - Module - Forward declarations
@@ -140,6 +142,30 @@ static ngx_command_t ngx_http_casper_broker_ul_module_commands[] = {
         offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, max_content_length),
         NULL
     },
+    {
+        ngx_string("nginx_casper_broker_ul_authorization_url"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_str_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, authorization_url),
+        NULL
+    },
+    {
+        ngx_string("nginx_casper_broker_ul_authorization_ct"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_num_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, authorization_ct),
+        NULL
+    },
+    {
+        ngx_string("nginx_casper_broker_ul_authorization_tt"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_num_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, authorization_tt),
+        NULL
+    },
     ngx_null_command
 };
 
@@ -201,6 +227,9 @@ static void* ngx_http_casper_broker_ul_module_create_loc_conf (ngx_conf_t* a_cf)
     conf->expires_in            = NGX_CONF_UNSET;
     conf->accept_multipart_body = NGX_CONF_UNSET;
     conf->max_content_length    = NGX_CONF_UNSET;
+    conf->authorization_url     = ngx_null_string;
+    conf->authorization_ct      = NGX_CONF_UNSET;
+    conf->authorization_tt      = NGX_CONF_UNSET;
 
     return conf;
 }
@@ -224,6 +253,9 @@ static char* ngx_http_casper_broker_ul_module_merge_loc_conf (ngx_conf_t* a_cf, 
     ngx_conf_merge_uint_value(conf->expires_in           , prev->expires_in           ,      604800 ); /* 604800 seconds -> 7 days */
     ngx_conf_merge_value     (conf->accept_multipart_body, prev->accept_multipart_body,           0 ); /* 0 - no */
     ngx_conf_merge_value     (conf->max_content_length   , prev->max_content_length   ,           0 ); /* not set */
+    ngx_conf_merge_str_value (conf->authorization_url    , prev->authorization_url    ,          "" ); /* not set */
+    ngx_conf_merge_value     (conf->authorization_ct     , prev->authorization_ct     ,          30 ); /* 30 seconds */
+    ngx_conf_merge_value     (conf->authorization_tt     , prev->authorization_tt     ,          60 ); /* 60 seconds */
     
     NGX_BROKER_MODULE_LOC_CONF_MERGED();    
     
@@ -318,42 +350,151 @@ ngx_int_t ngx_http_casper_broker_ul_module_content_handler (ngx_http_request_t* 
     // ... now collect headers ...
     ngx::utls::HeadersMap request_headers;
     ngx::utls::nrs_ngx_read_in_headers(a_r, request_headers);
-
-    // ... ensure 'Origin' header is present ...
-    const auto origin_it = request_headers.find("origin");
-    if ( request_headers.end() == origin_it ) {
-        NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
-                                    "CH", "LEAVING",
-                                    "missing mandatory header '%s'...", "Origin"
-        );
-        return NGX_HTTP_FORBIDDEN;
-    }
     
-    // ... and it it's acceptable ...
-    std::string acceptable_origin;
-    for ( Json::ArrayIndex idx = 0 ; idx < ao_obj.size() ; ++idx ) {
-        if ( 0 == strcasecmp(ao_obj[idx].asString().c_str(), origin_it->second.c_str() ) ) {
-            acceptable_origin = origin_it->second;
-            break;
+    // ... validate 'authorization' OR 'origin' ....
+    const auto authorization_it = request_headers.find("authorization");
+    if ( request_headers.end() != authorization_it ) {
+        // ... ensure it's enabled ...
+        if ( 0 == loc_conf->authorization_url.len || NULL == loc_conf->authorization_url.data ) {
+            // ... authorization validation not enabled ...
+            NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                        "CH", "LEAVING",
+                                        "authorization validation not %s ...", "enabled"
+            );
+            return NGX_HTTP_NOT_ALLOWED;
         }
-    }
-    
-    // ... NOT acceptable?
-    if ( 0 == acceptable_origin.length() ) {
-        NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
-                                    "CH", "LEAVING",
-                                    "Origin: %s - not acceptable...", origin_it->second.c_str()
-        );
-        return NGX_HTTP_FORBIDDEN;
-    }
-    
-    // ... origin is acceptable ...
-    ngx_str_t* allowed_origin = ngx::utls::nrs_ngx_copy_string(a_r, acceptable_origin);
+        const std::string authorization_url = std::string(reinterpret_cast<char const*>(loc_conf->authorization_url.data), loc_conf->authorization_url.len).c_str();
+        // ... 'authorization' ...
+        std::string type;
+        std::string credentials;
+        const ngx_int_t authorization_parsing = ngx::utls::nrs_ngx_parse_authorization((authorization_it->first + ": " + authorization_it->second), type, credentials);
+        if ( NGX_OK == authorization_parsing ) {
+            // ... valid, check type and credentials ...
+            if ( 0 != strcasecmp(type.c_str(), "bearer") ) {
+                // ... unsupported authorization header type ...
+                NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                            "CH", "LEAVING",
+                                            "unsupported authorization header type '%s'...", type.c_str()
+                );
+                return NGX_HTTP_FORBIDDEN;
+            } else if ( 0 == credentials.length() ) {
+                // ... invalid authorization header value ...
+                NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                            "CH", "LEAVING",
+                                            "invalid authorization header credentials '%s'...", credentials.c_str()
+                );
+                return NGX_HTTP_FORBIDDEN;
+            } else {
+                long  sc = (long)NGX_HTTP_INTERNAL_SERVER_ERROR;
+                CURL* handle  = curl_easy_init();
+                if ( NULL == handle ) {
+                    // ... unable to initialize cURL handle ...
+                    NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                                "CH", "LEAVING",
+                                                "unable to %s cURL handle...", "initialize"
+                    );
+                } else {
+                    // ... initialize cURL ...
+                    int ir  = curl_easy_setopt(handle, CURLOPT_URL           , authorization_url.c_str());
+                    ir     += curl_easy_setopt(handle, CURLOPT_CONNECTTIMEOUT, loc_conf->authorization_ct);
+                    ir     += curl_easy_setopt(handle, CURLOPT_TIMEOUT       , loc_conf->authorization_tt);
+                    ir     += curl_easy_setopt(handle, CURLOPT_FORBID_REUSE  , 1L);
+                    ir     += curl_easy_setopt(handle, CURLOPT_HTTPGET       , 1L);
+                    if ( ir != CURLE_OK ) {
+                        // ... unable to initialize cURL request ...
+                        NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                                    "CH", "LEAVING",
+                                                    "unable to %s cURL request...", "initialize"
+                        );
+                    } else {
+                        struct curl_slist* headers = curl_slist_append(nullptr, ("Authorization: " + type + " " + credentials).c_str());
+                        if ( nullptr == headers ) {
+                            // ... unable to allocate cURL request headers ...
+                            NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                                        "CH", "LEAVING",
+                                                        "unable to %s cURL request headers...", "allocate"
+                            );
+                        } else {
+                            if ( CURLE_OK != curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers) ) {
+                                // ... unable to bind cURL request headers ...
+                                NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                                            "CH", "LEAVING",
+                                                            "unable to %s cURL request headers...", "bind"
+                                );
+                            } else {
+                                // ... perform request ...
+                                const CURLcode rc = curl_easy_perform(handle);
+                                if ( CURLE_OK != rc ) {
+                                    // ... unable to perform cURL request ...
+                                    NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                                                "CH", "LEAVING",
+                                                                "unable to perform cURL request - %s", curl_easy_strerror(rc)
+                                    );
+                                    // ... special case timeout ....
+                                    if ( CURLE_OPERATION_TIMEDOUT == rc ) {
+                                        sc = NGX_HTTP_REQUEST_TIME_OUT;
+                                    }
+                                } else {
+                                    // ... succeeded, grab HTTP status code ...
+                                    curl_easy_getinfo(handle, CURLINFO_RESPONSE_CODE, &sc);
+                                }
+                            }
+                            curl_slist_free_all(headers);
+                        }
+                    }
+                    // ... cleanup ...
+                    curl_easy_cleanup(handle);
+                  }
+                // ... header is valid, check if credentials are also valid ...
+                if ( NGX_HTTP_OK != sc ) {
+                    return (ngx_int_t)sc;
+                }
+            }
+        } else {
+            // ... invalid ...
+            NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                        "CH", "LEAVING",
+                                        "invalid authorization header value '%s'...", ( authorization_it->first + ": " + authorization_it->second ).c_str()
+            );
+            return NGX_HTTP_FORBIDDEN;
+        }
+    } else { // ... 'origin' ...
+        // ... ensure 'Origin' header is present ...
+        const auto origin_it = request_headers.find("origin");
+        if ( request_headers.end() == origin_it ) {
+            NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                        "CH", "LEAVING",
+                                        "missing mandatory header '%s'...", "Origin"
+            );
+            return NGX_HTTP_FORBIDDEN;
+        }
+        
+        // ... and it it's acceptable ...
+        std::string acceptable_origin;
+        for ( Json::ArrayIndex idx = 0 ; idx < ao_obj.size() ; ++idx ) {
+            if ( 0 == strcasecmp(ao_obj[idx].asString().c_str(), origin_it->second.c_str() ) ) {
+                acceptable_origin = origin_it->second;
+                break;
+            }
+        }
+        
+        // ... NOT acceptable?
+        if ( 0 == acceptable_origin.length() ) {
+            NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
+                                        "CH", "LEAVING",
+                                        "Origin: %s - not acceptable...", origin_it->second.c_str()
+            );
+            return NGX_HTTP_FORBIDDEN;
+        }
+        
+        // ... origin is acceptable ...
+        ngx_str_t* allowed_origin = ngx::utls::nrs_ngx_copy_string(a_r, acceptable_origin);
 
-    // ... add 'Allow-*' headers ...
-    ngx::utls::nrs_ngx_add_response_header(a_r, &NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOW_ORIGIN,  allowed_origin);
-    ngx::utls::nrs_ngx_add_response_header(a_r, &NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOW_METHODS, &NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOWED_METHODS);
-    ngx::utls::nrs_ngx_add_response_header(a_r, &NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOW_HEADERS, &NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOWED_HEADERS);
+        // ... add 'Allow-*' headers ...
+        ngx::utls::nrs_ngx_add_response_header(a_r, &NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOW_ORIGIN,  allowed_origin);
+        ngx::utls::nrs_ngx_add_response_header(a_r, &NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOW_METHODS, &NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOWED_METHODS);
+        ngx::utls::nrs_ngx_add_response_header(a_r, &NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOW_HEADERS, &NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOWED_HEADERS);
+    }
 
     // ... only a pre-upload negotiation?
     if ( a_r->method & NGX_HTTP_OPTIONS ) {

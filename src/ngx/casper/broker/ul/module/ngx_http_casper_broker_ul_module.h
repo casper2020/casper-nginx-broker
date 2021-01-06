@@ -55,6 +55,9 @@ typedef struct {
     ngx_uint_t                expires_in;            //!<
     ngx_flag_t                accept_multipart_body; //!<
     ngx_uint_t                max_content_length;    //!<
+    ngx_str_t                 authorization_url;     //!<
+    ngx_uint_t                authorization_ct;      //!<
+    ngx_uint_t                authorization_tt;      //!<
 } ngx_http_casper_broker_ul_module_loc_conf_t;
 
 typedef struct {
