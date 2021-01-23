@@ -2566,7 +2566,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "CONFIGURATION_LC=\"$(tr '[:upper:]' '[:lower:]' <<< ${CONFIGURATION})\"\nBLOBS_DIR=/usr/local/share/nginx-broker/v8\nif [ \"debug\" == \"$CONFIGURATION_LC\" ] ; then\n    BLOBS_DIR+=/$CONFIGURATION_LC\nfi\nmkdir -p $BLOBS_DIR\nBLOBS_TO_COPY=(\"icudtl.dat\")\nfor __blob in ${BLOBS_TO_COPY[@]} ; do\n    __src_blob=$SRCROOT/../v8/out.gn/x64.$CONFIGURATION_LC/$__blob\n    __dst_blob=$BLOBS_DIR/$__blob\n    if [ ! -f $__dst_blob ] ; then\n        cp -fv $__src_blob $__dst_blob\n    fi\ndone\n";
+			shellScript = "CONFIGURATION_LC=\"$(tr '[:upper:]' '[:lower:]' <<< ${CONFIGURATION})\"\nBLOBS_DIR=/usr/local/share/nginx-broker/v8\nif [ \"debug\" == \"$CONFIGURATION_LC\" ] ; then\n    BLOBS_DIR+=/$CONFIGURATION_LC\nfi\nmkdir -p $BLOBS_DIR\nBLOBS_TO_COPY=(\"icudtl.dat\")\nfor __blob in ${BLOBS_TO_COPY[@]} ; do\n    __src_blob=$SRCROOT/../v8/out.gn/x64.$CONFIGURATION_LC/$__blob\n    __dst_blob=$BLOBS_DIR/$__blob\n    if [ ! -f $__dst_blob ] ; then\n        cp -fv $__src_blob $__dst_blob\n    fi\ndone\nTMP_ARCHS=`lipo -archs $CODESIGNING_FOLDER_PATH`\necho \"archs $TMP_ARCHS\"\n";
 		};
 		47E1FDEF232005A400484100 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2970,7 +2970,7 @@
 			baseConfigurationReference = 4772341C25BC3E24006050A6 /* common.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = x86_64;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
@@ -3031,7 +3031,7 @@
 			baseConfigurationReference = 4772341C25BC3E24006050A6 /* common.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = x86_64;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
@@ -3132,7 +3132,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYMROOT = "$(NRS_OUT_DIR)/$(CONFIGURATION)";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include";
-				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
 		};
@@ -3185,7 +3184,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYMROOT = "$(NRS_OUT_DIR)/$(CONFIGURATION)";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include";
-				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;
 		};
