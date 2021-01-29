@@ -143,7 +143,17 @@ namespace ngx
         ); \
         /* ... by declining request ... */ \
         return NGX_DECLINED; \
+    } \
+    /* if module already running */ \
+    const void* module_ptr = (void*) ngx_http_get_module_ctx(a_r, a_module_t); \
+    if ( NULL != module_ptr ) { \
+      ngx::casper::broker::Module::Log(a_module_t, a_r, NGX_LOG_DEBUG, a_log_token, \
+				       a_name, "LEAVING",		            \
+				       "module already actived... skipping..."      \
+       ); \
+      return NGX_OK; \
     }
+
 #endif // NGX_BROKER_MODULE_PHASE_HANDLER_BARRIER
                 
 #ifndef NGX_BROKER_MODULE_CONTENT_HANDLER_BARRIER
