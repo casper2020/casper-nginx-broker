@@ -633,8 +633,6 @@
 		472FEA3C1E25511A0033D258 /* libpq.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libpq.tbd; path = usr/lib/libpq.tbd; sourceTree = SDKROOT; };
 		4732779D234CE420005B8133 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		47385B6C22B7F8C1004877BE /* types.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = types.cc; sourceTree = "<group>"; };
-		473F1DC71F3DC0380067DB0D /* nginx-broker-common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "nginx-broker-common.xcconfig"; sourceTree = "<group>"; };
-		473F1DC91F3DDDB60067DB0D /* nginx-broker-debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "nginx-broker-debug.xcconfig"; sourceTree = "<group>"; };
 		473FC34B23BA6A1E00EFE4FE /* route.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = route.cc; sourceTree = "<group>"; };
 		473FC34C23BA6A1E00EFE4FE /* sideline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sideline.h; sourceTree = "<group>"; };
 		473FC34D23BA6A1F00EFE4FE /* route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = route.h; sourceTree = "<group>"; };
@@ -681,7 +679,9 @@
 		47697FDD1E28FD5200A65455 /* tracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tracker.h; sourceTree = "<group>"; };
 		476EF71A1E23CD22004A13C2 /* libpcre.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libpcre.tbd; path = usr/lib/libpcre.tbd; sourceTree = SDKROOT; };
 		476EF71C1E23CD7D004A13C2 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		4770F94822D49DF100DCDD2F /* nb-xattr-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "nb-xattr-common.xcconfig"; sourceTree = "<group>"; };
+		4772341C25BC3E24006050A6 /* common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = common.xcconfig; sourceTree = "<group>"; };
+		4772341D25BC3E24006050A6 /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = debug.xcconfig; sourceTree = "<group>"; };
+		4772341E25BC3E24006050A6 /* release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = release.xcconfig; sourceTree = "<group>"; };
 		47732F3D229455F00079A2F3 /* archive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = archive.h; sourceTree = "<group>"; };
 		47732F3E229455F00079A2F3 /* archive.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = archive.cc; sourceTree = "<group>"; };
 		477409D9241666F3009BA9EA /* ngx-cdb-modules.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ngx-cdb-modules.xcodeproj"; path = "../cloudware-central-db/ngx-cdb-modules/ngx-cdb-modules.xcodeproj"; sourceTree = "<group>"; };
@@ -1303,6 +1303,17 @@
 			path = module;
 			sourceTree = "<group>";
 		};
+		4772341B25BC3E23006050A6 /* xcode */ = {
+			isa = PBXGroup;
+			children = (
+				4772341C25BC3E24006050A6 /* common.xcconfig */,
+				4772341D25BC3E24006050A6 /* debug.xcconfig */,
+				4772341E25BC3E24006050A6 /* release.xcconfig */,
+			);
+			name = xcode;
+			path = "../casper-packager/xcode";
+			sourceTree = "<group>";
+		};
 		477526AA2313E54A00F6FB18 /* db */ = {
 			isa = PBXGroup;
 			children = (
@@ -1525,9 +1536,7 @@
 		47A1AC3E1E23AFF9009D8F29 = {
 			isa = PBXGroup;
 			children = (
-				473F1DC71F3DC0380067DB0D /* nginx-broker-common.xcconfig */,
-				473F1DC91F3DDDB60067DB0D /* nginx-broker-debug.xcconfig */,
-				4770F94822D49DF100DCDD2F /* nb-xattr-common.xcconfig */,
+				4772341B25BC3E23006050A6 /* xcode */,
 				47139830229C1601007816ED /* resources */,
 				471BE0DA23DF534C00751072 /* casper-packager-projects */,
 				47A51F7F1F4AE6A70060C1CD /* third-party */,
@@ -2557,7 +2566,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "CONFIGURATION_LC=\"$(tr '[:upper:]' '[:lower:]' <<< ${CONFIGURATION})\"\nBLOBS_DIR=/usr/local/share/nginx-broker/v8\nif [ \"debug\" == \"$CONFIGURATION_LC\" ] ; then\n    BLOBS_DIR+=/$CONFIGURATION_LC\nfi\nmkdir -p $BLOBS_DIR\nBLOBS_TO_COPY=(\"icudtl.dat\")\nfor __blob in ${BLOBS_TO_COPY[@]} ; do\n    __src_blob=$SRCROOT/../v8/out.gn/x64.$CONFIGURATION_LC/$__blob\n    __dst_blob=$BLOBS_DIR/$__blob\n    if [ ! -f $__dst_blob ] ; then\n        cp -fv $__src_blob $__dst_blob\n    fi\ndone\n";
+			shellScript = "CONFIGURATION_LC=\"$(tr '[:upper:]' '[:lower:]' <<< ${CONFIGURATION})\"\nBLOBS_DIR=/usr/local/share/nginx-broker/v8\nif [ \"debug\" == \"$CONFIGURATION_LC\" ] ; then\n    BLOBS_DIR+=/$CONFIGURATION_LC\nfi\nmkdir -p $BLOBS_DIR\nBLOBS_TO_COPY=(\"icudtl.dat\")\nfor __blob in ${BLOBS_TO_COPY[@]} ; do\n    __src_blob=$SRCROOT/../v8/out.gn/x64.$CONFIGURATION_LC/$__blob\n    __dst_blob=$BLOBS_DIR/$__blob\n    if [ ! -f $__dst_blob ] ; then\n        cp -fv $__src_blob $__dst_blob\n    fi\ndone\nTMP_ARCHS=`lipo -archs $CODESIGNING_FOLDER_PATH`\necho \"archs $TMP_ARCHS\"\n";
 		};
 		47E1FDEF232005A400484100 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2909,7 +2918,7 @@
 /* Begin XCBuildConfiguration section */
 		47243D6B229C104900CFAAC0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4770F94822D49DF100DCDD2F /* nb-xattr-common.xcconfig */;
+			baseConfigurationReference = 4772341D25BC3E24006050A6 /* debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2934,7 +2943,7 @@
 		};
 		47243D6C229C104900CFAAC0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4770F94822D49DF100DCDD2F /* nb-xattr-common.xcconfig */;
+			baseConfigurationReference = 4772341E25BC3E24006050A6 /* release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2958,10 +2967,10 @@
 		};
 		47A1AC4C1E23AFF9009D8F29 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 473F1DC71F3DC0380067DB0D /* nginx-broker-common.xcconfig */;
+			baseConfigurationReference = 4772341C25BC3E24006050A6 /* common.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = x86_64;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
@@ -3019,10 +3028,10 @@
 		};
 		47A1AC4D1E23AFF9009D8F29 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 473F1DC71F3DC0380067DB0D /* nginx-broker-common.xcconfig */;
+			baseConfigurationReference = 4772341C25BC3E24006050A6 /* common.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = x86_64;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
@@ -3072,7 +3081,7 @@
 		};
 		47A1AC4F1E23AFF9009D8F29 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 473F1DC91F3DDDB60067DB0D /* nginx-broker-debug.xcconfig */;
+			baseConfigurationReference = 4772341D25BC3E24006050A6 /* debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3123,13 +3132,12 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYMROOT = "$(NRS_OUT_DIR)/$(CONFIGURATION)";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include";
-				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
 		};
 		47A1AC501E23AFF9009D8F29 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 473F1DC71F3DC0380067DB0D /* nginx-broker-common.xcconfig */;
+			baseConfigurationReference = 4772341E25BC3E24006050A6 /* release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3176,7 +3184,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYMROOT = "$(NRS_OUT_DIR)/$(CONFIGURATION)";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src/** $(SRCROOT)/src/nginx/src $(SRCROOT)/src/nginx/src/event $(SRCROOT)/src/nginx/src/core $(SRCROOT)/src/nginx/src/http $(SRCROOT)/src/nginx/src/event/modules $(SRCROOT)/src/nginx/src/os/unix $(SRCROOT)/../ $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../jsoncpp/dist $(SRCROOT)/../cppcodec $(SRCROOT)/../libbcrypt/include $(SRCROOT)/../beanstalk-client $(SRCROOT)/../ngx_devel_kit/src $(SRCROOT)/../ngx_devel_kit/objs $(SRCROOT)/../set-misc-nginx-module/src $(SRCROOT)/src/ngx/casper/broker/cdn-common/ast/ /usr/local/include";
-				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;
 		};

@@ -92,6 +92,9 @@
 		47E2B46A1FC460430072EBC7 /* ngx_http_set_base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ngx_http_set_base64.h; sourceTree = "<group>"; };
 		47E2B46B1FC460430072EBC7 /* ngx_http_set_unescape_uri.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ngx_http_set_unescape_uri.c; sourceTree = "<group>"; };
 		47E2B4A71FC460EB0072EBC7 /* libngx_devel_kit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libngx_devel_kit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		47FF614625BC5656004BBCF2 /* common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = common.xcconfig; sourceTree = "<group>"; };
+		47FF614725BC5656004BBCF2 /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = debug.xcconfig; sourceTree = "<group>"; };
+		47FF614825BC5656004BBCF2 /* release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = release.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +112,7 @@
 		47E2B4391FC460230072EBC7 = {
 			isa = PBXGroup;
 			children = (
+				47FF614525BC5656004BBCF2 /* xcode */,
 				47E2B4491FC460430072EBC7 /* README.markdown */,
 				47E2B44A1FC460430072EBC7 /* src */,
 				47E2B4431FC460230072EBC7 /* Products */,
@@ -177,6 +181,17 @@
 				47E2B4A71FC460EB0072EBC7 /* libngx_devel_kit.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		47FF614525BC5656004BBCF2 /* xcode */ = {
+			isa = PBXGroup;
+			children = (
+				47FF614625BC5656004BBCF2 /* common.xcconfig */,
+				47FF614725BC5656004BBCF2 /* debug.xcconfig */,
+				47FF614825BC5656004BBCF2 /* release.xcconfig */,
+			);
+			name = xcode;
+			path = "../../casper-packager/xcode";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -294,6 +309,7 @@
 /* Begin XCBuildConfiguration section */
 		47E2B4441FC460230072EBC7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47FF614625BC5656004BBCF2 /* common.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = x86_64;
@@ -352,6 +368,7 @@
 		};
 		47E2B4451FC460230072EBC7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47FF614625BC5656004BBCF2 /* common.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = x86_64;
@@ -403,6 +420,7 @@
 		};
 		47E2B4471FC460230072EBC7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47FF614725BC5656004BBCF2 /* debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -437,6 +455,7 @@
 		};
 		47E2B4481FC460230072EBC7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47FF614825BC5656004BBCF2 /* release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
