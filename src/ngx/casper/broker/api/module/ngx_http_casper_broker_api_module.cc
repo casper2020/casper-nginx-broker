@@ -193,6 +193,16 @@ ngx_int_t ngx_http_casper_broker_api_module_content_handler (ngx_http_request_t*
     NGX_BROKER_MODULE_CONTENT_HANDLER_BARRIER(a_r, ngx_http_casper_broker_api_module, ngx_http_casper_broker_api_module_loc_conf_t,
                                               "api_module");
 
+    /* if module already running */
+    const void* module_ptr = (void*) ngx_http_get_module_ctx(a_r, ngx_http_casper_broker_api_module); \
+    if ( NULL != module_ptr ) {
+      ngx::casper::broker::Module::Log(ngx_http_casper_broker_api_module, a_r, NGX_LOG_DEBUG, "api_module",
+                                       "CH", "LEAVING",
+                       "module already running for this request... skipping..."
+      );
+      return NGX_OK;
+    }
+
     /*
      * This module is enabled.
      */
