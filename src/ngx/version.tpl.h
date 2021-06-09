@@ -37,7 +37,15 @@
 #endif
 
 #ifndef NGX_REL_DATE
-#define NGX_REL_DATE "d.d.d"
+#define NGX_REL_DATE "r.r.d"
+#endif
+
+#ifndef NGX_REL_BRANCH
+#define NGX_REL_BRANCH "r.r.b"
+#endif
+
+#ifndef NGX_REL_HASH
+#define NGX_REL_HASH "r.r.h"
 #endif
 
 #ifndef NGX_INFO

@@ -26,9 +26,11 @@ endif
 
 include $(PACKAGER_DIR)/common/c++/settings.mk
 
-REL_DATE             := $(shell date -u)
 REL_VARIANT          ?= 1
 REL_NAME             ?= nginx-broker
+REL_DATE             := $(shell date -u)
+REL_HASH             := $(shell git rev-parse HEAD)
+REL_BRANCH           := $(shell git rev-parse --abbrev-ref HEAD)
 
 PROJECT_SRC_DIR      := $(ROOT_DIR)/casper-nginx-broker
 EXECUTABLE_NAME      := 
@@ -93,7 +95,9 @@ version:
 	@cp -f $(PROJECT_SRC_DIR)/src/ngx/version.tpl.h $(PROJECT_SRC_DIR)/src/ngx/version.h
 	@sed -i.bak s#"x.x.x"#$(VERSION)#g $(PROJECT_SRC_DIR)/src/ngx/version.h
 	@sed -i.bak s#"n.n.n"#$(REL_NAME)#g $(PROJECT_SRC_DIR)/src/ngx/version.h
-	@sed -i.bak s#"d.d.d"#"$(REL_DATE)"#g $(PROJECT_SRC_DIR)/src/ngx/version.h
+	@sed -i.bak s#"r.r.d"#"$(REL_DATE)"#g $(PROJECT_SRC_DIR)/src/ngx/version.h
+	@sed -i.bak s#"r.r.b"#"$(REL_BRANCH)"#g $(PROJECT_SRC_DIR)/src/ngx/version.h
+	@sed -i.bak s#"r.r.h"#"$(REL_HASH)"#g $(PROJECT_SRC_DIR)/src/ngx/version.h
 	@sed -i.bak s#"v.v.v"#"$(REL_VARIANT)"#g $(PROJECT_SRC_DIR)/src/ngx/version.h
 	@rm -f $(PROJECT_SRC_DIR)/src/ngx/version.h.bak
 

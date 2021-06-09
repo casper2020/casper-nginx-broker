@@ -2310,6 +2310,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 47A1AC4E1E23AFF9009D8F29 /* Build configuration list for PBXNativeTarget "nginx-broker" */;
 			buildPhases = (
+				4717F1292670CAD800490B01 /* ShellScript */,
 				47A1AC431E23AFF9009D8F29 /* Sources */,
 				47A1AC441E23AFF9009D8F29 /* Frameworks */,
 				47A1AC451E23AFF9009D8F29 /* CopyFiles */,
@@ -2551,6 +2552,23 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4717F1292670CAD800490B01 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -f ${SRCROOT}/src/ngx/version.h ] ; then\n    __current_version=`egrep -n  \"NGX_VERSION\\ \\\".*\\\"$\" ${SRCROOT}/src/ngx/version.h  | cut -d'\"' -f2`\n    __target_version=`cat ${SRCROOT}/../casper-packager/nginx-broker/version`\n    if [ \"${__current_version}\" != \"${__target_version}\" ] ; then\n        make -f static-lib-makefile.mk TARGET=${CONFIGURATION} version\n    fi\nelse\n    make -f static-lib-makefile.mk TARGET=${CONFIGURATION} version\nfi\n";
+		};
 		47D7D78222008FDA004D0579 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
