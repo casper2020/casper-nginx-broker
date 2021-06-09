@@ -2288,6 +2288,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 47243D6D229C104900CFAAC0 /* Build configuration list for PBXNativeTarget "nb-xattr" */;
 			buildPhases = (
+				4717F14F2670E15000490B01 /* ShellScript */,
 				47243D63229C104900CFAAC0 /* Sources */,
 				47243D64229C104900CFAAC0 /* Frameworks */,
 				47243D65229C104900CFAAC0 /* CopyFiles */,
@@ -2568,6 +2569,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ -f ${SRCROOT}/src/ngx/version.h ] ; then\n    __current_version=`egrep -n  \"NGX_VERSION\\ \\\".*\\\"$\" ${SRCROOT}/src/ngx/version.h  | cut -d'\"' -f2`\n    __target_version=`cat ${SRCROOT}/../casper-packager/nginx-broker/version`\n    if [ \"${__current_version}\" != \"${__target_version}\" ] ; then\n        make -f static-lib-makefile.mk TARGET=${CONFIGURATION} version\n    fi\nelse\n    make -f static-lib-makefile.mk TARGET=${CONFIGURATION} version\nfi\n";
+		};
+		4717F14F2670E15000490B01 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -x\nif [ -f ${SRCROOT}/src/xattr/version.h ] ; then\n    __current_version=`egrep -n  \"NGX_VERSION\\ \\\".*\\\"$\" ${SRCROOT}/src/xattr/version.h  | cut -d'\"' -f2`\n    __target_version=`cat ${SRCROOT}/../casper-packager/nb-xattr/version`\n    if [ \"${__current_version}\" != \"${__target_version}\" ] ; then\n        make -f nb-xattr.mk TARGET=${CONFIGURATION} version\n    fi\nelse\n    make -f nb-xattr.mk TARGET=${CONFIGURATION} version\nfi\n";
 		};
 		47D7D78222008FDA004D0579 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

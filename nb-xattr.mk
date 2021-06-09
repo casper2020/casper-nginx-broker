@@ -35,6 +35,10 @@ VERSION             ?= $(shell cat $(PACKAGER_DIR)/nb-xattr$(EXECUTABLE_SUFFIX)/
 CHILD_CWD           := $(THIS_DIR)
 CHILD_MAKEFILE      := $(MAKEFILE_LIST)
 
+REL_DATE             := $(shell date -u)
+REL_HASH             := $(shell git rev-parse HEAD)
+REL_BRANCH           := $(shell git rev-parse --abbrev-ref HEAD)
+
 include common.mk
 
 NB_XATTR_CC_SRC := \
@@ -83,7 +87,10 @@ version:
 	@echo " $(LOG_COMPILING_PREFIX) - patching $(PROJECT_SRC_DIR)/src/xattr/version.h"
 	@cp -f $(PROJECT_SRC_DIR)/src/xattr/version.tpl.h $(PROJECT_SRC_DIR)/src/xattr/version.h
 	@sed -i.bak s#"@b.n.s@"#${EXECUTABLE_SUFFIX}#g $(PROJECT_SRC_DIR)/src/xattr/version.h
-	@sed -i.bak s#"x.x.xx"#$(VERSION)#g $(PROJECT_SRC_DIR)/src/xattr/version.h
+	@sed -i.bak s#"x.x.x"#$(VERSION)#g $(PROJECT_SRC_DIR)/src/xattr/version.h
+	@sed -i.bak s#"r.r.d"#"$(REL_DATE)"#g $(PROJECT_SRC_DIR)/src/xattr/version.h
+	@sed -i.bak s#"r.r.b"#"$(REL_BRANCH)"#g $(PROJECT_SRC_DIR)/src/xattr/version.h
+	@sed -i.bak s#"r.r.h"#"$(REL_HASH)"#g $(PROJECT_SRC_DIR)/src/xattr/version.h
 	@rm -f $(PROJECT_SRC_DIR)/src/xattr/version.h.bak
 
 .SECONDARY:
