@@ -2585,7 +2585,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -x\nif [ -f ${SRCROOT}/src/xattr/version.h ] ; then\n    __current_version=`egrep -n  \"NGX_VERSION\\ \\\".*\\\"$\" ${SRCROOT}/src/xattr/version.h  | cut -d'\"' -f2`\n    __target_version=`cat ${SRCROOT}/../casper-packager/nb-xattr/version`\n    if [ \"${__current_version}\" != \"${__target_version}\" ] ; then\n        make -f nb-xattr.mk TARGET=${CONFIGURATION} version\n    fi\nelse\n    make -f nb-xattr.mk TARGET=${CONFIGURATION} version\nfi\n";
+			shellScript = "set -x\nif [ -f ${SRCROOT}/src/xattr/version.h ] ; then\n    __current_version=`egrep -n  \"NRS_CASPER_NGINX_BROKER_XATTR_VERSION\\ \\\".*\\\"$\" ${SRCROOT}/src/xattr/version.h  | cut -d'\"' -f2`\n    __target_version=`cat ${SRCROOT}/../casper-packager/nb-xattr/version`\n    if [ \"${__current_version}\" != \"${__target_version}\" ] ; then\n        make -f nb-xattr.mk TARGET=${CONFIGURATION} version\n    fi\nelse\n    make -f nb-xattr.mk TARGET=${CONFIGURATION} version\nfi\n";
 		};
 		47D7D78222008FDA004D0579 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
