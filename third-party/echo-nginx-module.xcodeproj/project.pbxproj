@@ -433,7 +433,7 @@
 					"$(SRCROOT)/../../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/include",
 					"$(SRCROOT)/../../echo-nginx-module/src",
 					"$(SRCROOT)/../../echo-nginx-module/objs",
-					/usr/local/include,
+					"$(PCRE_INCLUDE_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_LDFLAGS = "-Wno-documentation";
@@ -459,7 +459,7 @@
 					"$(SRCROOT)/../../casper-packager/openssl/darwin/pkg/$(CONFIGURATION)/openssl/usr/local/casper/openssl/include",
 					"$(SRCROOT)/../../echo-nginx-module/src",
 					"$(SRCROOT)/../../echo-nginx-module/objs",
-					/usr/local/include,
+					"$(PCRE_INCLUDE_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_LDFLAGS = "-Wno-documentation";

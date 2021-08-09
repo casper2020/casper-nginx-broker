@@ -431,7 +431,7 @@
 					"$(SRCROOT)/../../set-misc-nginx-module/objs",
 					"$(SRCROOT)/../../ngx_devel_kit/src",
 					"$(SRCROOT)/../../ngx_devel_kit/objs",
-					/usr/local/include,
+					"$(PCRE_INCLUDE_DIR)",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -461,7 +461,7 @@
 					"$(SRCROOT)/../../set-misc-nginx-module/objs",
 					"$(SRCROOT)/../../ngx_devel_kit/src",
 					"$(SRCROOT)/../../ngx_devel_kit/objs",
-					/usr/local/include,
+					"$(PCRE_INCLUDE_DIR)",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
