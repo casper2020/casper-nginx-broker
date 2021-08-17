@@ -67,6 +67,7 @@
 		478D62AB1EFD54F70000EF4D /* object.cc in Sources */ = {isa = PBXBuildFile; fileRef = 478D62A41EFD54F70000EF4D /* object.cc */; };
 		478D62AC1EFD54F70000EF4D /* refresh_token.cc in Sources */ = {isa = PBXBuildFile; fileRef = 478D62A61EFD54F70000EF4D /* refresh_token.cc */; };
 		4797EE1F23E19CC900616FE1 /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 472AD2DF23E195E6000A7391 /* libjsoncpp.a */; };
+		47A08EC826CBC1E2007C10CE /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A08EC326CBC1E2007C10CE /* CoreFoundation.framework */; };
 		47A0A5171E6D8B7D00EFFE05 /* ngx_http_casper_broker_api_module.cc in Sources */ = {isa = PBXBuildFile; fileRef = 47A0A5151E6D8B7D00EFFE05 /* ngx_http_casper_broker_api_module.cc */; };
 		47A0A5201E6DC8FC00EFFE05 /* executor.cc in Sources */ = {isa = PBXBuildFile; fileRef = 47A0A51E1E6DC8FC00EFFE05 /* executor.cc */; };
 		47A1AE9C1E23B053009D8F29 /* ngx_modules.c in Sources */ = {isa = PBXBuildFile; fileRef = 47A1ACDD1E23B052009D8F29 /* ngx_modules.c */; };
@@ -753,6 +754,7 @@
 		4791F5D51E81779F00EEF4D3 /* hex_lower.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = hex_lower.hpp; sourceTree = "<group>"; };
 		4791F5D61E81779F00EEF4D3 /* hex_upper.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = hex_upper.hpp; sourceTree = "<group>"; };
 		4791F5D71E81779F00EEF4D3 /* parse_error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parse_error.hpp; sourceTree = "<group>"; };
+		47A08EC326CBC1E2007C10CE /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		47A0A50C1E6D76F600EFFE05 /* config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config; sourceTree = "<group>"; };
 		47A0A50D1E6D76F600EFFE05 /* config.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.tpl; sourceTree = "<group>"; };
 		47A0A5101E6D76F600EFFE05 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
@@ -1117,6 +1119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47A08EC826CBC1E2007C10CE /* CoreFoundation.framework in Frameworks */,
 				472F06962412C4D600D2E9A7 /* SystemConfiguration.framework in Frameworks */,
 				4732779E234CE420005B8133 /* Security.framework in Frameworks */,
 				47FCA1B123E1967300FB40EF /* libbcrypt.a in Frameworks */,
@@ -1989,6 +1992,7 @@
 		47A1B0391E23B4B1009D8F29 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				47A08EC326CBC1E2007C10CE /* CoreFoundation.framework */,
 				C1A6614726BFD0E20076E2E0 /* libapple_nghttp2.tbd */,
 				472F06942412C4D600D2E9A7 /* SystemConfiguration.framework */,
 				4732779D234CE420005B8133 /* Security.framework */,
