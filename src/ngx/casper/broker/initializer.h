@@ -79,7 +79,7 @@ namespace ngx
             public: // One-shot Call Method(s) / Function(s)
 
                 void Startup  (ngx_http_request_t* a_r, const std::map<std::string, std::string>& a_configs);
-                void Shutdown (bool a_for_cleanup_only);
+                void Shutdown (const int a_sig_no, const bool a_for_cleanup_only);
 
                 void PreStartup    (const ngx_core_conf_t* a_config, const ngx_cycle_t* a_cycle, const bool a_master,
                                     const bool a_standalone);

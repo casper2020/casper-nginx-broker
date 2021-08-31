@@ -96,7 +96,7 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
                                      case SIGQUIT:
                                      case SIGTERM:
                                      {
-                                         ngx::casper::broker::Initializer::GetInstance().Shutdown(/* a_for_cleanup_only */ false);
+                                         ngx::casper::broker::Initializer::GetInstance().Shutdown(a_sig_no, /* a_for_cleanup_only */ false);
                                      }
                                          return true;
                                      default:
@@ -106,8 +106,7 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
          },
          /* a_callbacks */
          {
-             /* call_on_main_thread_    */ std::move(glue_callbacks.call_on_main_thread_),
-             /* on_fatal_exception_     */ std::move(glue_callbacks.on_fatal_exception_)
+             /* call_on_main_thread_ */ std::move(glue_callbacks.call_on_main_thread_)
          }
      );
       
@@ -146,7 +145,7 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
  *
  * @param a_for_cleanup_only
  */
-void ngx::casper::broker::Initializer::Shutdown (bool a_for_cleanup_only)
+void ngx::casper::broker::Initializer::Shutdown (const int a_sig_no, const bool a_for_cleanup_only)
 {
     // ... ev glue ...
     ngx::casper::ev::Glue::GetInstance().Shutdown(/* a_sig_no */ -1);
@@ -156,7 +155,7 @@ void ngx::casper::broker::Initializer::Shutdown (bool a_for_cleanup_only)
     ngx::casper::broker::Tracker::GetInstance().Shutdown();
            
     // ... casper-connectors // third party libraries cleanup ...
-    ::cc::global::Initializer::GetInstance().Shutdown(a_for_cleanup_only);
+    ::cc::global::Initializer::GetInstance().Shutdown(a_sig_no, a_for_cleanup_only);
 
     // ... reset initialized flag ...
     s_initialized_ = false;
@@ -175,7 +174,7 @@ void ngx::casper::broker::Initializer::PreStartup (const ngx_core_conf_t* a_conf
 {
     // ... reset 'forked' instances ...
     if ( false == a_master ) {
-        Shutdown(/* a_for_cleanup_only */ true);
+        Shutdown(/* a_sig_no */ -1, /* a_for_cleanup_only */ true);
     }
     
     //
@@ -262,15 +261,19 @@ void ngx::casper::broker::Initializer::PreStartup (const ngx_core_conf_t* a_conf
             /* function_ */ std::bind(&ngx::casper::broker::Initializer::OnGlobalInitializationCompleted, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4),
             /* args_     */ (void*)(a_config)
         },
-        /* a_present */ [] (std::string& o_title, std::map<std::string, std::string>& o_values) {
-            o_title = "OWN MODULES";
+        /* a_present */ [] (std::vector<::cc::global::Initializer::Present>& o_values) {
+            o_values.push_back({
+                /* title_  */ "OWN MODULES",
+                /* values_ */ {}
+            });
+            auto& modules = o_values.back();
             for ( ngx_uint_t idx = 0; ngx_modules[idx]; idx++ ) {
                 if ( nullptr == strstr(ngx_modules[idx]->name, "casper")  ) {
                     if ( nullptr == strstr(ngx_modules[idx]->name, "ngx_http_named_imports_filter_module") ) {
                         continue;                        
                     }
                 }
-                o_values["ngx_modules[" + std::to_string(idx) + "]"] = ngx_modules[idx]->name;
+                modules.values_["ngx_modules[" + std::to_string(idx) + "]"] = ngx_modules[idx]->name;
             }
         },
        /* a_debug_tokens */
