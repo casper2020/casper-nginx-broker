@@ -13,8 +13,8 @@ CORE_LIBS="-lstdc++ -lm -ldl"
 CORE_LIBS+=" \
 @OTHER_LIBS@ \
 -L @PACKAGER_DIR@/../casper-nginx-broker/out/@PLATFORM@/@TARGET@ -lbroker \
--L @PACKAGER_DIR@/../casper-connectors/out/@PLATFORM@/@TARGET@ -lconnectors \
--L @PACKAGER_DIR@/../casper-osal/out/@PLATFORM@/@TARGET@ -losal \
+-L @PACKAGER_DIR@/../casper-connectors/out/@PLATFORM@/@TARGET@ -lconnectors-icu \
+-L @PACKAGER_DIR@/../casper-osal/out/@PLATFORM@/@TARGET@ -losal-icu \
 -L @PACKAGER_DIR@/jsoncpp/out/@PLATFORM@/@TARGET@ -ljsoncpp \
 -L @ZLIB_LIB_DIR@ -lz \
 -L @PACKAGER_DIR@/hiredis/out/@PLATFORM@/@TARGET@ -lhiredis \
@@ -23,6 +23,7 @@ CORE_LIBS+=" \
 -L @LIBCURL_LIB_DIR@ -lcurl \
 -L @ICU4C_LIB_DIR@ @PRJ_FORCE_STATIC_LIB_PREFERENCE@ -licui18n @PRJ_ALLOW_DYNAMIC_LIB_PREFERENCE@ \
 -L @ICU4C_LIB_DIR@ @PRJ_FORCE_STATIC_LIB_PREFERENCE@ -licuuc @PRJ_ALLOW_DYNAMIC_LIB_PREFERENCE@ \
+-L @ICU4C_LIB_DIR@ @PRJ_FORCE_STATIC_LIB_PREFERENCE@ -licudata @PRJ_ALLOW_DYNAMIC_LIB_PREFERENCE@ \
 -L @POSTGRESQL_LIB_DIR@ @PRJ_FORCE_STATIC_LIB_PREFERENCE@ -lpq @PRJ_ALLOW_DYNAMIC_LIB_PREFERENCE@ \
 -L @LIBEVENT2_LIB_DIR@ -levent \
 -L @LIBEVENT2_LIB_DIR@ -levent_pthreads \
