@@ -73,6 +73,12 @@ OBJECTS := \
 
 include $(PACKAGER_DIR)/common/c++/common.mk
 
+# standalone ICU! no need for V8
+ifeq (true, $(ICU_STAND_ALONE_DEP_ON))
+  CXXFLAGS+=-DCASPER_REQUIRE_STANDALONE_ICU=1
+  CFLAGS+=-DCASPER_REQUIRE_STANDALONE_ICU=1
+endif
+
 CASPER_NGINX_BROKER_DEPENDENCIES := \
   casper-connectors-icu-dep-on casper-osal-icu-dep-on \
   openssl-dep-on \
