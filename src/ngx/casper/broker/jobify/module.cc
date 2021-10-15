@@ -68,9 +68,34 @@ ngx::casper::broker::jobify::Module::~Module ()
  */
 ngx_int_t ngx::casper::broker::jobify::Module::Run ()
 {
-    const ::ev::casper::Session invalid_session(ctx_.loggable_data_ref_, /* a_iss */ "<invalid_iss>", /* a_sid */ "<invalid_sid>",  /* a_token_prefix */ "<invalid_prefix>",
-                                                /* a_test_maintenance_flag */ false
+    //
+    // ⚠️ This module was designed to be used within internal networks without any kind of session validation.
+    //
+    // Enven so, we are performing some validations by reading special headers values and
+    // setting them into a fake session object.
+    //
+    ::ev::casper::Session fake_session(ctx_.loggable_data_ref_, /* a_iss */ "<invalid_iss>", /* a_sid */ "<invalid_sid>",
+                                       /*a_token_prefix */ "<invalid_prefix>",
+                                       /* a_test_maintenance_flag */ false
     );
+    
+    // ... read special headers ...
+    {
+        char* end_ptr = nullptr;
+        for ( auto e : { "role-mask", "module-mask" } ) {
+            const auto it = ctx_.request_.headers_.find("x-casper-" + std::string(e));
+            if ( ctx_.request_.headers_.end() == it ) {
+                continue;
+            }
+            std::string key = e;
+            std::replace(key.begin(), key.end(), '-', '_');
+            if ( 0 == strncasecmp(it->second.c_str(), "0x", sizeof(char) * 2) ) {
+                fake_session.SetValue(key, std::to_string(std::strtoull(it->second.c_str(), &end_ptr, 16)));
+            } else {
+                fake_session.SetValue(key, std::to_string(std::strtoull(it->second.c_str(), &end_ptr, 10)));
+            }
+        }
+    }
     
     // ... starts as a bad request ...
     ctx_.response_.status_code_ = NGX_HTTP_BAD_REQUEST;
@@ -84,27 +109,27 @@ ngx_int_t ngx::casper::broker::jobify::Module::Run ()
         return ctx_.response_.return_code_;
     }
     
-     uri_ = ( ctx_.request_.uri_.c_str() + ctx_.request_.location_.length() );
+    uri_ = ( ctx_.request_.uri_.c_str() + ctx_.request_.location_.length() );
     
-     // ... first check with gatekeeper ...
-     const ev::auth::route::Gatekeeper::Status& status = ::ev::auth::route::Gatekeeper::GetInstance().Allow(
-             ctx_.request_.method_, uri_, invalid_session,
+    // ... first check with gatekeeper ...
+    const ev::auth::route::Gatekeeper::Status& status = ::ev::auth::route::Gatekeeper::GetInstance().Allow(
+             ctx_.request_.method_, uri_, fake_session,
              {
                /* */
                std::bind(&ngx::casper::broker::jobify::Module::OnOnGatekeeperDeflectToJob, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                /* */ nullptr
              },
              ctx_.loggable_data_ref_
-     );
+    );
     
     // ... on error, prepare response ...
-     if ( NGX_HTTP_OK != status.code_ ) {
-         // ... set gatekeeper serialized response ...
-         return NGX_BROKER_MODULE_SET_RESPONSE(ctx_, status.code_, ctx_.response_.content_type_, json_writer_.write(status.data_));
-     } else if ( false == status.deflected_ ) {
-         // ... gatekeer did not deflect the request ...
-         return NGX_BROKER_MODULE_SET_NOT_ALLOWED(ctx_, "This request can't be deflected!");
-     }
+    if ( NGX_HTTP_OK != status.code_ ) {
+        // ... set gatekeeper serialized response ...
+        return NGX_BROKER_MODULE_SET_RESPONSE(ctx_, status.code_, ctx_.response_.content_type_, json_writer_.write(status.data_));
+    } else if ( false == status.deflected_ ) {
+        // ... gatekeer did not deflect the request ...
+        return NGX_BROKER_MODULE_SET_NOT_ALLOWED(ctx_, "This request can't be deflected!");
+    }
 
     // ... no error, just should be scheduled ...
     return ctx_.response_.return_code_;
