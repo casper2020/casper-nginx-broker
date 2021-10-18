@@ -27,6 +27,9 @@
 
 #include "ev/casper/session.h"
 
+#include "cc/exception.h"
+#include "cc/easy/json.h"
+
 #include <algorithm>
 
 /**
@@ -186,13 +189,15 @@ ngx_int_t ngx::casper::broker::jobify::Module::PostJob (const ngx_int_t a_method
                                                         const std::string& a_urn, const std::string& a_body,
                                                         const std::string& a_tube, const ssize_t a_ttr, const ssize_t a_validity)
 {
+    const ::cc::easy::JSON<::cc::Exception> json;
+    
     Json::Value object = Json::Value(Json::ValueType::objectValue);
     object["id"]              = "";
     object["tube"]            = a_tube;
-    object["ttr"]             = static_cast<Json::UInt64>(a_ttr);
-    object["validity"]        = static_cast<Json::UInt64>(a_validity);
     object["payload"]         = Json::Value(Json::ValueType::objectValue);
     object["payload"]["tube"] = a_tube;
+    object["ttr"]             = static_cast<Json::UInt64>(a_ttr);
+    object["validity"]        = static_cast<Json::UInt64>(a_validity);
     // ... set request METHOD ...
     object["payload"]["method"] = ctx_.request_.method_;
     // ... set request URN ...
@@ -201,15 +206,13 @@ ngx_int_t ngx::casper::broker::jobify::Module::PostJob (const ngx_int_t a_method
     if ( a_body.length() > 0 ) {
         const bool is_json = ( nullptr != strcasestr(ctx_.request_.content_type_.c_str(), "application/json") ) ;
         if ( true == is_json ) {
-            if ( false == json_reader_.parse(a_body, object["payload"]["body"]) ) {
-                // ... an error occurred ...
-                const auto errors = json_reader_.getStructuredErrors();
-                if ( errors.size() > 0 ) {
-                    throw Json::Exception("An error occurred while parsing request body as JSON: " +  errors[0].message + "!" );
-                } else {
-                    throw Json::Exception("An error occurred while parsing request body as JSON!");
-                }
+            try {
+                json.Parse(a_body, object["payload"]["body"]);
+            } catch (const cc::Exception& a_exception) {
+                throw Json::Exception(a_exception.what());
             }
+            object["ttr"]      = json.Get(object["payload"]["body"], "ttr"     , Json::ValueType::uintValue, &object["ttr"]);
+            object["validity"] = json.Get(object["payload"]["body"], "validity", Json::ValueType::uintValue, &object["validity"]);
         } else {
             object["payload"]["body"] = a_body;
         }
