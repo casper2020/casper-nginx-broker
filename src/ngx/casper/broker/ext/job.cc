@@ -780,13 +780,14 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                 NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_ERRORS_SERIALIZATION_RESPONSE(module_ptr_);
             };
         
-        } else if ( '*' == a_message.c_str()[0] ) {
+        } else if ( '*' == a_message.c_str()[0] || '!' == a_message.c_str()[0] ) {
             
-            // ... strait response ...
+            // ... straight response ...
             
             const char* const c_str = a_message.c_str();
             
             // expecting: *<status-code-int-value>,<content-type-length-in-bytes>,<content-type-string-value>,<body-length-bytes>,<body>
+            // expecting: !<status-code-int-value>,<content-type-length-in-bytes>,<content-type-string-value>,<body-length-bytes>,<body>,<headers-length-bytes>,<headers>,...
             
             primitive_protocol_[0] = { c_str + 1, strchr(c_str + 1, ','), 0 }; /* status code @ unsigned_value */
             primitive_protocol_[1] = { nullptr  , nullptr               , 0 }; /* content-type */
@@ -815,6 +816,44 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                     }
                     primitive_protocol_[idx].start_ += sizeof(char);
                     primitive_protocol_[idx].end_    = primitive_protocol_[idx].start_ + primitive_protocol_[idx].unsigned_value_;
+                }
+                // ... extended?
+                if ( '!' == a_message.c_str()[0] ) {
+                    size_t idx = 3;
+                    const char* ptr = primitive_protocol_[2].start_ + primitive_protocol_[2].unsigned_value_;
+                    while ( '\0' != ptr[0] && ',' == ptr[0] ) {
+                        ptr += sizeof(char);
+                        unsigned len = 0;
+                        if ( 1 != sscanf(ptr, "%u,", &len) ) {
+                            break;
+                        }
+                        ptr = strchr(ptr, ',');
+                        if ( nullptr == ptr ) {
+                            break;
+                        }
+                        ptr += sizeof(char);
+                        {
+                            const char* v = strchr(ptr, ':');
+                            if ( nullptr == v ) {
+                                break;
+                            }
+                            const char* kv = ptr; const size_t kl = ( v - ptr );
+                            v+= sizeof(char);
+                            if ( ' ' == v[0] ) {
+                                v += sizeof(char);
+                            }
+                            const size_t vl = len - ( v - ptr );
+                            ctx_.response_.headers_[std::string(kv, kl)] = std::string(v, vl);
+                        }
+                        ++idx;
+                        ptr += static_cast<size_t>(len);
+                    }
+                    // ... failed?
+                    if ( not ( '\0' == ptr[0] ) ) {
+                        NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_,
+                                                                    ( "Invalid message format near field #" + std::to_string(idx) ).c_str()
+                        );
+                    }
                 }
             }
 

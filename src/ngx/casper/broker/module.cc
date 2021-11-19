@@ -1594,11 +1594,12 @@ void ngx::casper::broker::Module::SetOutHeaders (ngx_module_t& a_module, ngx_htt
 {
     const std::map<const char* const, ngx_table_elt_t**, StringMapCaseInsensitiveComparator> special_out_headers_map = {
         { "Location"        , &a_r->headers_out.location      },
+        { "Date"            , &a_r->headers_out.date          }
     };
     
     const std::map<const char* const , ngx_str_t*, StringMapCaseInsensitiveComparator> std_out_headers {
         { "Content-Type"    , &a_r->headers_out.content_type },
-        { "Charset"         , &a_r->headers_out.charset      }
+        { "Charset"         , &a_r->headers_out.charset      },
     };
     
     // ... pre set clean up ...
