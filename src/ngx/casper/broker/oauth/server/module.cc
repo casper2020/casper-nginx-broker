@@ -25,6 +25,7 @@
 
 #include "cc/auth/jwt.h"
 #include "cc/auth/exception.h"
+#include "cc/easy/json.h"
 
 #include "ev/beanstalk/producer.h"
 #include "ev/ngx/bridge.h"
@@ -53,6 +54,7 @@ ngx::casper::broker::oauth::server::Module::Module (const ngx::casper::broker::M
     authorization_code_ = nullptr;
     access_token_       = nullptr;
     refresh_token_      = nullptr;
+    client_credentials_ = nullptr;
 }
 
 /**
@@ -69,6 +71,9 @@ ngx::casper::broker::oauth::server::Module::~Module ()
     }
     if ( nullptr != refresh_token_ ) {
         delete refresh_token_;
+    }
+    if ( nullptr != client_credentials_ ) {
+        delete client_credentials_;
     }
 }
 
@@ -229,20 +234,44 @@ ngx_int_t ngx::casper::broker::oauth::server::Module::Run ()
         enum class GrantType {
             AuthorizationCode,
             RefreshToken,
+            ClientCredentials,
             NotSupported
         };
         
-        GrantType gt;
-        if ( 0 == grant_type.compare("authorization_code") ) {
-            gt = GrantType::AuthorizationCode;
-        } else if ( 0 == grant_type.compare("refresh_token") ) {
-            gt = GrantType::RefreshToken;
-        } else {
-           gt = GrantType::NotSupported;
+        GrantType gt = GrantType::NotSupported;
+
+        {
+            //
+            // GRAB 'MODULE' CONFIG
+            //
+            ngx_http_casper_broker_oauth_server_module_loc_conf_t* loc_conf =
+            (ngx_http_casper_broker_oauth_server_module_loc_conf_t*)ngx_http_get_module_loc_conf(ctx_.ngx_ptr_, ngx_http_casper_broker_oauth_server_module);
+            if ( NULL == loc_conf || NULL == loc_conf->grant_types.data || 0 == loc_conf->grant_types.len ) {
+                return NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_, "Invalid module config!");
+            }
+            const ::cc::easy::JSON<::cc::Exception> json; Json::Value supported;
+            json.Parse(std::string(reinterpret_cast<const char* const>(loc_conf->grant_types.data), loc_conf->grant_types.len), supported);
+            if ( false == supported.isArray() ) {
+                return NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_, "Invalid module config!");
+            }
+            for ( auto idx = 0 ; idx < supported.size() ; ++idx ) {
+                const Json::Value& s = json.Get(supported, idx, Json::ValueType::stringValue, nullptr);
+                if ( 0 != strcasecmp(s.asCString(), grant_type.c_str()) ) {
+                    continue;
+                }
+                if ( 0 == grant_type.compare("authorization_code") ) {
+                    gt = GrantType::AuthorizationCode;
+                } else if ( 0 == grant_type.compare("refresh_token") ) {
+                    gt = GrantType::RefreshToken;
+                } else if ( 0 == grant_type.compare("client_credentials") && true == s.isString() ) {
+                    gt = GrantType::ClientCredentials;
+                }
+                break;
+            }
         }
         
         // ... common requirements ...
-        if ( GrantType::AuthorizationCode == gt || GrantType::RefreshToken == gt ) {
+        if ( GrantType::AuthorizationCode == gt || GrantType::RefreshToken == gt || GrantType::ClientCredentials == gt ) {
             
             // ... 'client_*' args are required ...
             
@@ -345,6 +374,46 @@ ngx_int_t ngx::casper::broker::oauth::server::Module::Run ()
                                                                               a_message.c_str()
                                              );
                                          }
+                );
+                break;
+                
+            case GrantType::ClientCredentials:
+                // ... asynchronously, 'client_credentials' flow ...
+                client_credentials_ = new ngx::casper::broker::oauth::server::ClientCredentials(ctx_.loggable_data_ref_,
+                                                                                                service_id_, client_id, client_secret,
+                                                                                                scope, responses_bypass_rfc
+                );
+                client_credentials_->AsyncRun(/* a_preload_callback */
+                                              [this] () {
+                                                  ctx_.response_.return_code_  = NGX_OK;
+                                                  ctx_.response_.asynchronous_ = true;
+                                              },
+                                              /* a_redirect_callback */
+                                              [this] (const std::string& a_uri) {
+                                                  ctx_.response_.redirect_.uri_ = a_uri;
+                                                  NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_REDIRECT(this);
+                                              },
+                                              /* a_json_callback */
+                                              [this] (const uint16_t a_status_code, const std::map<std::string, std::string>& a_headers, const Json::Value& a_body) {
+                                                  ctx_.response_.return_code_  = NGX_OK;
+                                                  ctx_.response_.content_type_ = k_json_oauth_server_content_type_w_charset_;
+                                                  ctx_.response_.status_code_  = a_status_code;
+                                                  for ( auto it : a_headers ) {
+                                                      ctx_.response_.headers_[it.first] = it.second;
+                                                  }
+                                                  ctx_.response_.body_   = json_writer_.write(a_body);
+                                                  ctx_.response_.length_ = ctx_.response_.body_.length();
+                                                  if ( true == ctx_.response_.asynchronous_ ) {
+                                                      NGX_BROKER_MODULE_FINALIZE_REQUEST(this);
+                                                  }
+                                              },
+                                              /* a_log_callback */
+                                              [this] (const std::string& a_message) {
+                                                  ngx::casper::broker::Module::Log(ctx_.module_, ctx_.ngx_ptr_, NGX_LOG_ERR, ctx_.log_token_.c_str(),
+                                                                                   "CH", "ERROR",
+                                                                                   a_message.c_str()
+                                                 );
+                                              }
                 );
                 break;
                 

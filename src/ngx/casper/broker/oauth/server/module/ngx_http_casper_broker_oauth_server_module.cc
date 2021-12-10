@@ -74,6 +74,14 @@ static ngx_command_t ngx_http_casper_broker_oauth_server_module_commands[] = {
         offsetof(ngx_http_casper_broker_oauth_server_module_loc_conf_t, log_token),
         NULL
     },
+    {
+        ngx_string("nginx_casper_broker_oauth_server_grant_types"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_str_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_oauth_server_module_loc_conf_t, grant_types),
+        NULL
+    },
     ngx_null_command
 };
 
@@ -128,8 +136,9 @@ static void* ngx_http_casper_broker_oauth_server_module_create_loc_conf (ngx_con
         return NGX_CONF_ERROR;
     }
     
-    conf->enable     = NGX_CONF_UNSET;
-    conf->log_token  = ngx_null_string;
+    conf->enable      = NGX_CONF_UNSET;
+    conf->log_token   = ngx_null_string;
+    conf->grant_types = ngx_null_string;
     
     return conf;
 }
@@ -146,8 +155,9 @@ static char* ngx_http_casper_broker_oauth_server_module_merge_loc_conf (ngx_conf
     ngx_http_casper_broker_oauth_server_module_loc_conf_t* prev = (ngx_http_casper_broker_oauth_server_module_loc_conf_t*) a_parent;
     ngx_http_casper_broker_oauth_server_module_loc_conf_t* conf = (ngx_http_casper_broker_oauth_server_module_loc_conf_t*) a_child;
 
-    ngx_conf_merge_value     (conf->enable    , prev->enable    ,                     0 ); /* 0 - disabled */
-    ngx_conf_merge_str_value (conf->log_token , prev->log_token , "oauth_server_module" );
+    ngx_conf_merge_value     (conf->enable     , prev->enable     ,                                             0 ); /* 0 - disabled */
+    ngx_conf_merge_str_value (conf->log_token  , prev->log_token  , "oauth_server_module"                         );
+    ngx_conf_merge_str_value (conf->grant_types, prev->grant_types, "[\"authorization_code\", \"refresh_token\"]" );
 
     NGX_BROKER_MODULE_LOC_CONF_MERGED();
     

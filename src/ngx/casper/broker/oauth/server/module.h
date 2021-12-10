@@ -38,6 +38,7 @@
 #include "ngx/casper/broker/oauth/server/authorization_code.h"
 #include "ngx/casper/broker/oauth/server/access_token.h"
 #include "ngx/casper/broker/oauth/server/refresh_token.h"
+#include "ngx/casper/broker/oauth/server/client_credentials.h"
 
 #include "json/json.h"
 
@@ -69,6 +70,7 @@ namespace ngx
                         oauth::server::AuthorizationCode* authorization_code_;
                         oauth::server::AccessToken*       access_token_;
                         oauth::server::RefreshToken*      refresh_token_;
+                        oauth::server::ClientCredentials* client_credentials_;
                         Json::FastWriter                  json_writer_;
                         
                     protected: // Constructor(s)

@@ -38,8 +38,9 @@ extern "C" {
  * @brief Module configuration structure, applicable to a location scope
  */
 typedef struct {
-    ngx_flag_t            enable;     //!< flag that enables the module
-    ngx_str_t             log_token;  //!<
+    ngx_flag_t            enable;       //!< flag that enables the module
+    ngx_str_t             log_token;    //!<
+    ngx_str_t             grant_types;  //!< flag that enables the module
 } ngx_http_casper_broker_oauth_server_module_loc_conf_t;
 
 extern ngx_module_t ngx_http_casper_broker_oauth_server_module;
