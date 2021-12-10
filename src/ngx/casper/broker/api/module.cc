@@ -112,7 +112,11 @@ ngx_int_t ngx::casper::broker::api::Module::Setup ()
             };
             NGX_BROKER_MODULE_SET_BAD_REQUEST_ERROR_I18N_V(ctx_, "BROKER_MISSING_HEADER_ERROR", args, 1);
         } else {
-            if ( 0 != strcasecmp(client_content_type_it->second.c_str(), k_json_api_content_type_) ) {
+            if ( not ( 0 == strcasecmp(client_content_type_it->second.c_str(), k_json_api_content_type_)
+                        ||
+                       0 == strcasecmp(client_content_type_it->second.c_str(), k_json_api_content_type_w_charset_)
+                      )
+            ) {
                 U_ICU_NAMESPACE::Formattable args[] = {
                     client_content_type_it->second.c_str()
                 };
@@ -485,7 +489,7 @@ ngx_int_t ngx::casper::broker::api::Module::Factory (ngx_http_request_t* a_r, bo
         /* in_headers_              */ {},
         /* config_                  */ {},
         /* locale_                  */ "",
-        /* supported_content_types_ */ { "application/vnd.api+json" }
+        /* supported_content_types_ */ { "application/vnd.api+json", "application/vnd.api+json;charset=utf-8" }
     };
     
     ngx_int_t rv = ngx::casper::broker::Module::WarmUp(ngx_http_casper_broker_api_module, a_r, loc_conf->log_token,
