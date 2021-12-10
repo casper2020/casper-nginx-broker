@@ -873,7 +873,7 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                 ctx_.response_.status_code_ = static_cast<uint16_t>(primitive_protocol_[0].unsigned_value_);
 
                 // ... if it's an unauthorized response ...
-                if ( NGX_HTTP_UNAUTHORIZED == ctx_.response_.status_code_ ) {
+                if ( '!' != a_message.c_str()[0] && NGX_HTTP_UNAUTHORIZED == ctx_.response_.status_code_ ) {
                     ctx_.response_.headers_["WWW-Authenticate"] =
                         "Bearer realm=\"api\", error=\"invalid_token\", error_description=\"The access token provided is expired, revoked, malformed, or invalid for other reasons.\"";
                     // ... we must finalize request with errors serialization ...
