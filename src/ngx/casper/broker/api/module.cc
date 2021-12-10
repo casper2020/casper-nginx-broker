@@ -410,6 +410,7 @@ ngx_int_t ngx::casper::broker::api::Module::PostJob (const ngx_int_t a_method,
     object["payload"]["urn"]  = a_urn;
     object["payload"]["tube"] = a_tube;
     object["payload"]["body"] = body_object;
+    object["payload"]["__nginx_broker__"] = "nginx-broker//api";
     
     switch (a_method) {
         case NGX_HTTP_GET:
@@ -437,6 +438,8 @@ ngx_int_t ngx::casper::broker::api::Module::PostJob (const ngx_int_t a_method,
     
     object["payload"]["access_token"]     = a_access_token;
 
+    object["payload"]["__nginx_broker__"] = "nginx-broker//api";
+    
     // ... we're done  ...
     return job_.Submit(object);
 }

@@ -217,6 +217,7 @@ ngx_int_t ngx::casper::broker::jobify::Module::PostJob (const ngx_int_t a_method
             object["payload"]["body"] = a_body;
         }
     }
+    object["payload"]["__nginx_broker__"] = "nginx-broker//jobify";
     // ... set request HEADERS ...
     casper::broker::jobify::Module::GetUntouchedHeaders(ctx_.ngx_ptr_, object["payload"]["headers"]);
     // ... we're done  ...
