@@ -201,7 +201,7 @@ void ngx::casper::broker::cdn::Archive::Open (const std::string& a_path,
         // ... prepare xattrs helper ...
         xattr_ = new ::cc::fs::file::XAttr(local_.uri_);
         
-        // ... open, just for testing proposes only ( exits and obtain xhvn )?
+        // ... open, just for testing purposes only ( exits and obtain xhvn )?
         ngx::casper::broker::cdn::Archive::Mode mode;
         if ( nullptr != a_callback ) {
             mode_ = ngx::casper::broker::cdn::Archive::Mode::Read;

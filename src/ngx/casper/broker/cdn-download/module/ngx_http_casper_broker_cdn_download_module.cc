@@ -69,7 +69,7 @@ static ngx_command_t ngx_http_casper_broker_cdn_download_module_commands[] = {
         offsetof(ngx_http_casper_broker_cdn_download_module_loc_conf_t, enable), /* ... on the 'enable' element */
         NULL
     },
-    /* log proposes */
+    /* log purposes */
     {
         ngx_string("nginx_casper_broker_cdn_download_log_token"),
         NGX_HTTP_MAIN_CONF | NGX_CONF_TAKE1,

@@ -593,13 +593,13 @@ ngx_int_t ngx::casper::broker::Module::Initialize (const ngx::casper::broker::Mo
     const std::string uri = std::string((const char*)a_config.ngx_ptr_->unparsed_uri.data, a_config.ngx_ptr_->unparsed_uri.len);
 
     //
-    // TRACK REQUEST - TODO TRACK W/ LOCALE ONLY ONCE
+    // TRACK REQUEST - TODO: TRACK W/ LOCALE ONLY ONCE
     //
     ngx::casper::broker::Errors* errors_ptr = a_config.errors_factory_(a_params.locale_);
     
     ngx::casper::broker::Tracker::GetInstance().Register(a_config.ngx_ptr_, errors_ptr);
     
-    // ... logging proposes ...
+    // ... logging purposes ...
     NGX_BROKER_MODULE_DEBUG_LOG(a_config.ngx_module_, a_config.ngx_ptr_, a_config.log_token_.c_str(),
                                 "IT", "URI",
                                 "%s", uri.c_str()
