@@ -65,13 +65,14 @@ BROKER_CDN_DOWNLOAD_MODULE_CC_SRC := \
   $(PROJECT_SRC_DIR)/src/ngx/casper/broker/cdn-download/module.cc
 
 BROKER_OAUTH_SERVER_MODULE_CC_SRC := \
-  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/abstract_token.cc     \
-  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/access_token.cc       \
-  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/authorization_code.cc \
-  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/scope.cc              \
-  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/errors.cc             \
-  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/module.cc             \
-  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/object.cc             \
+  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/abstract_token.cc      \
+  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/access_token.cc        \
+  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/authorization_code.cc  \
+  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/client_credentials.cc  \
+  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/scope.cc               \
+  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/errors.cc              \
+  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/module.cc              \
+  $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/object.cc              \
   $(PROJECT_SRC_DIR)/src/ngx/casper/broker/oauth/server/refresh_token.cc
 
 BROKER_API_MODULE_CC_SRC := \
