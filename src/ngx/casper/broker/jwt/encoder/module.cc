@@ -152,8 +152,9 @@ ngx_int_t ngx::casper::broker::jwt::encoder::Module::Run ()
  * @brief Content handler factory.
  *
  * @param a_r
+ * @param a_at_rewrite_handler
  */
-ngx_int_t ngx::casper::broker::jwt::encoder::Module::Factory (ngx_http_request_t* a_r)
+ngx_int_t ngx::casper::broker::jwt::encoder::Module::Factory (ngx_http_request_t* a_r, bool a_at_rewrite_handler)
 {
     //
     // GRAB 'MODULE' CONFIG
@@ -216,7 +217,7 @@ ngx_int_t ngx::casper::broker::jwt::encoder::Module::Factory (ngx_http_request_t
         /* landing_page_url_      */ "",
         /* error_page_url_        */ "",
         /* serialize_errors_      */ true,
-        /* at_rewrite_handler_    */ false
+        /* at_rewrite_handler_    */ a_at_rewrite_handler
     };
     
     return ::ngx::casper::broker::Module::Initialize(config, params,

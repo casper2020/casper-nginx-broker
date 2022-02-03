@@ -77,7 +77,7 @@ namespace ngx
                         
                     public: // Static Method(s) / Function(s)
                         
-                        static ngx_int_t Factory (ngx_http_request_t* a_r);
+                        static ngx_int_t Factory (ngx_http_request_t* a_r, bool a_at_rewrite_handler);
                         
                     private: // Static Method(s) / Function(s)
                         

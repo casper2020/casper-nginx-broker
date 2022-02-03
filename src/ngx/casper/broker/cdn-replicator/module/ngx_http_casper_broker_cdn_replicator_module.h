@@ -44,6 +44,5 @@ typedef struct {
 } ngx_http_casper_broker_cdn_replicator_module_loc_conf_t;
 
 extern ngx_module_t ngx_http_casper_broker_cdn_replicator_module;
-extern ngx_int_t    ngx_http_casper_broker_cdn_replicator_module_content_handler (ngx_http_request_t* a_r);
 
 #endif // NRS_NGX_HTTP_CASPER_BROKER_CDN_REPLICATOR_MODULE_H_

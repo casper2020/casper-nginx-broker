@@ -43,6 +43,5 @@ typedef struct {
 } ngx_http_casper_broker_jobify_module_loc_conf_t;
 
 extern ngx_module_t ngx_http_casper_broker_jobify_module;
-extern ngx_int_t    ngx_http_casper_broker_jobify_module_content_handler (ngx_http_request_t* a_r);
 
 #endif // NRS_NGX_HTTP_CASPER_BROKER_JOBIFY_MODULE_H_

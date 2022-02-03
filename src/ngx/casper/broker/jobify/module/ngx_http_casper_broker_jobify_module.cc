@@ -45,6 +45,8 @@
 static void*     ngx_http_casper_broker_jobify_module_create_loc_conf (ngx_conf_t* a_cf);
 static char*     ngx_http_casper_broker_jobify_module_merge_loc_conf  (ngx_conf_t* a_cf, void* a_parent, void* a_child);
 static ngx_int_t ngx_http_casper_broker_jobify_module_filter_init     (ngx_conf_t* a_cf);
+static ngx_int_t ngx_http_casper_broker_jobify_module_content_handler (ngx_http_request_t* a_r);
+static ngx_int_t ngx_http_casper_broker_jobify_module_rewrite_handler (ngx_http_request_t* a_r);
 
 #ifdef __APPLE__
 #pragma mark -
@@ -161,11 +163,20 @@ static char* ngx_http_casper_broker_jobify_module_merge_loc_conf (ngx_conf_t* a_
  */
 static ngx_int_t ngx_http_casper_broker_jobify_module_filter_init (ngx_conf_t* a_cf)
 {
+    /*
+     * Install the rewrite handler
+     */
+    const ngx_int_t rv = NGX_BROKER_MODULE_INSTALL_REWRITE_HANDLER(ngx_http_casper_broker_jobify_module_rewrite_handler);
+    if ( NGX_OK != rv ) {
+        return rv;
+    }
+    
     /**
      * Install content handler.
      */
     return NGX_BROKER_MODULE_INSTALL_CONTENT_HANDLER(ngx_http_casper_broker_jobify_module_content_handler);
 }
+
 
 /**
  * @brief Content phase handler, sends the stashed response or if does not exist passes to next handler
@@ -175,26 +186,39 @@ static ngx_int_t ngx_http_casper_broker_jobify_module_filter_init (ngx_conf_t* a
  * @return @li NGX_DECLINED if the content is not produced here, pass to next
  *         @li the return of the content sender function
  */
-ngx_int_t ngx_http_casper_broker_jobify_module_content_handler (ngx_http_request_t* a_r)
+static ngx_int_t ngx_http_casper_broker_jobify_module_content_handler (ngx_http_request_t* a_r)
 {
     /*
      * Check if module is enabled and the request can be handled here.
      */
     NGX_BROKER_MODULE_CONTENT_HANDLER_BARRIER(a_r, ngx_http_casper_broker_jobify_module, ngx_http_casper_broker_jobify_module_loc_conf_t,
                                               "jobify_module");
-
     /*
-     * This module is enabled.
+     * This module is enabled, handle request.
      */
-    const auto rv = ngx::casper::broker::jobify::Module::Factory(a_r, /* a_at_rewrite_handler */ false);
-    if ( NGX_OK == rv ) {
-        ngx::casper::broker::jobify::Module* module = (ngx::casper::broker::jobify::Module*) ngx_http_get_module_ctx(a_r, ngx_http_casper_broker_jobify_module);
-        if ( nullptr == module ) {
-            // ... wtf?
-            return NGX_ERROR;
-        }
-        module->SetAtContentHandler();
-    }
-    // ... we're done ...
-    return rv;
+    return ngx::casper::broker::jobify::Module::ContentPhaseTackleResponse(a_r, ngx_http_casper_broker_jobify_module, "jobify_module");
+}
+
+/**
+ * @brief
+ *
+ * @param a_r
+ */
+static ngx_int_t ngx_http_casper_broker_jobify_module_rewrite_handler (ngx_http_request_t* a_r)
+{
+    /*
+     * Check if module is enabled and the request can be handled here.
+     */
+    NGX_BROKER_MODULE_REWRITE_HANDLER_BARRIER(a_r, ngx_http_casper_broker_jobify_module, ngx_http_casper_broker_jobify_module_loc_conf_t,
+                                              "jobify_module");
+   
+    /*
+    * This module is enabled, handle request.
+    */
+   return ngx::casper::broker::jobify::Module::RewritePhaseTackleResponse(a_r, ngx_http_casper_broker_jobify_module,
+                                                                          "jobify_module",
+                                                                          [a_r] () -> ngx_int_t {
+                                                                            return ngx::casper::broker::jobify::Module::Factory(a_r, /* a_at_rewrite_handler */ true);
+                                                                          }
+   );
 }

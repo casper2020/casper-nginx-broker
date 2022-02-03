@@ -48,8 +48,8 @@ static void*     ngx_http_casper_broker_cdn_download_module_create_loc_conf (ngx
 static char*     ngx_http_casper_broker_cdn_download_module_merge_loc_conf  (ngx_conf_t* a_cf, void* a_parent, void* a_child);
 static ngx_int_t ngx_http_casper_broker_cdn_download_module_filter_init     (ngx_conf_t* a_cf);
 
-extern ngx_int_t ngx_http_casper_broker_cdn_download_module_content_handler (ngx_http_request_t* a_r);
-extern ngx_int_t ngx_http_casper_broker_cdn_download_module_rewrite_handler (ngx_http_request_t* a_r);
+static ngx_int_t ngx_http_casper_broker_cdn_download_module_content_handler (ngx_http_request_t* a_r);
+static ngx_int_t ngx_http_casper_broker_cdn_download_module_rewrite_handler (ngx_http_request_t* a_r);
 
 #ifdef __APPLE__
 #pragma mark -
@@ -187,7 +187,7 @@ static ngx_int_t ngx_http_casper_broker_cdn_download_module_filter_init (ngx_con
  * @return @li NGX_DECLINED if the content is not produced here, pass to next
  *         @li the return of the content sender function
  */
-ngx_int_t ngx_http_casper_broker_cdn_download_module_content_handler (ngx_http_request_t* a_r)
+static ngx_int_t ngx_http_casper_broker_cdn_download_module_content_handler (ngx_http_request_t* a_r)
 {
     /*
      * Check if module is enabled and the request can be handled here.
@@ -205,7 +205,7 @@ ngx_int_t ngx_http_casper_broker_cdn_download_module_content_handler (ngx_http_r
  *
  * @param a_r
  */
-ngx_int_t ngx_http_casper_broker_cdn_download_module_rewrite_handler (ngx_http_request_t* a_r)
+static ngx_int_t ngx_http_casper_broker_cdn_download_module_rewrite_handler (ngx_http_request_t* a_r)
 {
     /*
      * Check if module is enabled and the request can be handled here.

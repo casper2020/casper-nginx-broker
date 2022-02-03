@@ -46,6 +46,9 @@ static void*     ngx_http_casper_broker_api_module_create_loc_conf (ngx_conf_t* 
 static char*     ngx_http_casper_broker_api_module_merge_loc_conf  (ngx_conf_t* a_cf, void* a_parent, void* a_child);
 static ngx_int_t ngx_http_casper_broker_api_module_filter_init     (ngx_conf_t* a_cf);
 
+static ngx_int_t ngx_http_casper_broker_api_module_content_handler (ngx_http_request_t* a_r);
+static ngx_int_t ngx_http_casper_broker_api_module_rewrite_handler(ngx_http_request_t* a_r);
+
 #ifdef __APPLE__
 #pragma mark -
 #pragma mark - Data && Data Types
@@ -171,6 +174,14 @@ static char* ngx_http_casper_broker_api_module_merge_loc_conf (ngx_conf_t* a_cf,
  */
 static ngx_int_t ngx_http_casper_broker_api_module_filter_init (ngx_conf_t* a_cf)
 {
+    /*
+     * Install the rewrite handler
+     */
+    const ngx_int_t rv = NGX_BROKER_MODULE_INSTALL_REWRITE_HANDLER(ngx_http_casper_broker_api_module_rewrite_handler);
+    if ( NGX_OK != rv ) {
+        return rv;
+    }
+    
     /**
      * Install content handler.
      */
@@ -185,26 +196,39 @@ static ngx_int_t ngx_http_casper_broker_api_module_filter_init (ngx_conf_t* a_cf
  * @return @li NGX_DECLINED if the content is not produced here, pass to next
  *         @li the return of the content sender function
  */
-ngx_int_t ngx_http_casper_broker_api_module_content_handler (ngx_http_request_t* a_r)
+static ngx_int_t ngx_http_casper_broker_api_module_content_handler (ngx_http_request_t* a_r)
 {
     /*
      * Check if module is enabled and the request can be handled here.
      */
     NGX_BROKER_MODULE_CONTENT_HANDLER_BARRIER(a_r, ngx_http_casper_broker_api_module, ngx_http_casper_broker_api_module_loc_conf_t,
                                               "api_module");
-
-    /* if module already running */
-    const void* module_ptr = (void*) ngx_http_get_module_ctx(a_r, ngx_http_casper_broker_api_module); \
-    if ( NULL != module_ptr ) {
-      ngx::casper::broker::Module::Log(ngx_http_casper_broker_api_module, a_r, NGX_LOG_DEBUG, "api_module",
-                                       "CH", "LEAVING",
-                       "module already running for this request... skipping..."
-      );
-      return NGX_OK;
-    }
-
     /*
-     * This module is enabled.
+     * This module is enabled, handle request.
      */
-    return ngx::casper::broker::api::Module::Factory(a_r, /* a_at_rewrite_handler */ false);
+    return ngx::casper::broker::api::Module::ContentPhaseTackleResponse(a_r, ngx_http_casper_broker_api_module, "api_module");
+}
+
+/**
+ * @brief
+ *
+ * @param a_r
+ */
+static ngx_int_t ngx_http_casper_broker_api_module_rewrite_handler (ngx_http_request_t* a_r)
+{
+    /*
+     * Check if module is enabled and the request can be handled here.
+     */
+    NGX_BROKER_MODULE_REWRITE_HANDLER_BARRIER(a_r, ngx_http_casper_broker_api_module, ngx_http_casper_broker_api_module_loc_conf_t,
+                                              "api_module");
+   
+    /*
+    * This module is enabled, handle request.
+    */
+   return ngx::casper::broker::api::Module::RewritePhaseTackleResponse(a_r, ngx_http_casper_broker_api_module,
+                                                                       "api_module",
+                                                                       [a_r] () -> ngx_int_t {
+                                                                        return ngx::casper::broker::api::Module::Factory(a_r, /* a_at_rewrite_handler */ true);
+                                                                       }
+   );
 }

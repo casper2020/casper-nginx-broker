@@ -33,8 +33,8 @@ static void*     ngx_http_casper_broker_cdn_public_module_create_loc_conf (ngx_c
 static char*     ngx_http_casper_broker_cdn_public_module_merge_loc_conf  (ngx_conf_t* a_cf, void* a_parent, void* a_child);
 static ngx_int_t ngx_http_casper_broker_cdn_public_module_filter_init     (ngx_conf_t* a_cf);
 
-extern ngx_int_t ngx_http_casper_broker_cdn_public_module_content_handler (ngx_http_request_t* a_r);
-extern ngx_int_t ngx_http_casper_broker_cdn_public_module_rewrite_handler (ngx_http_request_t* a_r);
+static ngx_int_t ngx_http_casper_broker_cdn_public_module_content_handler (ngx_http_request_t* a_r);
+static ngx_int_t ngx_http_casper_broker_cdn_public_module_rewrite_handler (ngx_http_request_t* a_r);
 
 #ifdef __APPLE__
 #pragma mark -
@@ -128,8 +128,8 @@ static char* ngx_http_casper_broker_cdn_public_module_merge_loc_conf (ngx_conf_t
     ngx_http_casper_broker_cdn_public_module_loc_conf_t* prev = (ngx_http_casper_broker_cdn_public_module_loc_conf_t*) a_parent;
     ngx_http_casper_broker_cdn_public_module_loc_conf_t* conf = (ngx_http_casper_broker_cdn_public_module_loc_conf_t*) a_child;
 
-    ngx_conf_merge_value     (conf->enable   , prev->enable   ,           0 ); /* 0 - disabled */
-    ngx_conf_merge_str_value (conf->log_token, prev->log_token, "cdn_public");
+    ngx_conf_merge_value     (conf->enable   , prev->enable   ,                  0 ); /* 0 - disabled */
+    ngx_conf_merge_str_value (conf->log_token, prev->log_token, "cdn_public_module");
                               
     NGX_BROKER_MODULE_LOC_CONF_MERGED();
 
@@ -166,7 +166,7 @@ static ngx_int_t ngx_http_casper_broker_cdn_public_module_filter_init (ngx_conf_
  * @return @li NGX_DECLINED if the content is not produced here, pass to next
  *         @li the return of the content sender function
  */
-ngx_int_t ngx_http_casper_broker_cdn_public_module_content_handler (ngx_http_request_t* a_r)
+static ngx_int_t ngx_http_casper_broker_cdn_public_module_content_handler (ngx_http_request_t* a_r)
 {
     /*
      * Check if module is enabled and the request can be handled here.
@@ -184,7 +184,7 @@ ngx_int_t ngx_http_casper_broker_cdn_public_module_content_handler (ngx_http_req
  *
  * @param a_r
  */
-ngx_int_t ngx_http_casper_broker_cdn_public_module_rewrite_handler (ngx_http_request_t* a_r)
+static ngx_int_t ngx_http_casper_broker_cdn_public_module_rewrite_handler (ngx_http_request_t* a_r)
 {
     /*
      * Check if module is enabled and the request can be handled here.
