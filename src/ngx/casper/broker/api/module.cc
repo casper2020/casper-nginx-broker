@@ -118,7 +118,7 @@ ngx_int_t ngx::casper::broker::api::Module::Setup ()
             };
             NGX_BROKER_MODULE_SET_BAD_REQUEST_ERROR_I18N_V(ctx_, "BROKER_MISSING_HEADER_ERROR", args, 1);
         } else {
-            if ( not ( std::string::npos != client_content_type_it->second.find("application/json") ) ) {
+            if ( not ( std::string::npos != client_content_type_it->second.find("application/json") ||  std::string::npos != client_content_type_it->second.find("application/vnd.api+json") ) ) {
                 U_ICU_NAMESPACE::Formattable args[] = {
                     client_content_type_it->second.c_str()
                 };
