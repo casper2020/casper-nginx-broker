@@ -491,7 +491,7 @@ ngx_int_t ngx::casper::broker::api::Module::Factory (ngx_http_request_t* a_r, bo
         /* in_headers_              */ {},
         /* config_                  */ {},
         /* locale_                  */ "",
-        /* supported_content_types_ */ { "application/vnd.api+json", "application/vnd.api+json;charset=utf-8" }
+        /* supported_content_types_ */ { "application/json", "application/json;charset=utf-8",  "application/vnd.api+json", "application/vnd.api+json;charset=utf-8" }
     };
     
     ngx_int_t rv = ngx::casper::broker::Module::WarmUp(ngx_http_casper_broker_api_module, a_r, loc_conf->log_token,
