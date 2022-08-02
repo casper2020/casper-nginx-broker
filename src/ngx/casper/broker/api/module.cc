@@ -94,6 +94,12 @@ ngx_int_t ngx::casper::broker::api::Module::Setup ()
     //   - Servers MUST respond with a 415 Unsupported Media Type status code if a request specifies
     //     the header Content-Type: application/vnd.api+json with any media type parameters.
     //
+    //     ⚠️
+    //
+    //     NOT LONG TRUE - " ON THE FLY" "NEW SPEC" ... ... ...
+    //
+    //     ⚠️
+    //
     //   - Servers MUST respond with a 406 Not Acceptable status code if a request’s Accept header
     //     contains the JSON API media type and all instances of that media type are modified with media type
     //     parameters.
@@ -112,11 +118,7 @@ ngx_int_t ngx::casper::broker::api::Module::Setup ()
             };
             NGX_BROKER_MODULE_SET_BAD_REQUEST_ERROR_I18N_V(ctx_, "BROKER_MISSING_HEADER_ERROR", args, 1);
         } else {
-            if ( not ( 0 == strcasecmp(client_content_type_it->second.c_str(), k_json_api_content_type_)
-                        ||
-                       0 == strcasecmp(client_content_type_it->second.c_str(), k_json_api_content_type_w_charset_)
-                      )
-            ) {
+            if ( not ( std::string::npos != client_content_type_it->second.find("application/json") ) ) {
                 U_ICU_NAMESPACE::Formattable args[] = {
                     client_content_type_it->second.c_str()
                 };
