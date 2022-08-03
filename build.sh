@@ -49,9 +49,6 @@ CURRENT_RELATIVE_PWD=$(dirname "$BASH_SOURCE")/
 # Parse arguments
 parse_arguments "$@"
 
-# collect info
-collect_platform_info
-
 # Process request
 if [ "build" == "${ACTION}" ] || [ "rebuild" == "${ACTION}" ] || [ "configure" == "${ACTION}" ] ; then
   : # pass
