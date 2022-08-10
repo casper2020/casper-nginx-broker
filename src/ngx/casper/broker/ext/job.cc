@@ -774,6 +774,10 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
             NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_,
                                                         "Invalid JOB response message - no data received!"
             );
+            
+            // ... stop accepting messages from this job ...
+            ::ev::redis::subscriptions::Manager::GetInstance().Unubscribe(this);
+            
             // ... we must finalize request with errors serialization ...
             return [this] () {
                 // ... and we're done ...
@@ -782,6 +786,9 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
         
         } else if ( '*' == a_message.c_str()[0] || '!' == a_message.c_str()[0] ) {
             
+            // ... stop accepting messages from this job ...
+            ::ev::redis::subscriptions::Manager::GetInstance().Unubscribe(this);
+
             // ... straight response ...
             
             const char* const c_str = a_message.c_str();
@@ -931,6 +938,8 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
             
             // ... if an error is set ...
             if ( NGX_HTTP_INTERNAL_SERVER_ERROR == ctx_.response_.status_code_ ) {
+                // ... stop accepting messages from this job ...
+                ::ev::redis::subscriptions::Manager::GetInstance().Unubscribe(this);
                 // ... we must finalize request with errors serialization ...
                 return [this] () {
                     // ... and we're done ...
@@ -967,6 +976,9 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                     
                 } else {
                     
+                    // ... stop accepting messages from this job ...
+                    ::ev::redis::subscriptions::Manager::GetInstance().Unubscribe(this);
+
                     // ... response codes already set ...
                     
                     // ... we're done ...
@@ -979,6 +991,9 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                 
             } else if ( 0 == strcasecmp(action.asCString(), "response") ) {
                 
+                // ... stop accepting messages from this job ...
+                ::ev::redis::subscriptions::Manager::GetInstance().Unubscribe(this);
+
                 // ... 'response' action ...
                 
                 //              {
@@ -1014,6 +1029,9 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
         NGX_BROKER_MODULE_SET_INTERNAL_SERVER_EXCEPTION(ctx_, a_broker_exception);
     }
     
+    // ... stop accepting messages from this job ...
+    ::ev::redis::subscriptions::Manager::GetInstance().Unubscribe(this);
+
     // ... if we've reached here ( at least on error should be already set ) ...
     return [this] () {
         // ... and we're done by finalizing request with errors serialization response ...
