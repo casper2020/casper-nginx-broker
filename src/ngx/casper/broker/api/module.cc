@@ -27,6 +27,8 @@
 
 #include "ngx/ngx_utils.h"
 
+#include "cc/easy/json.h"
+
 #include <algorithm>
 
 const char* const ngx::casper::broker::api::Module::k_json_api_content_type_           = "application/vnd.api+json";
@@ -416,7 +418,7 @@ ngx_int_t ngx::casper::broker::api::Module::PostJob (const ngx_int_t a_method,
     object["payload"]["urn"]  = a_urn;
     object["payload"]["tube"] = a_tube;
     object["payload"]["body"] = body_object;
-    object["payload"]["__nginx_broker__"] = "nginx-broker//api";
+    
     
     switch (a_method) {
         case NGX_HTTP_GET:
@@ -432,7 +434,7 @@ ngx_int_t ngx::casper::broker::api::Module::PostJob (const ngx_int_t a_method,
             object["payload"]["method"] = "PATCH";
             break;
         default:
-            object["payload"]["method"] = nullptr;
+            object["payload"]["method"] = Json::Value::null;
             break;
     }
     object["payload"]["user_id"]          = json_api_.GetUserId();
@@ -442,8 +444,13 @@ ngx_int_t ngx::casper::broker::api::Module::PostJob (const ngx_int_t a_method,
     object["payload"]["subentity_schema"] = json_api_.GetSubentitySchema();
     object["payload"]["subentity_prefix"] = json_api_.GetSubentityPrefix();
     
+    // ... session ...
     object["payload"]["access_token"]     = a_access_token;
-
+    
+    // ... adjust ...
+    object["payload"]["ttr"]      = object["ttr"];
+    object["payload"]["validity"] = object["validity"];
+    // ... trace ...
     object["payload"]["__nginx_broker__"] = "nginx-broker//api";
     
     // ... we're done  ...
