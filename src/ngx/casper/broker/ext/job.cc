@@ -714,7 +714,7 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                                                           NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT
                                                           ", ':warning: `%s` - %s - *timeout value above " SIZET_FMT " second(s)*! "
                                                           "```{\"timeout\":" SIZET_FMT ",\"ttr\":" SIZET_FMT ",\"validity\":" SIZET_FMT ",\"tube\":\"%s\"}```"
-                                                          " Job timeout value, " SIZET_FMT " second(s), should be bellow " SIZET_FMT " second(s).'",
+                                                          " Job timeout value, " SIZET_FMT " second(s), should be below " SIZET_FMT " second(s).'",
                                                           "JB : ALERT",
                                                           NGX_NAME, job_key_.c_str(), static_cast<size_t>(broker_conf->jobs.timeouts.max),
                                                           job_expires_in_, job_ttr_, job_validity_, job_tube_.c_str(),
