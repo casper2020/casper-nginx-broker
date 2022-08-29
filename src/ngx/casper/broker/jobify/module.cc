@@ -204,8 +204,7 @@ ngx_int_t ngx::casper::broker::jobify::Module::PostJob (const ngx_int_t a_method
     object["payload"]["urn"]  = a_urn;
     // ... set request BODY ...
     if ( a_body.length() > 0 ) {
-        const bool is_json = ( nullptr != strcasestr(ctx_.request_.content_type_.c_str(), "application/json") ) ;
-        if ( true == is_json ) {
+        if ( true == json.IsJSON(ctx_.request_.content_type_.c_str()) ) {
             try {
                 json.Parse(a_body, object["payload"]["body"]);
             } catch (const cc::Exception& a_exception) {
@@ -266,6 +265,7 @@ ngx_int_t ngx::casper::broker::jobify::Module::Factory (ngx_http_request_t* a_r,
         /* locale_                  */ "",
         /* supported_content_types_ */ {
             "application/json", "application/json; charset=UTF-8",
+            "application/vnd.api+json", "application/vnd.api+json;charset=utf-8'",
             "text/plain", "text/plain; charset=UTF-8",
             "application/x-www-form-urlencoded"        
         }
