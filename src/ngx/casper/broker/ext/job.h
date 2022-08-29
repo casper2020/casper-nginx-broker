@@ -74,6 +74,7 @@ namespace ngx
                     std::set<std::string>   job_allowed_patch_members_set_;
                     Json::Value             job_status_;
                     size_t                  job_ttr_;
+                    size_t                  job_validity_;
                     size_t                  job_expires_in_;
                     Json::Reader            json_reader_;
                     Json::FastWriter        json_writer_;
@@ -117,6 +118,7 @@ namespace ngx
                 public: // Inline Method(s) / Function(s)
                     
                     size_t             ttr                    () const;
+                    size_t             validity               () const;
                     size_t             expires_in             () const;
                     const std::string& jwt_rsa_public_key_uri () const;
                     
@@ -128,6 +130,14 @@ namespace ngx
                 inline size_t Job::ttr () const
                 {
                     return job_ttr_;
+                }
+                
+                /**
+                 * @return Validity.
+                 */
+                inline size_t Job::validity () const
+                {
+                    return job_validity_;
                 }
                 
                 /**

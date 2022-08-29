@@ -91,6 +91,27 @@ typedef struct {
     ngx_flag_t write_body;
 } ngx_http_casper_broker_cc_log_conf_t;
 
+/* logs */
+typedef struct {
+    ngx_int_t  max;
+    ngx_flag_t enforce;
+} ngx_http_casper_broker_jobs_timeouts_conf_t;
+
+/* job */
+typedef struct {
+    ngx_int_t  max;
+    ngx_flag_t enforce;
+} ngx_http_casper_broker_job_timeouts_conf_t;
+
+typedef struct {
+    ngx_flag_t payload;
+} ngx_http_casper_broker_job_logs_conf_t;
+
+typedef struct {
+    ngx_http_casper_broker_job_timeouts_conf_t timeouts;
+    ngx_http_casper_broker_job_logs_conf_t     log;
+} ngx_http_casper_broker_jobs_conf_t;
+
 #ifdef __APPLE__
 #pragma mark - module loc_conf_t
 #endif
@@ -135,6 +156,8 @@ typedef struct {
     ngx_http_casper_broker_gatekeeper_conf_t gatekeeper;
     // ... logs ...
     ngx_http_casper_broker_cc_log_conf_t     cc_log;
+    // ... jobs ...
+    ngx_http_casper_broker_jobs_conf_t       jobs;
 } ngx_http_casper_broker_module_loc_conf_t;
 
 extern ngx_module_t ngx_http_casper_broker_module;

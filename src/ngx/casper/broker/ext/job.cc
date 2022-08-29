@@ -33,6 +33,8 @@
 #include "cc/auth/exception.h"
 #include "cc/utc_time.h"
 
+#include "ngx/version.h"
+
 /**
  * @brief Default constructor.
  *
@@ -61,6 +63,7 @@ ngx::casper::broker::ext::Job::Job (ngx::casper::broker::Module::CTX& a_ctx, ngx
     job_patch_object_          = Json::Value::null;
     job_status_                = Json::Value::null;
     job_ttr_                   = 60;
+    job_validity_              = 120;
     job_expires_in_            = ctx_.request_.connection_validity_;
 
     // ... won't be used in this context, but need to initialize variables ...
@@ -102,6 +105,7 @@ ngx::casper::broker::ext::Job::Job (ngx::casper::broker::Module::CTX& a_ctx, ngx
     job_patch_object_          = Json::Value::null;
     job_status_                = Json::Value::null;
     job_ttr_                   = 60;
+    job_validity_              = 120;
     job_expires_in_            = ctx_.request_.connection_validity_;
     
     // ... can be used in this context ...
@@ -369,8 +373,8 @@ ngx_int_t ngx::casper::broker::ext::Job::Submit (const Json::Value& a_object,
     
     // ... set ttr && expires in ...
     job_ttr_         = static_cast<size_t>(job_object_.get("ttr", static_cast<Json::Value::UInt64>(job_ttr_)).asUInt64());             // in seconds
-    job_expires_in_  = static_cast<size_t>(job_object_.get("validity", static_cast<Json::Value::UInt64>(job_expires_in_)).asUInt64()); // in seconds
-    job_expires_in_ += job_ttr_;
+    job_validity_    = static_cast<size_t>(job_object_.get("validity", static_cast<Json::Value::UInt64>(job_expires_in_)).asUInt64()); // in seconds
+    job_expires_in_  = job_validity_ + job_ttr_;
     job_tube_        = job_object_["tube"].asString();
 
     // ... yes ... run a task to reserve it ...
@@ -628,17 +632,19 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
             
         case ::ev::redis::subscriptions::Manager::Status::Subscribed:
         {
+            bool accepted = true;
+
             // ... set new connection to a specific 'tube' ...
             const std::string tube = job_object_["tube"].asString();
             
             // ... connect and sent job ...
             try {
-                
+                                
                 ::ev::beanstalk::Producer producer(beanstalk_config_, tube);
                 
                 const std::string payload = json_writer_.write(job_object_["payload"]);
- 
-                // ... log
+                
+                // ... log ...
                 ::ev::LoggerV2::GetInstance().Log(module_ptr_->logger_client_, "cc-modules",
                                                   NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT ", %s ~> %s",
                                                   "JB : ID",
@@ -656,74 +662,131 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                 );
                 ::ev::LoggerV2::GetInstance().Log(module_ptr_->logger_client_, "cc-modules",
                                                   NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT ", " SIZET_FMT " second(s)",
-                                                  "JB : EXPIRES IN",
-                                                  job_expires_in_
+                                                  "JB : VALIDITY",
+                                                  job_validity_
                 );
                 ::ev::LoggerV2::GetInstance().Log(module_ptr_->logger_client_, "cc-modules",
                                                   NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT ", %s",
                                                   "JB : KEY",
                                                   job_key_.c_str()
                 );
-
                 ::ev::LoggerV2::GetInstance().Log(module_ptr_->logger_client_, "cc-modules",
                                                   NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT ", %s",
                                                   "JB : CHANNEL",
                                                   job_channel_.c_str()
                 );
+                
+                // ... check for max timeout enforcement ...
+                ngx_http_casper_broker_module_loc_conf_t* broker_conf = (ngx_http_casper_broker_module_loc_conf_t*)ngx_http_get_module_loc_conf(ctx_.ngx_ptr_, ngx_http_casper_broker_module);
+                if ( NULL == broker_conf ) {
+                    throw ::ev::Exception("%s", "Unable to access local config!");
+                }
+                
+                // ... log ...
                 ::ev::LoggerV2::GetInstance().Log(module_ptr_->logger_client_, "cc-modules",
                                                   NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT ", %s",
                                                   "JB : PAYLOAD",
-                                                  payload.c_str()
+                                                  ( 1 == broker_conf->jobs.log.payload ? payload.c_str() : "<redacted>" ) 
                 );
-
-                const int64_t status = producer.Put(payload,
-                                                    /* a_priority = 0 */ 0,
-                                                    /* a_delay = 0 */ 0,
-                                                    static_cast<uint32_t>(job_ttr_)
-                );
-                if ( status < 0 ) {
-                    // ... an error must be set ...
-                    NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_,
-                                                                ( "Beanstalk client returned with error code " + std::to_string(status) + ", while adding job '" +
-                                                                 job_object_["id"].asString() + "' to '" + tube + "' tube!"
-                                                                ).c_str()
-                    );
+                
+                // ... timeout above limit?
+                if ( job_expires_in_ > broker_conf->jobs.timeouts.max ) {
+                    // ... yes, enforce?
+                    if ( 1 == broker_conf->jobs.timeouts.enforce ) {
+                        // ... yes, log ...
+                        ::ev::LoggerV2::GetInstance().Log(module_ptr_->logger_client_, "cc-modules",
+                                                      NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT
+                                                      ", ':no_entry: `%s` - %s - *timeout value above " SIZET_FMT " second(s)*! "
+                                                      "```{\"timeout\":" SIZET_FMT ",\"ttr\":" SIZET_FMT ",\"validity\":" SIZET_FMT ",\"tube\":\"%s\"}```"
+                                                      " Job timeout value, " SIZET_FMT " second(s), must be bellow " SIZET_FMT " second(s).'",
+                                                      "JB : ALERT",
+                                                      NGX_NAME, job_key_.c_str(), static_cast<size_t>(broker_conf->jobs.timeouts.max),
+                                                      job_expires_in_, job_ttr_, job_validity_, job_tube_.c_str(),
+                                                      job_expires_in_, static_cast<size_t>(broker_conf->jobs.timeouts.max)
+                        );
+                        // ... and set error ...
+                        NGX_BROKER_MODULE_SET_BAD_REQUEST_ERROR(ctx_, ( "Job timeout value, " + std::to_string(job_expires_in_) + " second(s), must be bellow " + std::to_string(broker_conf->jobs.timeouts.max) + " second(s)!").c_str());
+                        // ... not acceptable ...
+                        accepted = false;
+                    } else {
+                        // ... no, just log a warning ...
+                        ::ev::LoggerV2::GetInstance().Log(module_ptr_->logger_client_, "cc-modules",
+                                                          NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT
+                                                          ", ':warning: `%s` - %s - *timeout value above " SIZET_FMT " second(s)*! "
+                                                          "```{\"timeout\":" SIZET_FMT ",\"ttr\":" SIZET_FMT ",\"validity\":" SIZET_FMT ",\"tube\":\"%s\"}```"
+                                                          " Job timeout value, " SIZET_FMT " second(s), should be bellow " SIZET_FMT " second(s).'",
+                                                          "JB : ALERT",
+                                                          NGX_NAME, job_key_.c_str(), static_cast<size_t>(broker_conf->jobs.timeouts.max),
+                                                          job_expires_in_, job_ttr_, job_validity_, job_tube_.c_str(),
+                                                          job_expires_in_, static_cast<size_t>(broker_conf->jobs.timeouts.max)
+                        );
+                    }
                 }
                 
-                ::ev::LoggerV2::GetInstance().Log(module_ptr_->logger_client_, "cc-modules",
-                                                  NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT ", " SIZET_FMT " second(s)",
-                                                  "JB : TIMEOUT IN",
-                                                  job_expires_in_
-                );
+                // ... accepted?
+                if ( true == accepted ) {
 
-                ::ev::scheduler::Scheduler::GetInstance().SetClientTimeout(
-                                                                           /* a_client */
-                                                                           this,
-                                                                           /* a_ms */
-                                                                           static_cast<uint64_t>(job_expires_in_ * 1000),
-                                                                           /* a_callback */
-                                                                           [this] () {
-                                                                               NGX_BROKER_MODULE_SET_GATEWAY_TIMEOUT_ERROR(ctx_,
-                                                                                                                           ( "Job waiting timed out after " + std::to_string(job_expires_in_) + " second(s)" ).c_str()
-                                                                               );
-                                                                               ctx_.response_.serialize_errors_ = true;
-                                                                               NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_ERRORS_SERIALIZATION_RESPONSE(module_ptr_);
-                                                                           }
-                );
+                    const int64_t status = producer.Put(payload,
+                                                        /* a_priority = 0 */ 0,
+                                                        /* a_delay = 0 */ 0,
+                                                        static_cast<uint32_t>(job_ttr_)
+                    );
+                    if ( status < 0 ) {
+                        // ... an error must be set ...
+                        NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_,
+                                                                    ( "Beanstalk client returned with error code " + std::to_string(status) + ", while adding job '" +
+                                                                     job_object_["id"].asString() + "' to '" + tube + "' tube!"
+                                                                    ).c_str()
+                        );
+                        // ... not acceptable ...
+                        accepted = false;
+                    }
+                    
+                    // ... still acceptable?
+                    if ( true == accepted ) {
+                        // ... yes, log ...
+                        ::ev::LoggerV2::GetInstance().Log(module_ptr_->logger_client_, "cc-modules",
+                                                          NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT ", " SIZET_FMT " second(s)",
+                                                          "JB : TIMEOUT IN",
+                                                          job_expires_in_
+                        );
+                        // ... and schedule timeout ...
+                        ::ev::scheduler::Scheduler::GetInstance().SetClientTimeout(
+                                                                                   /* a_client */
+                                                                                   this,
+                                                                                   /* a_ms */
+                                                                                   static_cast<uint64_t>(job_expires_in_ * 1000),
+                                                                                   /* a_callback */
+                                                                                   [this] () {
+                                                                                       NGX_BROKER_MODULE_SET_GATEWAY_TIMEOUT_ERROR(ctx_,
+                                                                                                                                   ( "Job waiting timed out after " + std::to_string(job_expires_in_) + " second(s)" ).c_str()
+                                                                                       );
+                                                                                       ctx_.response_.serialize_errors_ = true;
+                                                                                       NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_ERRORS_SERIALIZATION_RESPONSE(module_ptr_);
+                                                                                   }
+                        );
+                    }
+
+                }
                 
             } catch (const ::Beanstalk::ConnectException& a_btc_exception) {
                 // ... we're done ...
                 NGX_BROKER_MODULE_SET_INTERNAL_SERVER_EXCEPTION(ctx_, ::ev::Exception("BEANSTALK CONNECTOR: %s", a_btc_exception.what()));
+                // ... not acceptable ...
+                accepted = false;
             } catch (const ::ev::Exception& a_ev_exception) {
                 // ... we're done ...
                 NGX_BROKER_MODULE_SET_INTERNAL_SERVER_EXCEPTION(ctx_, a_ev_exception);
+                // ... not acceptable ...
+                accepted = false;
             }
             
             // ... if an error is set ...
-            if ( NGX_HTTP_INTERNAL_SERVER_ERROR == ctx_.response_.status_code_ ) {
+            if ( false == accepted || NGX_HTTP_INTERNAL_SERVER_ERROR == ctx_.response_.status_code_ ) {
                 // ... we must finalize request with errors serialization ...
                 return [this] () {
                     // ... and we're done ...
+                    ctx_.response_.serialize_errors_ = true;
                     NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_ERRORS_SERIALIZATION_RESPONSE(module_ptr_);
                 };
             }

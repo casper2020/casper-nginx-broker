@@ -372,7 +372,7 @@ static ngx_command_t ngx_http_casper_broker_module_commands[] = {
          NGX_HTTP_LOC_CONF_OFFSET,
          offsetof(ngx_http_casper_broker_module_loc_conf_t, cc_log.set),
          NULL
-     },
+    },
     {
          ngx_string("nginx_casper_broker_cc_log_write_body"),
          NGX_HTTP_MAIN_CONF | NGX_CONF_TAKE1,
@@ -381,15 +381,40 @@ static ngx_command_t ngx_http_casper_broker_module_commands[] = {
          offsetof(ngx_http_casper_broker_module_loc_conf_t, cc_log.write_body),
          NULL
      },
-    /* ... */
-    {
+     /* jobs */
+     {
+         ngx_string("nginx_casper_broker_jobs_timeouts_max"),
+         NGX_HTTP_MAIN_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_num_slot,
+         NGX_HTTP_LOC_CONF_OFFSET,
+         offsetof(ngx_http_casper_broker_module_loc_conf_t, jobs.timeouts.max),
+         NULL
+     },
+     {
+         ngx_string("nginx_casper_broker_jobs_timeouts_enforce"),
+         NGX_HTTP_MAIN_CONF | NGX_CONF_TAKE1,
+         ngx_conf_set_flag_slot,
+         NGX_HTTP_LOC_CONF_OFFSET,
+         offsetof(ngx_http_casper_broker_module_loc_conf_t, jobs.timeouts.enforce),
+         NULL
+     },
+     {
+         ngx_string("nginx_casper_broker_jobs_log_payload"),
+         NGX_HTTP_MAIN_CONF | NGX_CONF_TAKE1,
+         ngx_conf_set_flag_slot,
+         NGX_HTTP_LOC_CONF_OFFSET,
+         offsetof(ngx_http_casper_broker_module_loc_conf_t, jobs.log.payload),
+         NULL
+     },
+     /* ... */
+     {
         ngx_string("nginx_casper_broker_errors_serialization_enable_ordered_json"),
         NGX_HTTP_MAIN_CONF | NGX_CONF_TAKE1,
         ngx_conf_set_flag_slot,
         NGX_HTTP_LOC_CONF_OFFSET,
         offsetof(ngx_http_casper_broker_module_loc_conf_t, awful_conf.ordered_errors_json_serialization_enabled),
         NULL
-    },
+     },
     /* closure */
     ngx_null_command
 };
@@ -548,6 +573,10 @@ static void* ngx_http_casper_broker_module_create_loc_conf (ngx_conf_t* a_cf)
     // ... cc log ...
     conf->cc_log.set                       = NGX_CONF_UNSET;
     conf->cc_log.write_body                = NGX_CONF_UNSET;
+    // ... jobs ...
+    conf->jobs.timeouts.max                = NGX_CONF_UNSET;
+    conf->jobs.timeouts.enforce            = NGX_CONF_UNSET;
+    conf->jobs.log.payload                 = NGX_CONF_UNSET;
     // ... awful code enabler ...
     conf->awful_conf.ordered_errors_json_serialization_enabled = NGX_CONF_UNSET;
     
@@ -619,9 +648,14 @@ static char* ngx_http_casper_broker_module_merge_loc_conf (ngx_conf_t* a_cf, voi
 
     // ... cc log ...
     ngx_conf_merge_value     (conf->cc_log.set                         , prev->cc_log.set                      ,             0 ); /* 0 - not set */
-    ngx_conf_merge_value     (conf->cc_log.write_body                  , prev->cc_log.write_body               ,             1 ); /* 1 - enabled */
+    ngx_conf_merge_value     (conf->cc_log.write_body                  , prev->cc_log.write_body               ,             0 ); /* 1 - enabled */
 
-    // ... awful code enabler ... 
+    // ... jobs ...
+    ngx_conf_merge_value     (conf->jobs.timeouts.max                  , prev->jobs.timeouts.max               ,          1800 ); /* 1800 seconds, 30 minutes */
+    ngx_conf_merge_value     (conf->jobs.timeouts.enforce              , prev->jobs.timeouts.enforce           ,             1 ); /* 1 - enable, 0 - disable */
+    ngx_conf_merge_value     (conf->jobs.log.payload                   , prev->jobs.log.payload                ,             0 ); /* 1 - log, 0 - do not log */
+
+    // ... awful code enabler ...
     ngx_conf_merge_value     (conf->awful_conf.ordered_errors_json_serialization_enabled, prev->awful_conf.ordered_errors_json_serialization_enabled, 0 ); /* 0 - disabled - as it always should be */
     
     // ... done ...
