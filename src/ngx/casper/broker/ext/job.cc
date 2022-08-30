@@ -698,14 +698,14 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                                                       NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT
                                                       ", ':no_entry: `%s` - %s - *timeout value above " SIZET_FMT " second(s)*! "
                                                       "```{\"timeout\":" SIZET_FMT ",\"ttr\":" SIZET_FMT ",\"validity\":" SIZET_FMT ",\"tube\":\"%s\"}```"
-                                                      " Job timeout value, " SIZET_FMT " second(s), must be bellow " SIZET_FMT " second(s).'",
+                                                      " Job timeout value, " SIZET_FMT " second(s), must be below " SIZET_FMT " second(s).'",
                                                       "JB : ALERT",
                                                       NGX_NAME, job_key_.c_str(), static_cast<size_t>(broker_conf->jobs.timeouts.max),
                                                       job_expires_in_, job_ttr_, job_validity_, job_tube_.c_str(),
                                                       job_expires_in_, static_cast<size_t>(broker_conf->jobs.timeouts.max)
                         );
                         // ... and set error ...
-                        NGX_BROKER_MODULE_SET_BAD_REQUEST_ERROR(ctx_, ( "Job timeout value, " + std::to_string(job_expires_in_) + " second(s), must be bellow " + std::to_string(broker_conf->jobs.timeouts.max) + " second(s)!").c_str());
+                        NGX_BROKER_MODULE_SET_BAD_REQUEST_ERROR(ctx_, ( "Job timeout value, " + std::to_string(job_expires_in_) + " second(s), must be below " + std::to_string(broker_conf->jobs.timeouts.max) + " second(s)!").c_str());
                         // ... not acceptable ...
                         accepted = false;
                     } else {
