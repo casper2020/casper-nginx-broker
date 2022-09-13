@@ -41,7 +41,7 @@
  * @param a_ngx_jobify_loc_conf
  */
 ngx::casper::broker::jobify::Module::Module (const ngx::casper::broker::Module::Config& a_config, const ngx::casper::broker::Module::Params& a_params,
-                                          ngx_http_casper_broker_module_loc_conf_t& a_ngx_loc_conf, ngx_http_casper_broker_jobify_module_loc_conf_t& a_ngx_jobify_loc_conf)
+                                          ngx_http_casper_broker_module_loc_conf_t& a_ngx_loc_conf, ngx_http_casper_broker_jobify_module_loc_conf_t& /* a_ngx_jobify_loc_conf */)
     : ngx::casper::broker::Module("jobify", a_config, a_params),
       job_(ctx_, this, a_params, a_ngx_loc_conf)
 {
@@ -185,7 +185,7 @@ ngx_int_t ngx::casper::broker::jobify::Module::Run ()
  * @param a_ttr
  * @param a_validity
  */
-ngx_int_t ngx::casper::broker::jobify::Module::PostJob (const ngx_int_t a_method,
+ngx_int_t ngx::casper::broker::jobify::Module::PostJob (const ngx_uint_t /* a_method */,
                                                         const std::string& a_urn, const std::string& a_body,
                                                         const std::string& a_tube, const ssize_t a_ttr, const ssize_t a_validity)
 {

@@ -41,7 +41,7 @@ const char* const ngx::casper::broker::cdn::dl::Module::sk_tx_content_type_ = "a
  * @param a_ngx_cdn_loc_conf
  */
 ngx::casper::broker::cdn::dl::Module::Module (const ngx::casper::broker::cdn::dl::Module::Config& a_config, const ngx::casper::broker::cdn::dl::Module::Params& a_params,
-                                              ngx_http_casper_broker_module_loc_conf_t& a_ngx_loc_conf, ngx_http_casper_broker_cdn_download_module_loc_conf_t& a_ngx_cdn_loc_conf)
+                                              ngx_http_casper_broker_module_loc_conf_t& a_ngx_loc_conf, ngx_http_casper_broker_cdn_download_module_loc_conf_t& /* a_ngx_cdn_loc_conf */)
     : ngx::casper::broker::cdn::common::Module("cdn-dl", a_config, a_params,
                                                {
                                                    /* disposition_ */
@@ -111,7 +111,7 @@ ngx_int_t ngx::casper::broker::cdn::dl::Module::Run ()
  * @param a_async_request
  * @param a_session
  */
-void ngx::casper::broker::cdn::dl::Module::OnSessionFetchSucceeded (const bool a_async_request, const ::ev::casper::Session& a_session)
+void ngx::casper::broker::cdn::dl::Module::OnSessionFetchSucceeded (const bool /* a_async_request */, const ::ev::casper::Session& a_session)
 {
     const char* const tmp = ctx_.request_.uri_.c_str();
     

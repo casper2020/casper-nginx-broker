@@ -43,7 +43,7 @@ const char* const ngx::casper::broker::api::Module::k_json_api_content_type_w_ch
  * @param a_ngx_api_loc_conf
  */
 ngx::casper::broker::api::Module::Module (const ngx::casper::broker::Module::Config& a_config, const ngx::casper::broker::Module::Params& a_params,
-                                          ngx_http_casper_broker_module_loc_conf_t& a_ngx_loc_conf, ngx_http_casper_broker_api_module_loc_conf_t& a_ngx_api_loc_conf)
+                                          ngx_http_casper_broker_module_loc_conf_t& a_ngx_loc_conf, ngx_http_casper_broker_api_module_loc_conf_t& /* a_ngx_api_loc_conf */)
     : ngx::casper::broker::Module("api", a_config, a_params),
       json_api_(ctx_.loggable_data_ref_, /* a_enable_task_cancellation */ true, /* a_deferred_response */ false),
       session_(ctx_, this, a_params),
@@ -190,7 +190,7 @@ ngx_int_t ngx::casper::broker::api::Module::Run ()
  * @param a_async_request
  * @param a_session
  */
-void ngx::casper::broker::api::Module::OnSessionFetchSucceeded (const bool a_async_request, const ::ev::casper::Session& a_session)
+void ngx::casper::broker::api::Module::OnSessionFetchSucceeded (const bool /* a_async_request */, const ::ev::casper::Session& a_session)
 {
     // ... prepare json api ...
     json_api_.SetUserId(a_session.GetValue("user_id", ""));

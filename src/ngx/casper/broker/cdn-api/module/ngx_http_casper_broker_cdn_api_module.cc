@@ -191,7 +191,7 @@ static void* ngx_http_casper_broker_cdn_api_module_create_loc_conf (ngx_conf_t* 
  * @param a_parent
  * @param a_child
  */
-static char* ngx_http_casper_broker_cdn_api_module_merge_loc_conf (ngx_conf_t* a_cf, void* a_parent, void* a_child)
+static char* ngx_http_casper_broker_cdn_api_module_merge_loc_conf (ngx_conf_t* /* a_cf */, void* a_parent, void* a_child)
 {
     ngx_http_casper_broker_cdn_api_module_loc_conf_t* prev = (ngx_http_casper_broker_cdn_api_module_loc_conf_t*) a_parent;
     ngx_http_casper_broker_cdn_api_module_loc_conf_t* conf = (ngx_http_casper_broker_cdn_api_module_loc_conf_t*) a_child;

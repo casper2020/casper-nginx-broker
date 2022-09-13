@@ -48,7 +48,7 @@ const char* const ngx::casper::broker::oauth::server::Module::k_json_oauth_serve
  * @param a_ngx_log_conf
  */
 ngx::casper::broker::oauth::server::Module::Module (const ngx::casper::broker::Module::Config& a_config, const ngx::casper::broker::Module::Params& a_params,
-                                                    ngx_http_casper_broker_oauth_server_module_loc_conf_t& a_ngx_loc_conf)
+                                                    ngx_http_casper_broker_oauth_server_module_loc_conf_t& /* a_ngx_loc_conf */)
     : ngx::casper::broker::Module("oauth-server", a_config, a_params)
 {
     authorization_code_ = nullptr;

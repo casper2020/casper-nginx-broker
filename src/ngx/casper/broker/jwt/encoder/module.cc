@@ -211,7 +211,7 @@ ngx_int_t ngx::casper::broker::jwt::encoder::Module::Factory (ngx_http_request_t
             return new ngx::casper::broker::jwt::encoder::Errors(a_locale);
         },
         /* executor_factory_      */
-        [] (ngx::casper::broker::ErrorsTracker& a_errors_tracker) -> ngx::casper::broker::Executor* {
+        [] (ngx::casper::broker::ErrorsTracker& /* a_errors_tracker */) -> ngx::casper::broker::Executor* {
             return nullptr;
         },
         /* landing_page_url_      */ "",

@@ -58,7 +58,7 @@ ngx::casper::broker::cdn::common::db::Sideline::Settings ngx::casper::broker::cd
  */
 ngx::casper::broker::cdn::api::Module::Module (const ngx::casper::broker::Module::Config& a_config,
                                                const ngx::casper::broker::Module::Params& a_params,
-                                               ngx_http_casper_broker_module_loc_conf_t& a_ngx_loc_conf, ngx_http_casper_broker_cdn_api_module_loc_conf_t& a_ngx_cdn_api_loc_conf)
+                                               ngx_http_casper_broker_module_loc_conf_t& a_ngx_loc_conf, ngx_http_casper_broker_cdn_api_module_loc_conf_t& /* a_ngx_cdn_api_loc_conf */)
     : ngx::casper::broker::Module("cdn_api", a_config, a_params),
       router_(ctx_.loggable_data_ref_),
       job_(ctx_, this, a_ngx_loc_conf)
@@ -226,7 +226,7 @@ void ngx::casper::broker::cdn::api::Module::OnRouterRequestSucceeded (const uint
  * @param a_status HTTP Status Code.
  * @param a_value Response, JSON object.
  */
-void ngx::casper::broker::cdn::api::Module::OnRouterRequestFailed (const uint16_t a_status, const ::ev::Exception& a_value)
+void ngx::casper::broker::cdn::api::Module::OnRouterRequestFailed (const uint16_t /* a_status */, const ::ev::Exception& a_value)
 {
     NGX_BROKER_MODULE_SET_INTERNAL_SERVER_EXCEPTION(ctx_, a_value);
     NGX_BROKER_MODULE_FINALIZE_REQUEST_WITH_ERRORS_SERIALIZATION_RESPONSE(this);
