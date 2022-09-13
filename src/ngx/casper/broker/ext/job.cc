@@ -811,7 +811,7 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
  *
  * @return
  */
-EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::JobMessageCallback (const std::string& a_name, const std::string & a_message)
+EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::JobMessageCallback (const std::string& /* a_name */, const std::string & a_message)
 {
     try {
         

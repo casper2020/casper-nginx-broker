@@ -1285,7 +1285,7 @@ void ngx::casper::broker::cdn::archive::Module::OnFetchBillingInformationSucceed
  * @param a_status HTTP status code.
  * @param a_ev_exception Exception occurred during information fetch.
  */
-void ngx::casper::broker::cdn::archive::Module::OnFetchBillingInformationFailed (uint16_t a_status, const ::ev::Exception& a_ev_exception)
+void ngx::casper::broker::cdn::archive::Module::OnFetchBillingInformationFailed (uint16_t /* a_status */, const ::ev::Exception& a_ev_exception)
 {
     // ... set error ...
     NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR_I18N(ctx_, "BROKER_AN_ERROR_OCCURRED_MESSAGE", a_ev_exception.what());
@@ -1647,7 +1647,7 @@ void ngx::casper::broker::cdn::archive::Module::TrySubmitJob (const Json::Value&
                                 NGX_BROKER_MODULE_FINALIZE_REQUEST(this);
                                },
                               /* a_failure_callback */
-                              [this] (const ev::Exception& a_ev_exception) {
+                              [this] (const ev::Exception& /* a_ev_exception */) {
                                 // ... finalize request ...
                                 NGX_BROKER_MODULE_FINALIZE_REQUEST(this);
                               }

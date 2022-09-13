@@ -129,7 +129,7 @@ void ngx::casper::broker::cdn::common::db::Object::AsyncQueryAndSerializeToJSON 
         /* a_callbacks */
         {
             /* success_ */
-            [a_callbacks] (const uint16_t a_status, const ::ev::postgresql::Value& a_value) {
+            [a_callbacks] (const uint16_t /* a_status */, const ::ev::postgresql::Value& a_value) {
                 // ... for this specific requrest, we're expecting only one result ...
                 if ( 0 == a_value.rows_count() ) {
                     // ... not found -..

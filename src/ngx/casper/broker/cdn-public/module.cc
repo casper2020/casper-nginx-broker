@@ -77,7 +77,7 @@ ngx::casper::broker::cdn::pub::Module::JWTConfig ngx::casper::broker::cdn::pub::
  */
 ngx::casper::broker::cdn::pub::Module::Module (const ngx::casper::broker::Module::Config& a_config,
                                                const ngx::casper::broker::Module::Params& a_params,
-                                               ngx_http_casper_broker_module_loc_conf_t& a_ngx_loc_conf, ngx_http_casper_broker_cdn_public_module_loc_conf_t& a_ngx_cdn_public_loc_conf)
+                                               ngx_http_casper_broker_module_loc_conf_t& a_ngx_loc_conf, ngx_http_casper_broker_cdn_public_module_loc_conf_t& /* a_ngx_cdn_public_loc_conf */)
 : ngx::casper::broker::cdn::common::Module("cdn_public", a_config, a_params,
                                            /* a_settings */
                                            {

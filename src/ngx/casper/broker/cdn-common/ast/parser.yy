@@ -136,7 +136,7 @@ expressions:
 ;
 %%
 
-void ngx::casper::broker::cdn::common::ast::Parser::error (const location_type& a_location, const std::string& a_msg)
+void ngx::casper::broker::cdn::common::ast::Parser::error (const location_type& a_location, const std::string& /* a_msg */)
 {
     scanner_.ThrowParsingError("Parsing error", a_location.begin.column);
 }

@@ -1589,7 +1589,7 @@ void ngx::casper::broker::Module::Redirect (ngx_module_t& a_module, ngx_http_req
  * @param a_r
  * @param a_header
  */
-void ngx::casper::broker::Module::SetOutHeaders (ngx_module_t& a_module, ngx_http_request_t* a_r,
+void ngx::casper::broker::Module::SetOutHeaders (ngx_module_t& /* a_module */, ngx_http_request_t* a_r,
                                                  const std::map<std::string, std::string>& a_headers)
 {
     const std::map<const char* const, ngx_table_elt_t**, StringMapCaseInsensitiveComparator> special_out_headers_map = {
@@ -2010,7 +2010,7 @@ ngx_int_t ngx::casper::broker::Module::FinalizeWithInternalRedirect (ngx::casper
  * @return           A NGX code.
  */
 ngx_int_t ngx::casper::broker::Module::ContentPhaseTackleResponse (ngx_http_request_t* a_r, ngx_module_t& a_module_t,
-                                                                   const char* const a_token)
+                                                                   const char* const /* a_token */)
 {
     ngx::casper::broker::Module* module = (ngx::casper::broker::Module*) ngx_http_get_module_ctx(a_r, a_module_t);
     if ( nullptr == module ) {
@@ -2627,7 +2627,7 @@ ngx_int_t ngx::casper::broker::Module::InternalRedirect (ngx_module_t& a_module_
  */
 ngx_int_t ngx::casper::broker::Module::FinalizeWithErrors (ngx_module_t& a_module_t, ngx_http_request_t* a_r,
                                                            const std::map<std::string, std::string>* a_headers,
-                                                           uint16_t a_http_status_code, ngx_int_t a_ngx_return_code,
+                                                           uint16_t a_http_status_code, ngx_int_t /* a_ngx_return_code */,
                                                            bool a_serialize, bool a_force,
                                                            const std::string& a_log_token)
 {

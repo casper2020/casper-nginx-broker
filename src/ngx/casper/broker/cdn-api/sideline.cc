@@ -118,10 +118,10 @@ ngx_int_t ngx::casper::broker::cdn::api::Sideline::Process (const uint64_t& a_id
     return NGX_OK;
 }
 
-const ngx::casper::broker::cdn::api::Sideline::ActivityData& ngx::casper::broker::cdn::api::Sideline::GetActivityData (const uint64_t& a_id,
+const ngx::casper::broker::cdn::api::Sideline::ActivityData& ngx::casper::broker::cdn::api::Sideline::GetActivityData (const uint64_t& /* a_id */,
                                                                                                                        const ngx_uint_t& a_method,
                                                                                                                        const std::map<std::string, std::string>& a_headers,
-                                                                                                                       const std::map<std::string, std::set<std::string>>& a_params,
+                                                                                                                       const std::map<std::string, std::set<std::string>>& /* a_params */,
                                                                                                                        const char* const a_body)
 {
     // ... ensure ownership and billing info ...
@@ -212,7 +212,7 @@ const ngx::casper::broker::cdn::api::Sideline::ActivityData& ngx::casper::broker
  * @param a_params  Addicional params.
  * @param a_value  'JSON table'.
  */
-const Json::Value& ngx::casper::broker::cdn::api::Sideline::TranslateTableToJSONAPI (const ngx_uint_t& a_method, const uint64_t& a_id, const std::map<std::string, std::set<std::string>>& a_params,
+const Json::Value& ngx::casper::broker::cdn::api::Sideline::TranslateTableToJSONAPI (const ngx_uint_t& /* a_method */, const uint64_t& /* a_id */, const std::map<std::string, std::set<std::string>>& /* a_params */,
                                                                                      const Json::Value& a_value)
 {
     // ... translate JSON to JSONAPI ...

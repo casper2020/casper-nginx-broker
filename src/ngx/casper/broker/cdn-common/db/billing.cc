@@ -135,7 +135,7 @@ void ngx::casper::broker::cdn::common::db::Billing::Get (const uint64_t& a_id, c
         /* a_callbacks */
         {
             /* success_ */
-            [a_callbacks, a_type] (const uint16_t a_status, const ::ev::postgresql::Value& a_value) {
+            [a_callbacks, a_type] (const uint16_t /* a_status */, const ::ev::postgresql::Value& a_value) {
                 // ... for this specific requrest, we're expecting only one result ...
                 if ( 0 == a_value.rows_count() ) {
                     // ... not found -..

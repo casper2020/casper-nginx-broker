@@ -676,7 +676,7 @@ ngx_int_t ngx::utls::nrs_ngx_parse_arg_as_uri (ngx_http_request_t* a_r, const ch
  *
  * @return NGX_OK, NGX_ERROR or NGX_DECLINED
  */
-ngx_int_t ngx::utls::nrs_ngx_get_arg (ngx_http_request_t* a_r, ngx_str_t* a_args, const char* const a_name,
+ngx_int_t ngx::utls::nrs_ngx_get_arg (ngx_http_request_t* /* a_r */, ngx_str_t* a_args, const char* const a_name,
                                       std::string& o_value)
 {
     u_char  *p, *last;
@@ -733,7 +733,7 @@ ngx_int_t ngx::utls::nrs_ngx_get_arg (ngx_http_request_t* a_r, ngx_str_t* a_args
  *
  * @return NGX_OK, NGX_ERROR or NGX_DECLINED
  */
-ngx_int_t ngx::utls::nrs_ngx_get_args (ngx_http_request_t* a_r, ngx_str_t* a_args,
+ngx_int_t ngx::utls::nrs_ngx_get_args (ngx_http_request_t* /* a_r */, ngx_str_t* a_args,
                                        std::map<std::string, std::string>& o_map)
 {
     if ( 0 == a_args->len ) {
