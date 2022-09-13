@@ -45,9 +45,12 @@ ngx::casper::broker::cdn::api::Sideline::Sideline (const ::ev::Loggable::Data& a
       activity_data_{
           /* activity_     */ common::db::Sideline::Activity::NotSet,
           /* payload_      */ Json::Value::null,
-          /* id_           */ ("X-NUMERIC-ID"),
+          /* id_           */ ("X-NUMERIC-ID")
+#ifdef __APPLE__
+          ,
           /* billing_id_   */ 0,
           /* billing_type_ */ ""
+#endif
       }
 {
     wrapped_callbacks_.success_ = nullptr;

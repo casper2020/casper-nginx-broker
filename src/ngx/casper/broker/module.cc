@@ -2054,7 +2054,7 @@ ngx_int_t ngx::casper::broker::Module::RewritePhaseTackleResponse (ngx_http_requ
     // NOTICE: any return code rather than NGX_DECLINED or NGX_DONE will finalize request ...
     //
 
-    const auto tackle_response = [a_token] (ngx::casper::broker::Module* a_module) -> ngx_int_t {
+    const auto tackle_response = [CC_IF_DEBUG(a_token)] (ngx::casper::broker::Module* a_module) -> ngx_int_t {
         
         if ( true == a_module->SynchronousResponse() ) {
             // ... synchronous response ...
