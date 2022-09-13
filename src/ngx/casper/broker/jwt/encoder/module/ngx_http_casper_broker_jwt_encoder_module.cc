@@ -158,7 +158,7 @@ static void* ngx_http_casper_broker_jwt_encoder_module_create_loc_conf (ngx_conf
     conf->iss             = ngx_null_string;
     conf->rsa_public_key  = ngx_null_string;
     conf->rsa_private_key = ngx_null_string;
-    conf->duration        = NGX_CONF_UNSET;
+    conf->duration        = NGX_CONF_UNSET_UINT;
 
     return conf;
 }
@@ -175,12 +175,12 @@ static char* ngx_http_casper_broker_jwt_encoder_module_merge_loc_conf (ngx_conf_
     ngx_http_casper_broker_jwt_encoder_module_loc_conf_t* prev = (ngx_http_casper_broker_jwt_encoder_module_loc_conf_t*) a_parent;
     ngx_http_casper_broker_jwt_encoder_module_loc_conf_t* conf = (ngx_http_casper_broker_jwt_encoder_module_loc_conf_t*) a_child;
 
-    ngx_conf_merge_value    (conf->enable         , prev->enable         ,                    0 ); /* 0 - disabled */
-    ngx_conf_merge_str_value(conf->log_token      , prev->log_token      , "jwt_encoder_module" );
-    ngx_conf_merge_str_value(conf->iss            , prev->iss            ,                   "" );
-    ngx_conf_merge_str_value(conf->rsa_public_key , prev->rsa_public_key ,                   "" );
-    ngx_conf_merge_str_value(conf->rsa_private_key, prev->rsa_private_key,                   "" );
-    ngx_conf_merge_value    (conf->duration       , prev->duration       ,                    0 );
+    ngx_conf_merge_value     (conf->enable         , prev->enable         ,                    0 ); /* 0 - disabled */
+    ngx_conf_merge_str_value (conf->log_token      , prev->log_token      , "jwt_encoder_module" );
+    ngx_conf_merge_str_value (conf->iss            , prev->iss            ,                   "" );
+    ngx_conf_merge_str_value (conf->rsa_public_key , prev->rsa_public_key ,                   "" );
+    ngx_conf_merge_str_value (conf->rsa_private_key, prev->rsa_private_key,                   "" );
+    ngx_conf_merge_uint_value(conf->duration       , prev->duration       ,                    0 );
 
     NGX_BROKER_MODULE_LOC_CONF_MERGED();
     

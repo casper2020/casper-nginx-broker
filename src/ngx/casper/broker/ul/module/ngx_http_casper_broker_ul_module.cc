@@ -224,12 +224,12 @@ static void* ngx_http_casper_broker_ul_module_create_loc_conf (ngx_conf_t* a_cf)
     conf->log_token             = ngx_null_string;
     conf->allowed_origins       = ngx_null_string;
     conf->output_dir            = ngx_null_string;
-    conf->expires_in            = NGX_CONF_UNSET;
+    conf->expires_in            = NGX_CONF_UNSET_UINT;
     conf->accept_multipart_body = NGX_CONF_UNSET;
-    conf->max_content_length    = NGX_CONF_UNSET;
+    conf->max_content_length    = NGX_CONF_UNSET_UINT;
     conf->authorization_url     = ngx_null_string;
-    conf->authorization_ct      = NGX_CONF_UNSET;
-    conf->authorization_tt      = NGX_CONF_UNSET;
+    conf->authorization_ct      = NGX_CONF_UNSET_UINT;
+    conf->authorization_tt      = NGX_CONF_UNSET_UINT;
 
     return conf;
 }
@@ -252,10 +252,10 @@ static char* ngx_http_casper_broker_ul_module_merge_loc_conf (ngx_conf_t* /* a_c
     ngx_conf_merge_str_value (conf->output_dir           , prev->output_dir           ,     "/tmp/" );
     ngx_conf_merge_uint_value(conf->expires_in           , prev->expires_in           ,      604800 ); /* 604800 seconds -> 7 days */
     ngx_conf_merge_value     (conf->accept_multipart_body, prev->accept_multipart_body,           0 ); /* 0 - no */
-    ngx_conf_merge_value     (conf->max_content_length   , prev->max_content_length   ,           0 ); /* not set */
+    ngx_conf_merge_uint_value(conf->max_content_length   , prev->max_content_length   ,           0 ); /* not set */
     ngx_conf_merge_str_value (conf->authorization_url    , prev->authorization_url    ,          "" ); /* not set */
-    ngx_conf_merge_value     (conf->authorization_ct     , prev->authorization_ct     ,          30 ); /* 30 seconds */
-    ngx_conf_merge_value     (conf->authorization_tt     , prev->authorization_tt     ,          60 ); /* 60 seconds */
+    ngx_conf_merge_uint_value(conf->authorization_ct     , prev->authorization_ct     ,          30 ); /* 30 seconds */
+    ngx_conf_merge_uint_value(conf->authorization_tt     , prev->authorization_tt     ,          60 ); /* 60 seconds */
     
     NGX_BROKER_MODULE_LOC_CONF_MERGED();    
     

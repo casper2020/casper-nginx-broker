@@ -618,7 +618,7 @@ static char* ngx_http_casper_broker_module_merge_loc_conf (ngx_conf_t* /* a_cf *
     ngx_conf_merge_value     (conf->curl_max_conn_per_worker       , prev->curl_max_conn_per_worker       ,             4 );
     // ... beanstalk ...
     ngx_conf_merge_str_value (conf->beanstalkd.host                , prev->beanstalkd.host                ,   "127.0.0.1" );
-    ngx_conf_merge_value     (conf->beanstalkd.port                , prev->beanstalkd.port                ,         11300 );
+    ngx_conf_merge_uint_value(conf->beanstalkd.port                , prev->beanstalkd.port                ,         11300 );
     ngx_conf_merge_value     (conf->beanstalkd.timeout             , prev->beanstalkd.timeout             ,           0.0 );
     ngx_conf_merge_str_value (conf->beanstalkd.tubes.sessionless   , prev->beanstalkd.tubes.sessionless   ,            "" );
     ngx_conf_merge_str_value (conf->beanstalkd.tubes.action        , prev->beanstalkd.tubes.action        ,            "" );
@@ -635,7 +635,7 @@ static char* ngx_http_casper_broker_module_merge_loc_conf (ngx_conf_t* /* a_cf *
     ngx_conf_merge_str_value (conf->cdn.ast                            , prev->cdn.ast                         ,          "{}" );
     ngx_conf_merge_str_value (conf->cdn.h2e_map                        , prev->cdn.h2e_map                     ,          "{}" );
     ngx_conf_merge_str_value (conf->cdn.redirect.protocol              , prev->cdn.redirect.protocol           ,        "http" );
-    ngx_conf_merge_value     (conf->cdn.redirect.port                  , prev->cdn.redirect.port               ,            80 );
+    ngx_conf_merge_uint_value(conf->cdn.redirect.port                  , prev->cdn.redirect.port               ,            80 );
     ngx_conf_merge_str_value (conf->cdn.redirect.host                  , prev->cdn.redirect.host               ,   "127.0.0.1" );
     ngx_conf_merge_str_value (conf->cdn.redirect.path                  , prev->cdn.redirect.path               ,    "archive"  );
     ngx_conf_merge_str_value (conf->cdn.redirect.location              , prev->cdn.redirect.location           ,    "redirect" );
