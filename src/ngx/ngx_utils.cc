@@ -713,7 +713,7 @@ ngx_int_t ngx::utls::nrs_ngx_get_arg (ngx_http_request_t* /* a_r */, ngx_str_t* 
                 p = a_args->data + a_args->len;
             }
             
-            value.len = p - value.data;
+            value.len = static_cast<decltype(value.len)>(p - value.data);
             
             o_value = std::string(reinterpret_cast<const char*>(value.data), value.len);
             
@@ -754,7 +754,7 @@ ngx_int_t ngx::utls::nrs_ngx_get_args (ngx_http_request_t* /* a_r */, ngx_str_t*
         }
         
         name.data = p;
-        name.len = (e - p);
+        name.len = static_cast<decltype(name.len)>(e - p);
         
         if ( (p == a_args->data || *(p - 1) == '&') && *(p + name.len) == '=' ) {
             
@@ -768,7 +768,7 @@ ngx_int_t ngx::utls::nrs_ngx_get_args (ngx_http_request_t* /* a_r */, ngx_str_t*
                 p = a_args->data + a_args->len;
             }
             
-            value.len = ngx_max(p - value.data, 0);
+            value.len = static_cast<decltype(value.len)>ngx_max(p - value.data, 0);
 
             o_map[std::string(reinterpret_cast<const char*>(name.data), name.len)] = std::string(reinterpret_cast<const char*>(value.data), value.len);
             
