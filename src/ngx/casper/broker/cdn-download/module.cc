@@ -127,7 +127,7 @@ void ngx::casper::broker::cdn::dl::Module::OnSessionFetchSucceeded (const bool /
     
     const char* args_separator = strrchr(pch, '?');
     if ( nullptr != args_separator ) {
-        uri = std::string(pch, args_separator - pch);
+        uri = std::string(pch, static_cast<size_t>(args_separator - pch));
     } else {
         uri = pch;
     }

@@ -254,7 +254,7 @@ ngx_int_t ngx::casper::broker::oauth::server::Module::Run ()
             if ( false == supported.isArray() ) {
                 return NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_, "Invalid module config!");
             }
-            for ( auto idx = 0 ; idx < supported.size() ; ++idx ) {
+            for ( Json::ArrayIndex idx = 0 ; idx < supported.size() ; ++idx ) {
                 const Json::Value& s = json.Get(supported, idx, Json::ValueType::stringValue, nullptr);
                 if ( 0 != strcasecmp(s.asCString(), grant_type.c_str()) ) {
                     continue;

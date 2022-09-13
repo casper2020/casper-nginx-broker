@@ -149,8 +149,8 @@ ngx_int_t ngx::casper::broker::jobify::Module::Run ()
  ngx::casper::broker::jobify::Module::OnOnGatekeeperDeflectToJob (const std::string& a_tube, ssize_t a_ttr, ssize_t a_valitity)
 {
     ::ev::auth::route::Gatekeeper::DeflectorResult rv = {
-        /* ttr_            */ ( a_ttr > 0 ? a_ttr : job_.ttr() ),
-        /* validity_       */ ( a_valitity > 0 ? a_valitity : job_.expires_in() ),
+        /* ttr_            */ ( a_ttr > 0 ? static_cast<size_t>(a_ttr) : job_.ttr() ),
+        /* validity_       */ ( a_valitity > 0 ? static_cast<size_t>(a_valitity) : job_.expires_in() ),
         /* status_code_    */ NGX_HTTP_INTERNAL_SERVER_ERROR,
         /* status_message_ */ ""
     };

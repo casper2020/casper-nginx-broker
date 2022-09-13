@@ -1443,7 +1443,7 @@ static ngx_int_t ngx_http_casper_broker_ul_ensure_output (ngx_http_casper_broker
         
         const char* ext_ptr = strrchr(a_context->file_.name_.c_str(), '.');
         if ( nullptr != ext_ptr ) {
-            name      = std::string(a_context->file_.name_.c_str(), ext_ptr - a_context->file_.name_.c_str());
+            name      = std::string(a_context->file_.name_.c_str(), static_cast<size_t>(ext_ptr - a_context->file_.name_.c_str()));
             extension = std::string(ext_ptr + 1);
         } else {
             name      = a_context->file_.name_;

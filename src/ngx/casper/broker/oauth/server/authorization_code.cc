@@ -167,7 +167,7 @@ void ngx::casper::broker::oauth::server::AuthorizationCode::AsyncRun (ngx::caspe
         
         // ... search for 'count' and 'scope' values ...
         std::set<int> ignored_idxs;
-        for ( Json::ArrayIndex idx = 0 ; idx < value.Size() ; idx += 2 ) {
+        for ( int idx = 0 ; idx < static_cast<int>(value.Size()) ; idx += 2 ) {
             if ( 0 == value[idx].String().compare(k_client_redirect_uri_field_) ) {
                 // ... validate and 'redirect_uri' ...
                 const std::string& acceptable_redirect_uri = value[idx+1].String();
@@ -210,7 +210,7 @@ void ngx::casper::broker::oauth::server::AuthorizationCode::AsyncRun (ngx::caspe
         }
         
         /* copy 'template' values */
-        for ( Json::ArrayIndex idx = 0 ; idx < value.Size() ; idx += 2 ) {
+        for ( int idx = 0 ; idx < static_cast<int>(value.Size()) ; idx += 2 ) {
             if ( ignored_idxs.end() != ignored_idxs.find(idx) ) {
                 continue;
             }

@@ -84,7 +84,7 @@ namespace ngx
                     
                 private: // Method(s) / Function(s)
                     
-                    ngx_int_t PostJob (const ngx_int_t a_method,
+                    ngx_int_t PostJob (const ngx_uint_t a_method,
                                        const std::string& a_urn, const std::string& a_body,
                                        const std::string& a_tube, const ssize_t a_ttr, const ssize_t a_validity);
                     

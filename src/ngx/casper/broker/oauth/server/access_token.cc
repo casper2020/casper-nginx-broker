@@ -205,7 +205,7 @@ void ngx::casper::broker::oauth::server::AccessToken::AsyncRun (ngx::casper::bro
         
         // ... search for 'count' and 'scope' values ...
         std::set<int> ignored_idxs;
-        for ( Json::ArrayIndex idx = 0 ; idx < value.Size() ; idx += 2 ) {
+        for ( int idx = 0 ; idx < static_cast<int>(value.Size()) ; idx += 2 ) {
             // ...'count' ?
             if ( 0 == value[idx].String().compare("count") ) {
                 // ... check 'count' ...
@@ -254,7 +254,7 @@ void ngx::casper::broker::oauth::server::AccessToken::AsyncRun (ngx::casper::bro
         }
         
         /* copy 'template' values */
-        for ( Json::ArrayIndex idx = 0 ; idx < value.Size() ; idx += 2 ) {
+        for ( int idx = 0 ; idx < static_cast<int>(value.Size()) ; idx += 2 ) {
             if ( ignored_idxs.end() != ignored_idxs.find(idx) ) {
                 continue;
             }

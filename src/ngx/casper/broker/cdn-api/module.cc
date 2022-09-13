@@ -41,7 +41,8 @@ const char* const ngx::casper::broker::cdn::api::Module::sk_tx_content_type_ = "
 ngx::casper::broker::cdn::common::db::Sideline::Settings ngx::casper::broker::cdn::api::Module::s_sideline_settings_ = {
     /* tube_     */ "",
     /* ttr_      */ 300, // 5 min
-    /* validity_ */ 290  // 4 min and 50 sec
+    /* validity_ */ 290, // 4 min and 50 sec
+    /* slaves_   */ Json::Value::null
 };
 
 #ifdef __APPLE__

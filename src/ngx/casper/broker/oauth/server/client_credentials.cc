@@ -149,7 +149,7 @@ void ngx::casper::broker::oauth::server::ClientCredentials::AsyncRun (ngx::caspe
         
         // ... search for 'count' and 'scope' values ...
         std::set<int> ignored_idxs;
-        for ( Json::ArrayIndex idx = 0 ; idx < value.Size() ; idx += 2 ) {
+        for ( int idx = 0 ; idx < static_cast<int>(value.Size()) ; idx += 2 ) {
             if ( 0 == value[idx].String().compare(k_client_redirect_uri_field_) ) {
                 ignored_idxs.insert(idx);
             } else if ( 0 == value[idx].String().compare(k_client_scope_field_) ) {
@@ -176,7 +176,7 @@ void ngx::casper::broker::oauth::server::ClientCredentials::AsyncRun (ngx::caspe
         }
         
         /* copy 'template' values */
-        for ( Json::ArrayIndex idx = 0 ; idx < value.Size() ; idx += 2 ) {
+        for ( int idx = 0 ; idx < static_cast<int>(value.Size()) ; idx += 2 ) {
             if ( ignored_idxs.end() != ignored_idxs.find(idx) ) {
                 continue;
             }
