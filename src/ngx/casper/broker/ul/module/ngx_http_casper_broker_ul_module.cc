@@ -46,7 +46,7 @@ static ngx_int_t ngx_http_casper_broker_ul_module_filter_init      (ngx_conf_t* 
 static void      ngx_http_casper_broker_ul_module_read_body_callback (ngx_http_request_t* a_r);
 static void      ngx_http_casper_broker_ul_module_cleanup_handler    (void*);
 
-static ngx_int_t ngx_http_casper_broker_ul_ensure_output             (ngx_http_casper_broker_ul_module_context_t* a_context, std::string& o_uri);
+static ngx_uint_t ngx_http_casper_broker_ul_ensure_output             (ngx_http_casper_broker_ul_module_context_t* a_context, std::string& o_uri);
 
 static const ngx_str_t  NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOW_ORIGIN  = ngx_string("Access-Control-Allow-Origin");
 static const ngx_str_t  NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOW_METHODS = ngx_string("Access-Control-Allow-Methods");
@@ -618,7 +618,7 @@ ngx_int_t ngx_http_casper_broker_ul_module_content_handler (ngx_http_request_t* 
 			delete context;
 			return NGX_HTTP_BAD_REQUEST;
 		}
-		context->content_length_ = a_r->headers_in.content_length_n;
+		context->content_length_ = static_cast<decltype(context->content_length_)>(a_r->headers_in.content_length_n);
         // ... check limit ( if any ) ...
         if ( 0 != loc_conf->max_content_length && context->content_length_ > loc_conf->max_content_length ) {
             NGX_BROKER_MODULE_ERROR_LOG(ngx_http_casper_broker_ul_module, a_r, "ul_module",
@@ -828,7 +828,7 @@ static void ngx_http_casper_broker_ul_module_read_body_callback (ngx_http_reques
                                                ( std::string("Error while moving file to final destination - ") + strerror(rv) ).c_str()
                 );
             } else {
-                context->file_.bytes_written_ = chain->buf->file_last - chain->buf->file_pos;
+                context->file_.bytes_written_ = static_cast<size_t>(chain->buf->file_last - chain->buf->file_pos);
             }
 
             goto done;
@@ -863,7 +863,7 @@ static void ngx_http_casper_broker_ul_module_read_body_callback (ngx_http_reques
                 
                 // ... read fro memory ....
                 u_char* buffer_ptr = chain->buf->pos;
-                size_t  bytes_read = chain->buf->last - buffer_ptr;
+                size_t  bytes_read = static_cast<size_t>(chain->buf->last - buffer_ptr);
                 
                 // ... write data to file ...
                 try {
@@ -1371,7 +1371,7 @@ static void ngx_http_casper_broker_ul_module_cleanup_handler (void* a_data)
  * @param a_context
  * @param o_uri
  */
-static ngx_int_t ngx_http_casper_broker_ul_ensure_output (ngx_http_casper_broker_ul_module_context_t* a_context, std::string& o_uri)
+static ngx_uint_t ngx_http_casper_broker_ul_ensure_output (ngx_http_casper_broker_ul_module_context_t* a_context, std::string& o_uri)
 {
     std::string tmp_uri = a_context->file_.directory_;
     
