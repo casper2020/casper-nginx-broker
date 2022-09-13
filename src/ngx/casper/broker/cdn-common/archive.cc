@@ -1036,9 +1036,9 @@ void ngx::casper::broker::cdn::Archive::IDFromURLPath (const std::string& a_path
     // ... extract id from URL path ...
     const char* const ext_dot_ptr = strrchr(start_ptr, '.');
     if ( nullptr != ext_dot_ptr ) {
-        o_id = std::string(start_ptr, ext_dot_ptr - start_ptr);
+        o_id = std::string(start_ptr, static_cast<size_t>(ext_dot_ptr - start_ptr));
     } else if ( nullptr != args_ptr ) {
-        o_id = std::string(start_ptr, args_ptr - start_ptr);
+        o_id = std::string(start_ptr, static_cast<size_t>(args_ptr - start_ptr));
     } else {
         o_id = start_ptr;
     }
@@ -1056,7 +1056,7 @@ void ngx::casper::broker::cdn::Archive::IDFromURLPath (const std::string& a_path
     if ( nullptr != o_ext ) {
         if ( nullptr != ext_dot_ptr ) {
             if ( nullptr != args_ptr ) {
-                (*o_ext) = std::string(ext_dot_ptr + sizeof(char), args_ptr - ext_dot_ptr - sizeof(char));
+                (*o_ext) = std::string(ext_dot_ptr + sizeof(char), static_cast<size_t>(args_ptr - ext_dot_ptr) - sizeof(char));
             } else {
                 (*o_ext) = std::string(ext_dot_ptr + sizeof(char));
             }

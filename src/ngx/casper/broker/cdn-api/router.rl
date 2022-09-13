@@ -45,7 +45,7 @@
         
     action insert_include
     {
-        const size_t l = ( p - param_value_start_ptr );
+        const size_t l = static_cast<size_t>( p - param_value_start_ptr );
         if ( l > 0 ) {
             o_params["include"].insert(std::string(p - l, l));
         }

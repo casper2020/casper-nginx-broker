@@ -65,20 +65,20 @@
         __permission => {
             // fprintf(stdout, "__permission: %s\n", std::string(ts_, te_ - ts_).c_str());fflush(stdout);
             rv = ngx::casper::broker::cdn::common::ast::Parser::token::PERM;
-            (*value) = std::string(ts_, te_ - ts_);
+            (*value) = std::string(ts_, static_cast<size_t>(te_ - ts_));
             fbreak;
         };
 
         __variable    => {
-            // fprintf(stdout, "__variable: %s\n", std::string(ts_, te_ - ts_).c_str());fflush(stdout);
+            // fprintf(stdout, "__variable: %s\n", std::string(ts_, static_cast<size_t>(te_ - ts_)).c_str());fflush(stdout);
             rv = ngx::casper::broker::cdn::common::ast::Parser::token::VAR;
-            (*value) = std::string(ts_, te_ - ts_);
+            (*value) = std::string(ts_, static_cast<size_t>(te_ - ts_));
             fbreak;
         };
      
         __number => {
             // fprintf(stdout, "__number: " UINT64_FMT "\n", number_);fflush(stdout);
-            if ( 1 == sscanf(std::string(ts_, te_ - ts_).c_str(), UINT64_FMT, &number_) ) {
+            if ( 1 == sscanf(std::string(ts_, static_cast<size_t>(te_ - ts_)).c_str(), UINT64_FMT, &number_) ) {
                 (*value) = number_;
                 rv = ngx::casper::broker::cdn::common::ast::Parser::token::NUM;
             } else {
@@ -88,11 +88,11 @@
         };
 
         __hex_number => {
-            // fprintf(stdout, "hex number: %s\n", std::string(ts_, te_ - ts_).c_str());fflush(stdout);
-            if ( 1 == sscanf(std::string(ts_, te_ - ts_).c_str(), UINT64_HEX_FMT, &number_) ) {
+            // fprintf(stdout, "hex number: %s\n", std::string(ts_, static_cast<size_t>(te_ - ts_)).c_str());fflush(stdout);
+            if ( 1 == sscanf(std::string(ts_, static_cast<size_t>(te_ - ts_)).c_str(), UINT64_HEX_FMT, &number_) ) {
                 (*value) = number_;
                 rv = ngx::casper::broker::cdn::common::ast::Parser::token::HEX;
-            } else if ( 1 == sscanf(std::string(ts_, te_ - ts_).c_str(), UINT64_hex_FMT, &number_) ) {
+            } else if ( 1 == sscanf(std::string(ts_, static_cast<size_t>(te_ - ts_)).c_str(), UINT64_hex_FMT, &number_) ) {
                 (*value) = number_;
                 rv = ngx::casper::broker::cdn::common::ast::Parser::token::HEX;
             } else {

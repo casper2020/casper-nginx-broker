@@ -907,12 +907,12 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                             if ( nullptr == v ) {
                                 break;
                             }
-                            const char* kv = ptr; const size_t kl = ( v - ptr );
+                            const char* kv = ptr; const size_t kl = static_cast<size_t>(v - ptr);
                             v+= sizeof(char);
                             if ( ' ' == v[0] ) {
                                 v += sizeof(char);
                             }
-                            const size_t vl = len - ( v - ptr );
+                            const size_t vl = len - static_cast<size_t>(v - ptr);
                             ctx_.response_.headers_[std::string(kv, kl)] = std::string(v, vl);
                         }
                         ++idx;
@@ -972,7 +972,7 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                                                                      /* status-code  */ ctx_.response_.status_code_,
                                                                      /* content-type */ content_type,
                                                                      /* body         */ std::string(primitive_protocol_[2].start_, primitive_protocol_[2].unsigned_value_),
-                                                                     /* length       */ primitive_protocol_[2].end_ - primitive_protocol_[2].start_,
+                                                                     /* length       */ static_cast<size_t>(primitive_protocol_[2].end_ - primitive_protocol_[2].start_),
                                                                      /* binary       */  ( false == is_text )
                     );
                 };

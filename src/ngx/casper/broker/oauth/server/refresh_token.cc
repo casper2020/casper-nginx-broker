@@ -197,7 +197,7 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
         
         // ... search for 'count' and 'scope' values ...
         std::set<int> ignored_idxs;
-        for ( Json::ArrayIndex idx = 0 ; idx < value.Size() ; idx += 2 ) {
+        for ( int idx = 0 ; idx < static_cast<int>(value.Size()) ; idx += 2 ) {
              if ( 0 == value[idx].String().compare(k_client_scope_field_) ) {
                  // ... validate and 'grant' scope(s) ...
                  ngx::casper::broker::oauth::server::Scope scope(value[idx+1]);
@@ -231,7 +231,7 @@ void ngx::casper::broker::oauth::server::RefreshToken::AsyncRun (ngx::casper::br
         }
         
         /* copy 'template' values */
-        for ( Json::ArrayIndex idx = 0 ; idx < value.Size() ; idx += 2 ) {
+        for ( int idx = 0 ; idx < static_cast<int>(value.Size()) ; idx += 2 ) {
             if ( ignored_idxs.end() != ignored_idxs.find(idx) ) {
                 continue;
             }
