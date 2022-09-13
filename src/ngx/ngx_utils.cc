@@ -40,7 +40,7 @@ void ngx::utls::nrs_ngx_unescape_uri (ngx_str_t* a_value)
     ngx_unescape_uri(&dst, &src, a_value->len, NGX_UNESCAPE_URI);
     if ( dst < src ) {
         *dst = '\0';
-        a_value->len = dst - a_value->data;
+        a_value->len = static_cast<decltype(a_value->len)>(dst - a_value->data);
     }
 }
 
@@ -114,7 +114,7 @@ ngx_table_elt_t* ngx::utls::nrs_ngx_add_response_header (ngx_http_request_t* a_r
  * @param a_r
  * @param a_status HTTP status code.
  */
-ngx_int_t ngx::utls::nrs_ngx_send_only_header_response (ngx_http_request_t* a_r, ngx_int_t a_status)
+ngx_int_t ngx::utls::nrs_ngx_send_only_header_response (ngx_http_request_t* a_r, ngx_uint_t a_status)
 {
     ngx_int_t rc;
     
@@ -315,7 +315,7 @@ ngx_int_t ngx::utls::nrs_ngx_parse_content_type (const std::string& a_header, st
     
     const char* sep = strchr(type_ptr, ';');
     if ( nullptr != sep ) {
-        o_type = std::string(type_ptr, sep - type_ptr);
+        o_type = std::string(type_ptr, static_cast<size_t>(sep - type_ptr));
     } else {
         o_type = type_ptr;
     }
@@ -350,7 +350,7 @@ ngx_int_t ngx::utls::nrs_ngx_parse_content_type (const std::string& a_header, st
     
     const char* sep = strchr(type_ptr, ';');
     if ( nullptr != sep ) {
-        o_type = std::string(type_ptr, sep - type_ptr);
+        o_type = std::string(type_ptr, static_cast<size_t>(sep - type_ptr));
         const char* charset_ptr = strcasestr(sep + sizeof(char), "charset=");
         if ( nullptr != charset_ptr ) {
             charset_ptr += ( sizeof(char) * 8 );
@@ -432,7 +432,7 @@ ngx_int_t ngx::utls::nrs_ngx_parse_content_disposition (const std::string& a_hea
     
     const char* sep = strchr(disposition_ptr, ';');
     if ( nullptr != sep ) {
-        o_disposition = std::string(disposition_ptr, sep - disposition_ptr);
+        o_disposition = std::string(disposition_ptr, static_cast<size_t>(sep - disposition_ptr));
         disposition_ptr += ( sep - disposition_ptr );
         // ... has name ?
         typedef struct {
@@ -460,7 +460,7 @@ ngx_int_t ngx::utls::nrs_ngx_parse_content_disposition (const std::string& a_hea
                     disposition_ptr = sep + search_prefix.length();
                     sep = strchr(disposition_ptr, '"');
                     if ( nullptr != sep ) {
-                        entry.value_ = std::string(disposition_ptr, sep - disposition_ptr);
+                        entry.value_ = std::string(disposition_ptr, static_cast<size_t>(sep - disposition_ptr));
                         sep++;
                     } else {
                         return NGX_ERROR;
@@ -658,7 +658,7 @@ ngx_int_t ngx::utls::nrs_ngx_parse_arg_as_uri (ngx_http_request_t* a_r, const ch
     
     u_char* dst_sp = dst.data;    
     ngx_unescape_uri(&dst.data, &src.data, src.len, NGX_UNESCAPE_URI);
-    dst.len   = dst.data - dst_sp;
+    dst.len   = static_cast<decltype(dst.len)>(dst.data - dst_sp);
     dst.data -= dst.len;
     src.data -= src.len;
 
@@ -810,7 +810,7 @@ ngx_int_t ngx::utls::nrs_ngx_unescape_uri (ngx_http_request_t* a_r, const char* 
     
     u_char* dst_sp = dst.data;
     ngx_unescape_uri(&dst.data, &src.data, src.len, NGX_UNESCAPE_URI);
-    dst.len   = dst.data - dst_sp;
+    dst.len   = static_cast<decltype(dst.len)>(dst.data - dst_sp);
     dst.data -= dst.len;
     src.data -= src.len;
     

@@ -86,7 +86,7 @@ namespace ngx
                                                                       const ngx_str_t* a_name, const ngx_str_t* a_value);
         
         static ngx_int_t        nrs_ngx_send_only_header_response    (ngx_http_request_t* a_r,
-                                                                      ngx_int_t a_http_status_code);
+                                                                      ngx_uint_t a_http_status_code);
 
         static void             nrs_ngx_read_in_headers              (ngx_http_request_t* a_r, HeadersMap& o_map);
         static void             nrs_ngx_read_out_headers             (ngx_http_request_t* a_r, HeadersMap& o_map);
