@@ -2400,7 +2400,7 @@ ngx_int_t ngx::casper::broker::Module::EnsureDirectives (ngx_module_t& a_module_
     if ( NGX_OK != ngx_return_code || a_errors->Count() > 0 ) {
         const std::string data = a_errors->Serialize2JSON();
         ngx::casper::broker::Module::WriteResponse(a_module_t, a_r, nullptr,
-                                                   ngx_return_code, a_errors->content_type_.c_str(),
+                                                   static_cast<ngx_uint_t>(ngx_return_code), a_errors->content_type_.c_str(),
                                                    data.c_str(), data.length(), /* a_binary */ false,
                                                    /* a_finalize */ false,
                                                    log_token.c_str()

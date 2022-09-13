@@ -61,8 +61,8 @@ namespace ngx
 
                     protected: // Data Type(s)
                         
-                        typedef std::set<ngx_int_t> ImplementedMethods;
-                        typedef std::set<ngx_int_t> ContentHeadersMethods;
+                        typedef std::set<ngx_uint_t> ImplementedMethods;
+                        typedef std::set<ngx_uint_t> ContentHeadersMethods;
 
                         typedef struct {
                             const ngx_str_t*  protocol_;

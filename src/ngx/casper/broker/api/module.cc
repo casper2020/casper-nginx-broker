@@ -353,8 +353,8 @@ void ngx::casper::broker::api::Module::OnJSONAPIReply (const char* a_uri, const 
  ngx::casper::broker::api::Module::OnOnGatekeeperDeflectToJob (const std::string& a_tube, ssize_t a_ttr, ssize_t a_valitity)
 {
     ::ev::auth::route::Gatekeeper::DeflectorResult rv = {
-        /* ttr_            */ ( a_ttr > 0 ? a_ttr : job_.ttr() ),
-        /* validity_       */ ( a_valitity > 0 ? a_valitity : job_.expires_in() ),
+        /* ttr_            */ ( a_ttr > 0 ? static_cast<size_t>(a_ttr) : job_.ttr() ),
+        /* validity_       */ ( a_valitity > 0 ? static_cast<size_t>(a_valitity) : job_.expires_in() ),
         /* status_code_    */ NGX_HTTP_INTERNAL_SERVER_ERROR,
         /* status_message_ */ ""
     };
@@ -391,7 +391,7 @@ void ngx::casper::broker::api::Module::OnJSONAPIReply (const char* a_uri, const 
  * @param a_validity
  * @param a_access_token
  */
-ngx_int_t ngx::casper::broker::api::Module::PostJob (const ngx_int_t a_method,
+ngx_int_t ngx::casper::broker::api::Module::PostJob (const ngx_uint_t a_method,
                                                      const std::string& a_urn, const std::string& a_body,
                                                      const std::string& a_tube, const ssize_t a_ttr, const ssize_t a_validity,
                                                      const std::string& a_access_token)

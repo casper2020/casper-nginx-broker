@@ -545,7 +545,7 @@ static void* ngx_http_casper_broker_module_create_loc_conf (ngx_conf_t* a_cf)
     conf->curl_max_conn_per_worker         = NGX_CONF_UNSET;
     // ... beanstalk ...
     conf->beanstalkd.host                  = ngx_null_string;
-    conf->beanstalkd.port                  = NGX_CONF_UNSET;
+    conf->beanstalkd.port                  = NGX_CONF_UNSET_UINT;
     conf->beanstalkd.timeout               = NGX_CONF_UNSET;
     conf->beanstalkd.tubes.action          = ngx_null_string;
     conf->beanstalkd.tubes.sessionless     = ngx_null_string;
@@ -562,7 +562,7 @@ static void* ngx_http_casper_broker_module_create_loc_conf (ngx_conf_t* a_cf)
     conf->cdn.h2e_map                      = ngx_null_string;
     conf->cdn.redirect.protocol            = ngx_null_string;
     conf->cdn.redirect.host                = ngx_null_string;
-    conf->cdn.redirect.port                = NGX_CONF_UNSET;
+    conf->cdn.redirect.port                = NGX_CONF_UNSET_UINT;
     conf->cdn.redirect.path                = ngx_null_string;
     conf->cdn.redirect.location            = ngx_null_string;
     conf->cdn.response.content_disposition = ngx_null_string;

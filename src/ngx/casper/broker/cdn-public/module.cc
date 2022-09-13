@@ -217,7 +217,7 @@ ngx_int_t ngx::casper::broker::cdn::pub::Module::Setup ()
         return ctx_.response_.return_code_;
     }
 
-    const std::string b64 = ::cc::auth::JWT::MakeBrowsersUnhappy(std::string(ptr, end - ptr));
+    const std::string b64 = ::cc::auth::JWT::MakeBrowsersUnhappy(std::string(ptr, static_cast<size_t>(end - ptr)));
  
     // ... verify JWT signature ...
     const int64_t now = cc::UTCTime::Now();

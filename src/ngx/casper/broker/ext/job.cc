@@ -690,7 +690,7 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                 );
                 
                 // ... timeout above limit?
-                if ( job_expires_in_ > broker_conf->jobs.timeouts.max ) {
+                if ( job_expires_in_ > static_cast<size_t>(broker_conf->jobs.timeouts.max) ) {
                     // ... yes, enforce?
                     if ( 1 == broker_conf->jobs.timeouts.enforce ) {
                         // ... yes, log ...

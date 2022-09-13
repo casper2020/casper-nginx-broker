@@ -182,11 +182,11 @@ static void* ngx_http_casper_broker_cdn_archive_module_create_loc_conf (ngx_conf
     conf->enable                      = NGX_CONF_UNSET;
     conf->log_token                   = ngx_null_string;
     conf->sync.tube                   = ngx_null_string;
-    conf->sync.ttr                    = NGX_CONF_UNSET;
-    conf->sync.validity               = NGX_CONF_UNSET;
+    conf->sync.ttr                    = NGX_CONF_UNSET_UINT;
+    conf->sync.validity               = NGX_CONF_UNSET_UINT;
     conf->sync.slaves                 = ngx_null_string;
     conf->quarantine.directory_prefix = ngx_null_string;
-    conf->quarantine.validity         = NGX_CONF_UNSET;
+    conf->quarantine.validity         = NGX_CONF_UNSET_UINT;
 
     return conf;
 }

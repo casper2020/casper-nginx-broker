@@ -673,16 +673,16 @@ namespace ngx
                 } Cookie;
                 
                 typedef struct {
-                    std::string         protocol_;
-                    std::string         host_;
-                    ngx_uint_t          port_;
-                    std::string         path_;
-                    std::string         file_;
-                    std::string         uri_;
-                    bool                internal_;
-                    bool                asynchronous_;
-                    std::string         location_;
-                    std::set<ngx_int_t> supported_methods_;
+                    std::string          protocol_;
+                    std::string          host_;
+                    ngx_uint_t           port_;
+                    std::string          path_;
+                    std::string          file_;
+                    std::string          uri_;
+                    bool                 internal_;
+                    bool                 asynchronous_;
+                    std::string          location_;
+                    std::set<ngx_uint_t> supported_methods_;
                 } RedirectData;
                 
                 typedef struct {
@@ -784,9 +784,9 @@ namespace ngx
                 CTX                     ctx_;
                 Executor*               executor_;
                 std::string             service_id_;
-                std::set<ngx_int_t>     body_read_supported_methods_;
-                std::set<ngx_int_t>     body_read_bypass_methods_;
-                std::set<ngx_int_t>     body_read_allow_empty_methods_;
+                std::set<ngx_uint_t>    body_read_supported_methods_;
+                std::set<ngx_uint_t>    body_read_bypass_methods_;
+                std::set<ngx_uint_t>    body_read_allow_empty_methods_;
                 
             public: // Constructor(s) / Destructor
                 

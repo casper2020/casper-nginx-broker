@@ -142,7 +142,7 @@ void ngx::casper::broker::cdn::common::db::Object::AsyncQueryAndSerializeToJSON 
                     Json::Value record = Json::Value(Json::ValueType::objectValue);
                     try {
                         Json::Reader reader;
-                        for ( int column = 0 ; column < a_value.columns_count() ; ++column ) {
+                        for ( size_t column = 0 ; column < static_cast<size_t>(a_value.columns_count()) ; ++column ) {
                             const char* const value = a_value.raw_value(/* a_row */ 0, /* a_column */ column);
                             if ( nullptr == value || 0 == strlen(value) ) {
                                 record[a_value.column_name(column)] = Json::Value::null;

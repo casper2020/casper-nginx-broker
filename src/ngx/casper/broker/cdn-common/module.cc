@@ -195,7 +195,7 @@ ngx_int_t ngx::casper::broker::cdn::common::Module::Setup ()
             {
                 const char* uri = ctx_.request_.uri_.c_str();
                 const char* pch = strrchr(ctx_.request_.uri_.c_str(), '/');
-                if ( nullptr == pch || ( ctx_.request_.uri_.length() - ( pch - uri ) ) < 10 ) { // aBBcccccc
+                if ( nullptr == pch || ( ctx_.request_.uri_.length() - static_cast<size_t>( pch - uri ) ) < 10 ) { // aBBcccccc
                     NGX_BROKER_MODULE_SET_BAD_REQUEST_ERROR_I18N(ctx_, "BROKER_MISSING_OR_INVALID_URN_ERROR");
                 }
                 args.data = ctx_.ngx_ptr_->args.data;

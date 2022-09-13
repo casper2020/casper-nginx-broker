@@ -201,7 +201,7 @@
     
     action save_variable
     {
-        const auto        rwnd     = ( p_ - read_ptr_ );
+        const auto        rwnd     = static_cast<size_t>( p_ - read_ptr_ );
         const std::string variable = std::string(read_ptr_, rwnd);
         
         (*expression_->value_.current_) = a_callback(variable);

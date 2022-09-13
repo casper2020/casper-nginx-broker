@@ -177,8 +177,8 @@ static void* ngx_http_casper_broker_cdn_api_module_create_loc_conf (ngx_conf_t* 
     conf->directory_prefix = ngx_null_string;
     
     conf->sideline.tube     = ngx_null_string;
-    conf->sideline.ttr      = NGX_CONF_UNSET;
-    conf->sideline.validity = NGX_CONF_UNSET;
+    conf->sideline.ttr      = NGX_CONF_UNSET_UINT;
+    conf->sideline.validity = NGX_CONF_UNSET_UINT;
     conf->sideline.slaves   = ngx_null_string;
     
     return conf;
