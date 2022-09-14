@@ -148,7 +148,7 @@ void ngx::casper::broker::cdn::common::db::Billing::Get (const uint64_t& a_id, c
                     Json::Value record = Json::Value(Json::ValueType::objectValue);
                     try {
                         Json::Reader reader;
-                        for ( int column = 0 ; column < a_value.columns_count() ; ++column ) {
+                        for ( size_t column = 0 ; column < static_cast<size_t>(a_value.columns_count()) ; ++column ) {
                             if ( false == reader.parse(a_value.raw_value(/* a_row */ 0, /* a_column */ column), record[a_value.column_name(column)]) ) {
                                 const auto errors = reader.getStructuredErrors();
                                 if ( errors.size() > 0 ) {

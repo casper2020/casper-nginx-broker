@@ -862,13 +862,13 @@ static void ngx_http_casper_broker_ul_module_read_body_callback (ngx_http_reques
             while ( ( 0 == context->error_tracker_->Count() ) && NULL != chain ) {
                 
                 // ... read fro memory ....
-                u_char* buffer_ptr = chain->buf->pos;
-                size_t  bytes_read = static_cast<size_t>(chain->buf->last - buffer_ptr);
+                u_char* chain_buffer_ptr = chain->buf->pos;
+                size_t  chain_bytes_read = static_cast<size_t>(chain->buf->last - chain_buffer_ptr);
                 
                 // ... write data to file ...
                 try {
-                    context->file_.bytes_written_ += context->file_.writer_->Write(buffer_ptr, bytes_read, /* a_flush */ true);
-                    context->file_.md5_.Update(buffer_ptr, bytes_read);
+                    context->file_.bytes_written_ += context->file_.writer_->Write(chain_buffer_ptr, chain_bytes_read, /* a_flush */ true);
+                    context->file_.md5_.Update(chain_buffer_ptr, chain_bytes_read);
                 } catch (const cc::Exception& a_cc_exception) {
                     ss.str("");
                     ss << "Error while writing to file '" << context->file_.writer_->URI() << "': " << a_cc_exception.what();

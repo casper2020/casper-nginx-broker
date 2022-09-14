@@ -345,7 +345,7 @@ namespace ngx
                     }
                 }
 
-                DEFINE_ENUM_WITH_BITWISE_OPERATORS(Archive::Mode);
+                DEFINE_ENUM_WITH_BITWISE_OPERATORS(Archive::Mode)
                 
             } // end of namespace 'cdn'
             

@@ -802,21 +802,21 @@ ngx_int_t ngx::casper::broker::Module::Initialize (const ngx::casper::broker::Mo
     // REQUEST / EXECUTOR SETUP
     //
     
-    const auto async_or_finalize = [] (ngx::casper::broker::Module* module_ptr, uint16_t http_status_code, ngx_int_t ngx_return_code, bool a_force) -> ngx_int_t {
+    const auto async_or_finalize = [] (ngx::casper::broker::Module* a_module_ptr, uint16_t a_http_status_code, ngx_int_t a_ngx_return_code, bool a_force) -> ngx_int_t {
                 
-        if ( NGX_DECLINED == module_ptr->ctx_.response_.return_code_ ) {
-            return module_ptr->ctx_.response_.return_code_;
+        if ( NGX_DECLINED == a_module_ptr->ctx_.response_.return_code_ ) {
+            return a_module_ptr->ctx_.response_.return_code_;
         }
         
         // ... if it will be an asynchronous response ...
-        if ( NGX_AGAIN == module_ptr->ctx_.response_.return_code_ || true == module_ptr->ctx_.response_.asynchronous_ ) {
-            module_ptr->ctx_.cycle_cnt_++;
+        if ( NGX_AGAIN == a_module_ptr->ctx_.response_.return_code_ || true == a_module_ptr->ctx_.response_.asynchronous_ ) {
+            a_module_ptr->ctx_.cycle_cnt_++;
             // ... we're done for now ...
-            return module_ptr->ctx_.response_.return_code_;
+            return a_module_ptr->ctx_.response_.return_code_;
         }
         
         // .. we're done and we've got a response ready ...
-        return ngx::casper::broker::Module::FinalizeRequest(module_ptr, &http_status_code, &ngx_return_code, a_force);
+        return ngx::casper::broker::Module::FinalizeRequest(a_module_ptr, &a_http_status_code, &a_ngx_return_code, a_force);
 
     };
     
@@ -862,8 +862,8 @@ ngx_int_t ngx::casper::broker::Module::Initialize (const ngx::casper::broker::Mo
         const ngx_int_t vr_rc = module_ptr->ValidateRequest([async_or_finalize, module_ptr]() {
 
             // ... we're ready to run now  ...
-            ngx_int_t ngx_return_code  = module_ptr->Run();
-            uint16_t  http_status_code = module_ptr->ctx_.response_.status_code_;
+            ngx_int_t validate_ngx_return_code  = module_ptr->Run();
+            uint16_t  validate_http_status_code = module_ptr->ctx_.response_.status_code_;
             
             ::ev::scheduler::Scheduler::GetInstance().SetClientTimeout(
                                                                        /* a_client */
@@ -871,8 +871,8 @@ ngx_int_t ngx::casper::broker::Module::Initialize (const ngx::casper::broker::Mo
                                                                        /* a_ms */
                                                                        10,
                                                                        /* a_callback */
-                                                                       [module_ptr, async_or_finalize, ngx_return_code, http_status_code] () {
-                                                                           async_or_finalize(module_ptr, http_status_code, ngx_return_code, /* a_force */ true);
+                                                                       [module_ptr, async_or_finalize, validate_ngx_return_code, validate_http_status_code] () {
+                                                                           async_or_finalize(module_ptr, validate_http_status_code, validate_ngx_return_code, /* a_force */ true);
                                                                        }
            );
 

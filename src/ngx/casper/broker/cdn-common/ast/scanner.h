@@ -88,7 +88,7 @@ namespace ngx
                         public: // Method(s) / Function(s)
                             
                             void               Set               (const char* a_data, size_t a_length);
-                            void               ThrowParsingError (const std::string& a_title, const unsigned int& a_column);
+                            void               ThrowParsingError (const std::string& a_title, const size_t a_column);
                             Parser::token_type Scan               (Parser::semantic_type* o_value, location* o_location);
                             
                         }; // end of class 'Scanner'

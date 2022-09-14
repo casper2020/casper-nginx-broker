@@ -79,7 +79,6 @@ namespace ngx
                     private: // Helper(s)
                         
                         Archive             archive_;
-                        Json::Reader        json_reader_;
                         
                     private: // Data
                         

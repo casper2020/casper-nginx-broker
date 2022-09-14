@@ -170,7 +170,7 @@ ngx::casper::broker::cdn::common::ast::Parser::token_type ngx::casper::broker::c
             &&
         ngx::casper::broker::cdn::common::ast::Node::Type::Undefined == (*o_value)->type()
     ) {
-        ngx::casper::broker::cdn::common::ast::Scanner::ThrowParsingError("Scanner error", o_location->begin.column);
+        ngx::casper::broker::cdn::common::ast::Scanner::ThrowParsingError("Scanner error", static_cast<size_t>(o_location->begin.column));
     }
     
     return rv;
@@ -182,9 +182,9 @@ ngx::casper::broker::cdn::common::ast::Parser::token_type ngx::casper::broker::c
  * @param a_title
  * @param a_column
  */
-void ngx::casper::broker::cdn::common::ast::Scanner::ThrowParsingError (const std::string& a_title, const unsigned int& a_column)
+void ngx::casper::broker::cdn::common::ast::Scanner::ThrowParsingError (const std::string& a_title, const size_t a_column)
 {
-    const size_t l1 = a_title.length() + ( ( pe_ - input_ ) + ( a_column + 20 ) ) * sizeof(char);
+    const size_t l1 = a_title.length() + ( static_cast<size_t>( pe_ - input_ ) + ( a_column + 20 ) ) * sizeof(char);
     char* b1        = new char[l1]; b1[0] = '\0';
 
     snprintf(b1, l1 - sizeof(char),
@@ -193,7 +193,7 @@ void ngx::casper::broker::cdn::common::ast::Scanner::ThrowParsingError (const st
              "   %*.*s^~~~~~\n",
              a_title.c_str(),
              (int)(pe_ - input_), (int)(pe_ - input_), input_,
-             a_column, a_column, " "
+             (int)a_column, (int)a_column, " "
     );
 
     const std::string msg = std::string(b1);

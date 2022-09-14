@@ -176,9 +176,9 @@ ngx::casper::broker::ext::Job::Job (ngx::casper::broker::Module::CTX& a_ctx, ngx
             if ( NGX_OK == ctx_.response_.return_code_ ) {
                 // ... set job allowed patch objects ...
                 if ( a_ngx_loc_conf.jwt_allowed_patch_members_set.len > 0 ) {
-                    const std::string payload = std::string(reinterpret_cast<const char*>(a_ngx_loc_conf.jwt_allowed_patch_members_set.data), a_ngx_loc_conf.jwt_allowed_patch_members_set.len);
+                    const std::string patch_payload = std::string(reinterpret_cast<const char*>(a_ngx_loc_conf.jwt_allowed_patch_members_set.data), a_ngx_loc_conf.jwt_allowed_patch_members_set.len);
                     Json::Value allowed_patch_members;
-                    if ( false == json_reader_.parse(payload, allowed_patch_members) ) {
+                    if ( false == json_reader_.parse(patch_payload, allowed_patch_members) ) {
                         // ... an error occurred ...
                         const auto errors = json_reader_.getStructuredErrors();
                         if ( errors.size() > 0 ) {
@@ -385,7 +385,7 @@ ngx_int_t ngx::casper::broker::ext::Job::Submit (const Json::Value& a_object,
             /* key   */ job_id_key_
         });
                          
-     })->Then([this] (::ev::Object* a_object) -> ::ev::Object* {
+     })->Then([this] (::ev::Object* a_object_prev) -> ::ev::Object* {
         
         //
         // INCR:
@@ -394,7 +394,7 @@ ngx_int_t ngx::casper::broker::ext::Job::Submit (const Json::Value& a_object,
         //
         //  - the value of key after the increment
         //
-        const ::ev::redis::Value& value = ::ev::redis::Reply::EnsureIntegerReply(a_object);
+        const ::ev::redis::Value& value = ::ev::redis::Reply::EnsureIntegerReply(a_object_prev);
         
         job_object_["id"] = std::to_string(value.Integer());
         
@@ -408,7 +408,7 @@ ngx_int_t ngx::casper::broker::ext::Job::Submit (const Json::Value& a_object,
             /* field */ "status", "{\"status\":\"queued\"}"
         });
         
-    })->Then([this] (::ev::Object* a_object) -> ::ev::Object* {
+    })->Then([this] (::ev::Object* a_object_prev) -> ::ev::Object* {
         
         //
         // HSET:
@@ -418,11 +418,11 @@ ngx_int_t ngx::casper::broker::ext::Job::Submit (const Json::Value& a_object,
         //  - 1 if field is a new field in the hash and value was set.
         //  - 0 if field already exists in the hash and the value was updated.
         //
-        (void)::ev::redis::Reply::EnsureIntegerReply(a_object);
+        (void)::ev::redis::Reply::EnsureIntegerReply(a_object_prev);
         
         return new ::ev::redis::Request(ctx_.loggable_data_ref_, "EXPIRE", { job_key_, std::to_string(job_expires_in_) });
         
-    })->Finally([this, a_success_callback] (::ev::Object* a_object) {
+    })->Finally([this, a_success_callback] (::ev::Object* a_object_prev) {
         
         //
         // EXPIRE:
@@ -431,7 +431,7 @@ ngx_int_t ngx::casper::broker::ext::Job::Submit (const Json::Value& a_object,
         // - 1 if the timeout was set.
         // - 0 if key does not exist or the timeout could not be set.
         //
-        ::ev::redis::Reply::EnsureIntegerReply(a_object, 1);
+        ::ev::redis::Reply::EnsureIntegerReply(a_object_prev, 1);
 
         // ... patch job id and tube ...
         job_object_["payload"]["id"] = job_object_["id"];

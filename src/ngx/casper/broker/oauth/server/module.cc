@@ -143,7 +143,7 @@ ngx_int_t ngx::casper::broker::oauth::server::Module::Run ()
             args.len  = nullptr != ctx_.request_.body_ ? strlen(ctx_.request_.body_) : 0;
             break;
         default:
-            return NGX_BROKER_MODULE_SET_HTTP_METHOD_NOT_IMPLEMENTED(ctx_);;
+            return NGX_BROKER_MODULE_SET_HTTP_METHOD_NOT_IMPLEMENTED(ctx_);
     }
     
     // ... no args, nothing to do ...
