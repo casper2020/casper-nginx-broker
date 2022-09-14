@@ -942,7 +942,7 @@ static void ngx_http_casper_broker_ul_module_read_body_callback (ngx_http_reques
             
             size_t bytes_used = 0;
             
-            ngx_int_t mpb_parse_rc = ngx::utls::nrs_ngx_parse_multipart_body(buffer_ptr, bytes_read, context->multipart_body_,
+            ngx_int_t mpb_parse_rc = ngx::utls::nrs_ngx_parse_multipart_body(buffer_ptr, static_cast<size_t>(bytes_read), context->multipart_body_,
                                                                              bytes_used);
             if ( NGX_AGAIN == mpb_parse_rc ) {
                 
@@ -990,10 +990,11 @@ static void ngx_http_casper_broker_ul_module_read_body_callback (ngx_http_reques
                     break;
                 }
                 // ... final adjustment ..
-                context->content_length_ = a_r->headers_in.content_length_n - ( /* includes first boundary */
-                                                                               context->multipart_body_.offset_ +
-                                                                               /* last boundary */
-                                                                               context->multipart_body_.boundary_.value_.length() + strlen(CRLF "--" CRLF)
+                context->content_length_ = static_cast<size_t>(a_r->headers_in.content_length_n - static_cast<off_t>( /* includes first boundary */
+                                                                                                                     context->multipart_body_.offset_ +
+                                                                                                                     /* last boundary */
+                                                                                                                     context->multipart_body_.boundary_.value_.length() + strlen(CRLF "--" CRLF)
+                                                                                                  )
                 );
                 
                 //
@@ -1034,14 +1035,14 @@ static void ngx_http_casper_broker_ul_module_read_body_callback (ngx_http_reques
                     break;
                 }
                 
-                if ( bytes_used > bytes_read ) {
+                if ( bytes_used > static_cast<size_t>(bytes_read) ) {
                     // ... sanity check failed!
                     http_status_code = NGX_HTTP_INTERNAL_SERVER_ERROR;
                     context->error_tracker_->Track("UL_AN_ERROR_OCCURRED_MESSAGE", http_status_code, "UL_AN_ERROR_OCCURRED_MESSAGE",
                                                    "Error while parsing multipart body data - used more bytes than received!"
                     );
                     break;
-                } else if ( bytes_used == bytes_read ) {
+                } else if ( bytes_used == static_cast<size_t>(bytes_read) ) {
                     read_offset += bytes_used;
                     continue;
                 } else {

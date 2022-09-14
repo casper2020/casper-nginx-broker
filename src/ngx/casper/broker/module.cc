@@ -211,7 +211,10 @@ ngx::casper::broker::Module::Module (const char* const a_name, const ngx::casper
                 }
             },
             /* landing_page_url_   */ a_config.landing_page_url_,
-            /* error_page_url_     */ a_config.error_page_url_,            
+            /* error_page_url_     */ a_config.error_page_url_,
+            /* errors_tracker_     */ { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
+            /* asynchronous_       */ false,
+            /* serialize_errors_   */ false
         },
         /* log_token_          */ a_config.log_token_,
         /* log_level_          */ NGX_LOG_DEBUG,
@@ -1045,16 +1048,16 @@ void ngx::casper::broker::Module::ReadBody (ngx_module_t& a_module, ngx_http_req
             } else {
                 while ( ( n = ngx_read_file(chain->buf->file, buffer, max_read, offset) ) > 0 ) {
                     if ( max_size < static_cast<size_t>(n) ) {
-                        size_t swp_size   = offset + n  ;
+                        size_t swp_size   = static_cast<size_t>(offset) + static_cast<size_t>(n);
                         char*  swp_buffer = new char[swp_size + 1];
-                        memcpy(swp_buffer, module->ctx_.request_.body_, offset);
+                        memcpy(swp_buffer, module->ctx_.request_.body_, static_cast<size_t>(offset));
                         delete [] module->ctx_.request_.body_;
                         module->ctx_.request_.body_ = swp_buffer;
-                        max_size += n;
+                        max_size += static_cast<size_t>(n);
                     }
                     memcpy(module->ctx_.request_.body_ + offset, reinterpret_cast<char const*>(buffer), static_cast<size_t>(n));
                     offset   += n;
-                    max_size -= n;
+                    max_size -= static_cast<size_t>(n);
                 }
             }
         } else {
@@ -1316,7 +1319,7 @@ void ngx::casper::broker::Module::WriteResponse (ngx_module_t& a_module, ngx_htt
             chain->next           = NULL;
             
             a_r->headers_out.status            = a_status_code;
-            a_r->headers_out.content_length_n  = payload->len;
+            a_r->headers_out.content_length_n  = static_cast<off_t>(payload->len);
             
             ngx::casper::broker::Module::SetOutHeaders(a_module, a_r, {
                 { "Content-Type", content_type }
@@ -2276,13 +2279,13 @@ ngx_int_t ngx::casper::broker::Module::WarmUp (ngx_module_t& a_module_t, ngx_htt
 
             std::stringstream ss;
 
-            ss << std::string(acceptable.c_str() + ( sep - acceptable.c_str() + sizeof(char) ));
+            ss << std::string(acceptable.c_str() + ( static_cast<size_t>(sep - acceptable.c_str()) + sizeof(char) ));
             
             while( std::getline(ss, acceptable, ',') ) {
                 
                 const char* weight_ptr = strchr(acceptable.c_str(), ';');
                 if ( nullptr != weight_ptr ) {
-                    if ( true == i18n.Contains(std::string(acceptable.c_str(), weight_ptr - acceptable.c_str())) ) {
+                    if ( true == i18n.Contains(std::string(acceptable.c_str(), static_cast<size_t>(weight_ptr - acceptable.c_str()))) ) {
                         o_params.locale_ = acceptable;
                         break;
                     }
