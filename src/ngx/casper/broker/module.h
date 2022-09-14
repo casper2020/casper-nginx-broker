@@ -257,21 +257,21 @@ namespace ngx
     #define NGX_BROKER_MODULE_SET_HTTP_METHOD_NOT_IMPLEMENTED(a_ctx) [&] () -> ngx_int_t { \
         a_ctx.response_.status_code_ = NGX_HTTP_NOT_IMPLEMENTED; \
         a_ctx.response_.return_code_ = NGX_ERROR; \
-        const char* const http_short_status_code = NGX_BROKER_MODULE_HTTP_SHORT_STATUS_CODE_STR(a_ctx.response_.status_code_); \
-        const auto method_it = ngx::casper::broker::Module::k_http_methods_map_.find((uint32_t)a_ctx.ngx_ptr_->method); \
-        if ( ngx::casper::broker::Module::k_http_methods_map_.end() != method_it ) { \
-            U_ICU_NAMESPACE::Formattable args[] = { \
-                method_it->second.c_str() \
+        const char* const __http_short_status_code = NGX_BROKER_MODULE_HTTP_SHORT_STATUS_CODE_STR(a_ctx.response_.status_code_); \
+        const auto __method_it = ngx::casper::broker::Module::k_http_methods_map_.find((uint32_t)a_ctx.ngx_ptr_->method); \
+        if ( ngx::casper::broker::Module::k_http_methods_map_.end() != __method_it ) { \
+            U_ICU_NAMESPACE::Formattable __args[] = { \
+                __method_it->second.c_str() \
             }; \
-            a_ctx.response_.errors_tracker_.add_i18n_v_(http_short_status_code, a_ctx.response_.status_code_, \
-                "BROKER_METHOD_NOT_IMPLEMENTED_ERROR", args, 1 \
+            a_ctx.response_.errors_tracker_.add_i18n_v_(__http_short_status_code, a_ctx.response_.status_code_, \
+                "BROKER_METHOD_NOT_IMPLEMENTED_ERROR", __args, 1 \
             ); \
         } else { \
-            U_ICU_NAMESPACE::Formattable args[] = { \
+            U_ICU_NAMESPACE::Formattable __args[] = { \
                 (int32_t)a_ctx.ngx_ptr_->method \
             }; \
-            a_ctx.response_.errors_tracker_.add_i18n_v_(http_short_status_code, a_ctx.response_.status_code_, \
-                "BROKER_METHOD_NOT_IMPLEMENTED_ERROR", args, 1 \
+            a_ctx.response_.errors_tracker_.add_i18n_v_(__http_short_status_code, a_ctx.response_.status_code_, \
+                "BROKER_METHOD_NOT_IMPLEMENTED_ERROR", __args, 1 \
             ); \
         } \
         return a_ctx.response_.status_code_; \
@@ -282,11 +282,11 @@ namespace ngx
     #define NGX_BROKER_MODULE_SET_ACTION_NOT_IMPLEMENTED(a_ctx, a_name) [&] () -> ngx_int_t { \
         a_ctx.response_.status_code_ = NGX_HTTP_BAD_REQUEST; \
         a_ctx.response_.return_code_ = NGX_ERROR; \
-        U_ICU_NAMESPACE::Formattable args [] = { \
+        U_ICU_NAMESPACE::Formattable __args [] = { \
             a_name \
         }; \
         a_ctx.response_.errors_tracker_.add_i18n_v_(NGX_BROKER_MODULE_HTTP_SHORT_STATUS_CODE_STR(a_ctx.response_.status_code_), ctx_.response_.status_code_, \
-            "BROKER_ACTION_NOT_IMPLEMENTED_ERROR", args, 1 \
+            "BROKER_ACTION_NOT_IMPLEMENTED_ERROR", __args, 1 \
         ); \
         return a_ctx.response_.return_code_; \
     } ()
