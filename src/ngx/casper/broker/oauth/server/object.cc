@@ -108,8 +108,8 @@ std::string ngx::casper::broker::oauth::server::Object::RandomString (std::size_
     
     std::string string;
     while (len--) {
-        string += hex[*random_bytes >> 4];
-        string += hex[*random_bytes++ & 0xf];
+        string += static_cast<char>(hex[*random_bytes >> 4]);
+        string += static_cast<char>(hex[*random_bytes++ & 0xf]);
     }
     random_bytes -= (static_cast<int>(a_length) / 2);
     delete [] random_bytes;

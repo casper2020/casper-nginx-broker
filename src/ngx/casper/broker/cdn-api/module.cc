@@ -42,7 +42,7 @@ ngx::casper::broker::cdn::common::db::Sideline::Settings ngx::casper::broker::cd
     /* tube_     */ "",
     /* ttr_      */ 300, // 5 min
     /* validity_ */ 290, // 4 min and 50 sec
-    /* slaves_   */ Json::Value::null
+    /* slaves_   */ Json::Value(Json::ValueType::nullValue)
 };
 
 #ifdef __APPLE__

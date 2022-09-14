@@ -389,7 +389,7 @@ ngx_int_t ngx::utls::nrs_ngx_parse_content_length (const std::string& a_header, 
         return NGX_ERROR;
     }
     
-    o_length = std::atoll(length_ptr);
+    o_length = static_cast<size_t>(std::strtoull(length_ptr, nullptr, 10));
     
     return NGX_OK;
 }

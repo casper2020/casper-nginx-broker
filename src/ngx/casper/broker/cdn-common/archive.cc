@@ -389,8 +389,8 @@ void ngx::casper::broker::cdn::Archive::Create (const ngx::casper::broker::cdn::
             static const char   dictionary[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             static const size_t limit        = (sizeof(dictionary) / sizeof(dictionary[0]) - 1);
             for ( size_t idx = 0; idx < ( sizeof(char) * 2 ) ; ++idx ) {
-                id_buffer[written + idx] = dictionary[random() % limit];
-                local_.id_ += ( id_buffer[written + idx] );
+                id_buffer[static_cast<size_t>(written) + idx] = dictionary[static_cast<size_t>(random()) % limit];
+                local_.id_ += ( id_buffer[static_cast<size_t>(written) + idx] );
             }
             id_buffer[18] = '\0';
             // ... set path and uri ...
@@ -732,7 +732,7 @@ void ngx::casper::broker::cdn::Archive::Delete (const std::string& a_path,
         // ... set quarantine path ...
         o_info.new_uri_ = a_quarantine->directory_prefix_;
         // ... get time w/offset ...
-        cc::UTCTime::HumanReadable now_hrt = cc::UTCTime::ToHumanReadable(cc::UTCTime::OffsetBy(a_quarantine->validity_));
+        cc::UTCTime::HumanReadable now_hrt = cc::UTCTime::ToHumanReadable(cc::UTCTime::OffsetBy(static_cast<int64_t>(a_quarantine->validity_)));
         char                       now_hrt_b[27];
 
         const int w = snprintf(now_hrt_b, 26, "%04d-%02d-%02d/",
@@ -1324,13 +1324,13 @@ void ngx::casper::broker::cdn::Archive::SetXAttrs (const std::map<std::string, s
         attrs[XATTR_ARCHIVE_PREFIX "com.cldware.archive.xattrs.created.at"] = cc::UTCTime::NowISO8601WithTZ();
     }
     
-    for ( auto it : attrs ) {
-        xattr_->Set(it.first, it.second);
+    for ( auto it2 : attrs ) {
+        xattr_->Set(it2.first, it2.second);
     }
     
-    for ( auto it : a_excluding ) {
-        if ( true == xattr_->Exists(it) ) {
-            xattr_->Remove(it);
+    for ( auto it3 : a_excluding ) {
+        if ( true == xattr_->Exists(it3) ) {
+            xattr_->Remove(it3);
         }
     }
     
@@ -1756,8 +1756,8 @@ void ngx::casper::broker::cdn::Archive::LoadACTConfig (const std::string& a_uri,
         throw ::cc::Exception(("An error occurred while opening file '" + a_uri + "' to read ACT configuration!" ));
     }    
     std::istream in_stream(&file);
-    SetACTConfig([&in_stream] (Json::Reader& a_reader, Json::Value& o_config) {
-        return a_reader.parse(in_stream, o_config);
+    SetACTConfig([&in_stream] (Json::Reader& a_reader, Json::Value& o_config_arg) {
+        return a_reader.parse(in_stream, o_config_arg);
     }, o_config);
 }
 
@@ -1770,8 +1770,8 @@ void ngx::casper::broker::cdn::Archive::LoadACTConfig (const std::string& a_uri,
  */
 void ngx::casper::broker::cdn::Archive::LoadACTConfig (const char* const a_data, size_t a_length, Json::Value& o_config)
 {
-    SetACTConfig([a_data, &a_length] (Json::Reader& a_reader, Json::Value& o_config) {
-        return a_reader.parse(a_data, a_data + a_length, o_config);
+    SetACTConfig([a_data, &a_length] (Json::Reader& a_reader, Json::Value& o_config_arg) {
+        return a_reader.parse(a_data, a_data + a_length, o_config_arg);
     }, o_config);
 }
 

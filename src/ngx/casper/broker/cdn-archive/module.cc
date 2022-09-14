@@ -1253,9 +1253,9 @@ void ngx::casper::broker::cdn::archive::Module::OnFetchBillingInformationSucceed
                 
                 int64_t op_delta_space;
                 if ( NGX_HTTP_PUT == ctx_.ngx_ptr_->method ) {
-                    op_delta_space = db_.sync_data_.old_.size_ - db_.sync_data_.new_.size_;
+                    op_delta_space = static_cast<int64_t>(db_.sync_data_.old_.size_) - static_cast<int64_t>(db_.sync_data_.new_.size_);
                 } else {
-                    op_delta_space = db_.sync_data_.new_.size_;
+                    op_delta_space = static_cast<int64_t>(db_.sync_data_.new_.size_);
                 }
                 const int64_t new_accounted_space = accounted_used_space + op_delta_space;
                 if ( new_accounted_space >= accounted_space_limit ) {

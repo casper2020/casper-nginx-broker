@@ -81,7 +81,7 @@
     action dgt
     {
         (*expression_->value_.current_) *= 10;
-        (*expression_->value_.current_) += (fc - '0');
+        (*expression_->value_.current_) += static_cast<uint64_t>(fc - '0');
     }
     
     action parse_error
@@ -233,11 +233,11 @@
         uint64_t base  = 1;
         for ( ssize_t idx = static_cast<ssize_t>(p_ - read_ptr_) - 1 ;  idx >= 2 /* 0x */ ; idx --) {
             if ( read_ptr_[idx] >= '0' && read_ptr_[idx] <= '9') {
-                (*expression_->value_.current_) += ( read_ptr_[idx] - 48 ) * base;
+                (*expression_->value_.current_) += static_cast<uint64_t>( read_ptr_[idx] - 48 ) * base;
             } else if ( read_ptr_[idx] >= 'A' && read_ptr_[idx] <= 'F') {
-                (*expression_->value_.current_) += ( read_ptr_[idx] - 55 ) * base;
+                (*expression_->value_.current_) += static_cast<uint64_t>( read_ptr_[idx] - 55 ) * base;
             } else if ( read_ptr_[idx] >= 'a' && read_ptr_[idx] <= 'f') {
-                (*expression_->value_.current_) += ( read_ptr_[idx] - 87 ) * base;
+                (*expression_->value_.current_) += static_cast<uint64_t>( read_ptr_[idx] - 87 ) * base;
             } else {
                 error_column_ = int(fpc - input_);
                 fbreak;
@@ -281,11 +281,11 @@
         NRS_NGX_CASPER_BROKER_CDN_COMMON_AST_EVALUATOR_DEBUG_TRACE("[ ↥ ] STACK PUSH: top_: %d, stack_size_: %d\n", top_, stack_size_);
         if ( stack_size_ == 0 ) {
             stack_size_ = 20;
-            stack_ = (int*) malloc(sizeof(int) * stack_size_);
+            stack_ = (int*) malloc(sizeof(int) * static_cast<size_t>(stack_size_));
         }
         if ( top_ == stack_size_ -1 ) {
             stack_size_ *= 2;
-            stack_ = (int*) realloc(stack_, sizeof(int) * stack_size_);
+            stack_ = (int*) realloc(stack_, sizeof(int) * static_cast<size_t>(stack_size_));
         }
     }
     
