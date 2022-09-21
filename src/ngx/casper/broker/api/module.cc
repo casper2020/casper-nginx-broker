@@ -435,6 +435,9 @@ ngx_int_t ngx::casper::broker::api::Module::PostJob (const ngx_uint_t a_method,
         case NGX_HTTP_PATCH:
             object["payload"]["method"] = "PATCH";
             break;
+        case NGX_HTTP_PUT:
+            object["payload"]["method"] = "PUT";
+            break;
         default:
             object["payload"]["method"] = Json::Value::null;
             break;
