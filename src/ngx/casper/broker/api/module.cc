@@ -51,6 +51,8 @@ ngx::casper::broker::api::Module::Module (const ngx::casper::broker::Module::Con
 {
     // ... set JSON writer properties ...
     json_writer_.omitEndingLineFeed();
+    // ...
+    body_read_supported_methods_.insert(NGX_HTTP_PUT);
 }
 
 /**
