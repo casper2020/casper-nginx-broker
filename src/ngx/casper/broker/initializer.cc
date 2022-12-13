@@ -41,6 +41,13 @@
 
 #include "cc/logs/basic.h"
 
+#include "ngx/casper/config.h"
+
+#if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
+  #include "casper/hsm/singleton.h"
+  #include "ngx/casper/broker/hsm/module/ngx_http_casper_broker_hsm_module.h"
+#endif
+
 #ifdef CC_BROKER_INITIALIZER_LOG
     #undef CC_BROKER_INITIALIZER_LOG
 #endif
@@ -93,6 +100,11 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
              /* callback_ */ [](const int a_sig_no) { // unhandled signals callback
                                  // ... is a 'shutdown' signal?
                                  switch(a_sig_no) {
+                                     case SIGTTIN:
+#if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
+                                         ::casper::hsm::Singleton::GetInstance().Recycle();
+#endif
+                                         return false;
                                      case SIGQUIT:
                                      case SIGTERM:
                                      {
@@ -109,7 +121,8 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
              /* call_on_main_thread_ */ std::move(glue_callbacks.call_on_main_thread_)
          }
      );
-      
+          
+    // ... tracker ...
     ngx::casper::broker::Tracker::GetInstance().Startup();
     
     if ( false == ngx::casper::broker::I18N::GetInstance().IsInitialized() ) {
@@ -125,6 +138,18 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
         );
     }
     
+    // ... HSM ...
+#if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
+    ngx_http_casper_broker_hsm_module_loc_conf_t* hsm_conf = (ngx_http_casper_broker_hsm_module_loc_conf_t*)ngx_http_get_module_loc_conf(a_r, ngx_http_casper_broker_hsm_module);
+    if ( NULL != hsm_conf && 0 != hsm_conf->pin.len ) {
+        ::casper::hsm::Singleton::GetInstance().Startup(/* a_application */ std::string(NGX_INFO) + "(" + std::to_string(getpid()) + ")",
+                                                        (CK_SLOT_ID)hsm_conf->slot_id,
+                                                        std::string(reinterpret_cast<const char* const>(hsm_conf->pin.data), hsm_conf->pin.len)
+        );
+    }
+#endif
+    
+    // ... errors set?
     if ( true == ngx::casper::broker::Tracker::GetInstance().ContainsErrors(a_r) ) {
         
         const std::string msg = ngx::casper::broker::Tracker::GetInstance().errors_ptr(a_r)->Serialize2JSON();
@@ -153,7 +178,10 @@ void ngx::casper::broker::Initializer::Shutdown (const int a_sig_no, const bool 
     ngx::casper::broker::I18N::GetInstance().Shutdown();
     // ... tracker ...
     ngx::casper::broker::Tracker::GetInstance().Shutdown();
-           
+    // ... HSM ...
+#if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
+    ::casper::hsm::Singleton::GetInstance().Shutdown();
+#endif
     // ... casper-connectors // third party libraries cleanup ...
     ::cc::global::Initializer::GetInstance().Shutdown(a_sig_no, a_for_cleanup_only);
 

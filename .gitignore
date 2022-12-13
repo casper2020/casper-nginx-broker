@@ -2,6 +2,7 @@
 #
 #############
 src/ngx/version.h
+src/ngx/casper/config.h
 src/ngx/casper/broker/module/config.h
 src/ngx/casper/broker/module/config
 src/ngx/casper/broker/api/module/version.h
