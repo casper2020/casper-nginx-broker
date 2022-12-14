@@ -10,8 +10,8 @@ $ngx_addon_dir/ngx_http_casper_broker_module.h \
 $ngx_addon_dir/version.h"
 
 CORE_LIBS=" \
-@OTHER_LIBS@ \
 -L @PACKAGER_DIR@/nginx-broker/out/@PLATFORM@/@TARGET@ -lbroker \
+@OTHER_LIBS@ \
 -L @PACKAGER_DIR@/../casper-connectors/out/@PLATFORM@/@TARGET@ -lconnectors-icu \
 -L @PACKAGER_DIR@/../casper-osal/out/@PLATFORM@/@TARGET@ -losal-icu \
 -L @PACKAGER_DIR@/jsoncpp/out/@PLATFORM@/@TARGET@ -ljsoncpp \
