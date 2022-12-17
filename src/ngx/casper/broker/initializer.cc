@@ -45,6 +45,11 @@
 
 #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
   #include "casper/hsm/singleton.h"
+    #ifdef __APPLE__
+      #include "casper/hsm/fake/api.h"
+    #else
+        #include "casper/hsm/safenet/api.h"
+    #endif
   #include "ngx/casper/broker/hsm/module/ngx_http_casper_broker_hsm_module.h"
 #endif
 
@@ -142,10 +147,33 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
 #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
     ngx_http_casper_broker_hsm_module_loc_conf_t* hsm_conf = (ngx_http_casper_broker_hsm_module_loc_conf_t*)ngx_http_get_module_loc_conf(a_r, ngx_http_casper_broker_hsm_module);
     if ( NULL != hsm_conf && 0 != hsm_conf->pin.len ) {
-        ::casper::hsm::Singleton::GetInstance().Startup(/* a_application */ std::string(NGX_INFO) + "(" + std::to_string(getpid()) + ")",
-                                                        (CK_SLOT_ID)hsm_conf->slot_id,
-                                                        std::string(reinterpret_cast<const char* const>(hsm_conf->pin.data), hsm_conf->pin.len)
-        );
+        ::casper::hsm::Singleton::GetInstance().Startup(
+#ifdef __APPLE__
+            "/usr/local/share/nginx-hsm/",
+#else
+            "/usr/share/nginx-hsm/",
+#endif
+        {
+            [&hsm_conf] () -> ::casper::hsm::API* {
+                const std::string application = std::string(NGX_NAME) + "(" + std::to_string(getpid()) + ")";
+            #ifdef __APPLE__
+                return new ::casper::hsm::fake::API(application, std::string(reinterpret_cast<const char* const>(hsm_conf->fake.config.data), hsm_conf->fake.config.len));
+            #else
+                return new ::casper::hsm::safent::API(application,
+                                                      static_cast<::casper::hsm::SlotID>(hsm_conf->slot_id),
+                                                      std::string(reinterpret_cast<const char* const>(hsm_conf->pin.data), hsm_conf->pin.len),
+                                                      /* a_reuse_session */ true
+                );
+            #endif
+            },
+            [] (const ::casper::hsm::API* a_api) -> ::casper::hsm::API* {
+            #ifdef __APPLE__
+                return new ::casper::hsm::fake::API(*(dynamic_cast<const ::casper::hsm::fake::API*>(a_api)));
+            #else
+                return new ::casper::hsm::safenet::API(*(dynamic_cast<const ::casper::hsm::safenet::API*>(a_api)));
+            #endif
+            }
+        });
     }
 #endif
     
