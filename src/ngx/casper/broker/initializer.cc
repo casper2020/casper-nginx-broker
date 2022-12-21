@@ -159,10 +159,10 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
             #ifdef __APPLE__
                 return new ::casper::hsm::fake::API(application, std::string(reinterpret_cast<const char* const>(hsm_conf->fake.config.data), hsm_conf->fake.config.len));
             #else
-                return new ::casper::hsm::safent::API(application,
-                                                      static_cast<::casper::hsm::SlotID>(hsm_conf->slot_id),
-                                                      std::string(reinterpret_cast<const char* const>(hsm_conf->pin.data), hsm_conf->pin.len),
-                                                      /* a_reuse_session */ true
+                return new ::casper::hsm::safenet::API(application,
+                                                       static_cast<::casper::hsm::SlotID>(hsm_conf->slot_id),
+                                                       std::string(reinterpret_cast<const char* const>(hsm_conf->pin.data), hsm_conf->pin.len),
+                                                       /* a_reuse_session */ true
                 );
             #endif
             },
