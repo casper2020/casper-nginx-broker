@@ -284,6 +284,7 @@ void ngx::casper::broker::Initializer::PreStartup (const ngx_core_conf_t* a_conf
             /* rel_date_   */ NGX_REL_DATE,
             /* rel_branch_ */ NGX_REL_BRANCH,
             /* rel_hash_   */ NGX_REL_HASH,
+            /* rel_target_ */ NGX_REL_TARGET,
             /* info_       */ NGX_INFO,
             /* banner_     */ NGX_BANNER,
             /* pid_        */ getpid(),

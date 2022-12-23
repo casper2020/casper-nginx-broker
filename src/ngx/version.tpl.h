@@ -48,6 +48,10 @@
 #define NGX_REL_HASH "r.r.h"
 #endif
 
+#ifndef NGX_REL_TARGET
+#define NGX_REL_TARGET "r.r.t"
+#endif
+
 #ifndef NGX_INFO
 #define NGX_INFO NGX_NAME " v" NGX_VERSION "/" NGINX_VERSION
 #endif
