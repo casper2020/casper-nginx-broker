@@ -34,6 +34,8 @@
 
 #include "ev/signals.h"
 
+#include "cc/os.h"
+
 #include "cc/fs/file.h"
 #include "cc/fs/dir.h"
 
