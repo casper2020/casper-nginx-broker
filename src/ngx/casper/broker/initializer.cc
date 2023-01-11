@@ -47,9 +47,8 @@
 
 #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
   #include "casper/hsm/singleton.h"
-    #ifdef __APPLE__
-      #include "casper/hsm/fake/api.h"
-    #else
+    #include "casper/hsm/fake/api.h"
+    #if !defined(__APPLE__)
         #include "casper/hsm/safenet/api.h"
     #endif
   #include "ngx/casper/broker/hsm/module/ngx_http_casper_broker_hsm_module.h"
