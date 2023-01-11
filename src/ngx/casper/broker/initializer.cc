@@ -147,7 +147,7 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
     // ... HSM ...
 #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
     ngx_http_casper_broker_hsm_module_loc_conf_t* hsm_conf = (ngx_http_casper_broker_hsm_module_loc_conf_t*)ngx_http_get_module_loc_conf(a_r, ngx_http_casper_broker_hsm_module);
-    if ( NULL != hsm_conf && 1 == hsm_conf->enable CC_IF_LINUX( && 0 != hsm_conf->pin.len ) ) {
+    if ( NULL != hsm_conf && 1 == hsm_conf->enable ) {
         ::casper::hsm::Singleton::GetInstance().Startup(
 #ifdef __APPLE__
             "/usr/local/share/nginx-hsm/",
@@ -160,7 +160,7 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
             #ifdef __APPLE__
                 return new ::casper::hsm::fake::API(application, std::string(reinterpret_cast<const char* const>(hsm_conf->fake.config.data), hsm_conf->fake.config.len));
             #else
-                if ( 0 != hsm_conf->fake.config.len ) {
+                if ( 0 == hsm_conf->pin.len || 0 != hsm_conf->fake.config.len ) {
                     return new ::casper::hsm::fake::API(application, std::string(reinterpret_cast<const char* const>(hsm_conf->fake.config.data), hsm_conf->fake.config.len));
                 } else {
                     return new ::casper::hsm::safenet::API(application,
