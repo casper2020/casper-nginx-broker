@@ -175,7 +175,11 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
             #ifdef __APPLE__
                 return new ::casper::hsm::fake::API(*(dynamic_cast<const ::casper::hsm::fake::API*>(a_api)));
             #else
-                return new ::casper::hsm::safenet::API(*(dynamic_cast<const ::casper::hsm::safenet::API*>(a_api)));
+                if ( nullptr != dynamic_cast<const ::casper::hsm::fake::API*>(a_api) ) {
+                    return new ::casper::hsm::fake::API(*(dynamic_cast<const ::casper::hsm::fake::API*>(a_api)));
+                } else {
+                    return new ::casper::hsm::safenet::API(*(dynamic_cast<const ::casper::hsm::safenet::API*>(a_api)));
+                }
             #endif
             }
         });
