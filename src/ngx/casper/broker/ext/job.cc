@@ -456,7 +456,7 @@ ngx_int_t ngx::casper::broker::ext::Job::Submit (const Json::Value& a_object,
                 );
                 
                 if ( status < 0 ) {
-                    throw ::ev::Exception("Beanstalk client returned with error code " + std::to_string(status) + ", while adding job '"
+                    throw ::ev::Exception("Beanstalk producer returned with error code ( " +  std::to_string(status) + " ) " + producer.ErrorCodeToString(status) + ", while adding job '"
                                             +
                                            job_object_["id"].asString() + "' to '" + job_tube_ + "' tube!"
                     );
@@ -734,7 +734,7 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                     if ( status < 0 ) {
                         // ... an error must be set ...
                         NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_,
-                                                                    ( "Beanstalk client returned with error code " + std::to_string(status) + ", while adding job '" +
+                                                                    ( "Beanstalk producer returned with error code ( " + std::to_string(status) + " ) " + producer.ErrorCodeToString(status) + ", while adding job '" +
                                                                      job_object_["id"].asString() + "' to '" + tube + "' tube!"
                                                                     ).c_str()
                         );
