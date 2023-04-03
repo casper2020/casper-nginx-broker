@@ -274,6 +274,6 @@ void ngx::casper::ev::Glue::OnFatalException (const ::ev::Exception& a_ev_except
         fprintf(output, "\n@@@@@@@@@@@@\nFATAL ERROR:\n@@@@@@@@@@@@\n%s\n", a_ev_exception.what());
         fflush(output);
     }
-    exit(-1);
+    exit(EXIT_FAILURE);
 }
 
