@@ -125,10 +125,25 @@ ngx_int_t ngx::casper::broker::jwt::encoder::Module::Run ()
             jwt.SetUnregisteredClaim(member, object[member]);
         }
         
-        ctx_.response_.body_         = jwt.Encode(jwt_duration_, jwt_private_rsa_key_);
-        ctx_.response_.length_       = ctx_.response_.body_.length();
-        ctx_.response_.content_type_ = k_json_jwt_encoder_content_type_;
+        const std::string encoded_jwt = jwt.Encode(jwt_duration_, jwt_private_rsa_key_);
         
+        const bool as_json = ( ctx_.request_.headers_.end() != ctx_.request_.headers_.find("accept") );
+        if ( true == as_json ) {
+            // ... as json ...
+            ctx_.response_.content_type_ = "application/json";
+            {
+                Json::FastWriter jfw; jfw.omitEndingLineFeed();
+                Json::Value      tmp; tmp["jwt"] = encoded_jwt;
+                ctx_.response_.body_ = jfw.write(tmp);
+            }
+        } else {
+            // ... default, as text ...
+            ctx_.response_.content_type_ = k_json_jwt_encoder_content_type_;
+            ctx_.response_.body_         = encoded_jwt;
+        }
+        ctx_.response_.length_ = ctx_.response_.body_.length();
+
+        // ... done ...
         ctx_.response_.status_code_ = NGX_HTTP_OK;
         ctx_.response_.return_code_ = NGX_OK;
         
