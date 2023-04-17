@@ -46,6 +46,7 @@
 #include "ngx/casper/config.h"
 
 #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
+  #include "casper/hsm/about.h"
   #include "casper/hsm/singleton.h"
     #include "casper/hsm/fake/api.h"
     #if !defined(__APPLE__)
@@ -328,6 +329,21 @@ void ngx::casper::broker::Initializer::PreStartup (const ngx_core_conf_t* a_conf
             /* args_     */ (void*)(a_config)
         },
         /* a_present */ [] (std::vector<::cc::global::Initializer::Present>& o_values) {
+#if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
+            {
+                o_values.push_back({
+                    /* title_  */ "CASPER-HSM",
+                    /* values_ */ {}
+                });
+                auto& skia = o_values.back();
+                skia.values_["VERSION"       ] = ::casper::hsm::VERSION();
+                skia.values_["RELEASE NAME"  ] = ::casper::hsm::REL_NAME();
+                skia.values_["RELEASE DATE"  ] = ::casper::hsm::REL_DATE();
+                skia.values_["RELEASE BRANCH"] = ::casper::hsm::REL_BRANCH();
+                skia.values_["RELEASE HASH"  ] = ::casper::hsm::REL_HASH();
+                skia.values_["INFO"          ] = ::casper::hsm::INFO();
+            }
+#endif
             o_values.push_back({
                 /* title_  */ "OWN MODULES",
                 /* values_ */ {}
