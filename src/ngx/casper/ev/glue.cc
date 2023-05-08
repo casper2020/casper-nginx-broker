@@ -43,8 +43,6 @@
 
 #include "ev/auth/route/gatekeeper.h"
 
-#include "osal/utf8_string.h"
-
 #include "ngx/version.h"
 
 bool                        ngx::casper::ev::Glue::s_initialized_       = false;
