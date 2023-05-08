@@ -653,7 +653,7 @@ namespace ngx
                     std::set<std::string>              supported_content_types_;
                 } Params;
                 
-                struct StringMapCaseInsensitiveComparator : public std::binary_function<std::string, std::string, bool> {
+                struct StringMapCaseInsensitiveComparator {
                      bool operator()(const std::string& a_lhs, const std::string& a_rhs) const {
                          return strcasecmp(a_lhs.c_str(), a_rhs.c_str()) < 0;
                      }
