@@ -58,6 +58,7 @@ typedef struct {
     ngx_str_t                 authorization_url;     //!<
     ngx_uint_t                authorization_ct;      //!<
     ngx_uint_t                authorization_tt;      //!<
+    ngx_array_t*              allowed_mime_types;    //!<
 } ngx_http_casper_broker_ul_module_loc_conf_t;
 
 typedef struct {

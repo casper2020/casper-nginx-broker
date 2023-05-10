@@ -33,6 +33,12 @@
 
 #include "curl/curl.h"
 
+#include "ngx/version.h"
+
+#include "cc/magic/mime_type.h"
+
+#include <algorithm> // std::min
+
 #ifdef __APPLE__
 #pragma mark -
 #pragma mark - Module - Forward declarations
@@ -166,6 +172,16 @@ static ngx_command_t ngx_http_casper_broker_ul_module_commands[] = {
         offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, authorization_tt),
         NULL
     },
+    // ...
+    {
+        ngx_string("nginx_casper_broker_ul_allow_mime_type"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_str_array_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, allowed_mime_types),
+        NULL
+    },
+    // ...
     ngx_null_command
 };
 
@@ -230,6 +246,7 @@ static void* ngx_http_casper_broker_ul_module_create_loc_conf (ngx_conf_t* a_cf)
     conf->authorization_url     = ngx_null_string;
     conf->authorization_ct      = NGX_CONF_UNSET_UINT;
     conf->authorization_tt      = NGX_CONF_UNSET_UINT;
+    conf->allowed_mime_types    = (ngx_array_t*)NGX_CONF_UNSET_PTR;
 
     return conf;
 }
@@ -256,6 +273,7 @@ static char* ngx_http_casper_broker_ul_module_merge_loc_conf (ngx_conf_t* /* a_c
     ngx_conf_merge_str_value (conf->authorization_url    , prev->authorization_url    ,          "" ); /* not set */
     ngx_conf_merge_uint_value(conf->authorization_ct     , prev->authorization_ct     ,          30 ); /* 30 seconds */
     ngx_conf_merge_uint_value(conf->authorization_tt     , prev->authorization_tt     ,          60 ); /* 60 seconds */
+    ngx_conf_merge_ptr_value (conf->allowed_mime_types   , prev->allowed_mime_types   ,      nullptr);
     
     NGX_BROKER_MODULE_LOC_CONF_MERGED();    
     
@@ -1194,6 +1212,33 @@ done:
                             reinterpret_cast<const unsigned char*>(NGX_CASPER_BROKER_UL_MODULE_INFO), strlen(NGX_CASPER_BROKER_UL_MODULE_INFO),
                             /* a_excluding_attrs */ nullptr
                 );
+                
+                // ....
+                const ngx_http_casper_broker_ul_module_loc_conf_t* loc_conf = (const ngx_http_casper_broker_ul_module_loc_conf_t*) ngx_http_get_module_loc_conf(a_r, ngx_http_casper_broker_ul_module);
+                if ( nullptr != loc_conf->allowed_mime_types ) {
+                    cc::magic::MIMEType mime_type;
+                    mime_type.Initialize(std::string(NGX_SHARED_DIR));
+                    const auto mt = mime_type.MIMETypeOf(uri);
+
+                    bool allowed = false;
+                    const ngx_str_t* array = ((ngx_str_t*) loc_conf->allowed_mime_types->elts);
+                    for ( ngx_uint_t idx = 0; idx < loc_conf->allowed_mime_types->nelts; idx++ ) {
+                        const ngx_str_t value = array[idx];
+                        if ( 0 == value.len ) {
+                            continue;
+                        }
+                        if ( 0 == strncasecmp((const char*)(value.data), mt.c_str(), std::min(value.len, mt.length())) ) {
+                            allowed = true;
+                            break;
+                        }
+                    }
+                    if ( false == allowed ) {
+                        http_status_code = NGX_HTTP_FORBIDDEN;
+                        context->error_tracker_->Track("BROKER_FORBIDDEN_ERROR", NGX_HTTP_FORBIDDEN, "BROKER_FORBIDDEN_ERROR",
+                                                       ( "The uploaded data MIME-Type '" + mt + "' is not allowed!" ).c_str()
+                        );
+                    }
+                }
 
             } catch (const cc::Exception& a_cc_exception) {
                 ss.str("");

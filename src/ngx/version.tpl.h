@@ -36,6 +36,10 @@
 #define NGX_VERSION "x.x.x"
 #endif
 
+#ifndef NGX_SHARED_DIR
+#define NGX_SHARED_DIR "s.s.s"
+#endif
+
 #ifndef NGX_REL_DATE
 #define NGX_REL_DATE "r.r.d"
 #endif
