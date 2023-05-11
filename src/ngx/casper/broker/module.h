@@ -166,21 +166,8 @@ namespace ngx
                 //
                 
 #ifndef NGX_BROKER_MODULE_LOG
-    #if defined(DEBUG) || defined(_DEBUG) || defined(ENABLE_DEBUG) || defined(ENABLE_DEBUG_TRACE)
-        #define NGX_BROKER_MODULE_LOG(a_ctx, a_location, a_action, a_format, ...) \
-                ngx::casper::broker::Module::Log(a_ctx.module_, a_ctx.ngx_ptr_, a_ctx.log_level_, a_ctx.log_token_.c_str(), \
-                                                 a_location, a_action, \
-                                                 a_format, __VA_ARGS__ \
-                );
-    #else
-        #define NGX_BROKER_MODULE_LOG(a_ctx, a_location, a_action, a_format, ...) \
-            if ( NGX_LOG_DEBUG != a_ctx.log_level_ ) { \
-                ngx::casper::broker::Module::Log(a_ctx.module_, a_ctx.ngx_ptr_, a_ctx.log_level_, a_ctx.log_token_.c_str(), \
-                                                 a_location, a_action, \
-                                                 a_format, __VA_ARGS__ \
-                ); \
-            }
-    #endif
+    #define NGX_BROKER_MODULE_LOG(aa_module_t, aa_r, aa_level, aa_token, aa_location, aa_action, aa_format, ...) \
+        ngx::casper::broker::Module::Log(aa_module_t, aa_r, aa_level, aa_token, aa_location, aa_action, aa_format, __VA_ARGS__);
 #endif // NGX_BROKER_MODULE_LOG
 
 #ifndef NRS_NGX_CASPER_BROKER_MODULE_LOGGER_KEY_FMT
