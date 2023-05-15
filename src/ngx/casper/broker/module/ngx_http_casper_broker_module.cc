@@ -38,11 +38,11 @@
 static void* ngx_http_casper_broker_module_create_main_conf(ngx_conf_t* a_cf);
 static char* ngx_http_casper_broker_module_init_main_conf  (ngx_conf_t* a_cf, void* a_conf);
 
-static ngx_int_t ngx_http_casper_broker_module_init_process        (ngx_cycle_t* a_cycle);
-static void      ngx_http_casper_broker_module_exit_process        (ngx_cycle_t* a_cycle);
-
 static void*     ngx_http_casper_broker_module_create_loc_conf (ngx_conf_t* a_cf);
 static char*     ngx_http_casper_broker_module_merge_loc_conf  (ngx_conf_t* a_cf, void* a_parent, void* a_child);
+
+static ngx_int_t ngx_http_casper_broker_module_init_process (ngx_cycle_t* a_cycle);
+static void      ngx_http_casper_broker_module_exit_process (ngx_cycle_t* a_cycle);
 
 #ifdef __APPLE__
 #pragma mark -

@@ -422,7 +422,12 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
 #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
     const nginx_hsm_service_conf_t* hsm_conf = (const nginx_hsm_service_conf_t*)ngx_http_cycle_get_module_main_conf(a_cycle, ngx_http_casper_broker_hsm_module);
     if ( nullptr != hsm_conf && 1 == hsm_conf->enabled ) {
-        ::casper::hsm::Singleton::GetInstance().Startup(NGX_SHARED_DIR,
+        ::casper::hsm::Singleton::GetInstance().Startup(
+#ifdef __APPLE__
+            "/usr/local/share/nginx-hsm/",
+#else
+            "/usr/share/nginx-hsm/",
+#endif
         {
             [&hsm_conf] () -> ::casper::hsm::API* {
                 const std::string application = std::string(NGX_NAME) + "(" + std::to_string(getpid()) + ")";
