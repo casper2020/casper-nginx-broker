@@ -622,183 +622,21 @@ ngx_int_t ngx::casper::broker::Module::Initialize (const ngx::casper::broker::Mo
     
     ngx_int_t ngx_return_code  = NGX_OK;
     uint16_t  http_status_code = NGX_HTTP_BAD_REQUEST;
-    
-    //
-    // COMMON CONFIG DATA
-    //
-    // ... resources dir ...
-    if ( 0 == broker_conf->resources_dir.len ) {
-        U_ICU_NAMESPACE::Formattable args[] = {
-            "",
-            "nginx_casper_broker_resources_dir"
-        };
-        http_status_code = NGX_HTTP_INTERNAL_SERVER_ERROR;
-        errors_ptr->Track("config_error", http_status_code,
-                          "BROKER_MODULE_CONFIG_MISSING_OR_INVALID_DIRECTIVE_VALUE_ERROR",
-                          args, 2
-        );
-    }
-    
-    a_params.config_[ngx::casper::broker::Initializer::k_resources_dir_key_lc_]
-        = std::string(reinterpret_cast<char const*>(broker_conf->resources_dir.data), broker_conf->resources_dir.len);
-    
-    //
-    // ... CONNECTION ...
-    //
-    a_params.config_[ngx::casper::broker::Module::k_connection_validity_key_lc_]
-        = std::to_string(broker_conf->connection_validity);
-    
-    //
-    // ONE-SHOT INITIALIZATION - first request will be slower that the other ones.
-    //                           due to sockets and thread(s) initialization
-    if ( false == ngx::casper::broker::Initializer::IsInitialized() ) {
-        
-        //
-        // ... SERVICE ...
-        //
-        a_params.config_[ngx::casper::broker::Module::k_service_id_key_lc_]
-            = std::string(reinterpret_cast<char const*>(broker_conf->service_id.data), broker_conf->service_id.len);
-        
-        //
-        // ... REDIS ....
-        //
-        
-        // ... host ...
-        if ( 0 == broker_conf->redis_ip_address.len ) {
-            U_ICU_NAMESPACE::Formattable args[] = {
-                "",
-                "nginx_casper_broker_redis_ip_address"
-            };
-            http_status_code = NGX_HTTP_INTERNAL_SERVER_ERROR;
-            errors_ptr->Track("config_error", http_status_code,
-                              "BROKER_MODULE_CONFIG_MISSING_OR_INVALID_DIRECTIVE_VALUE_ERROR",
-                              args, 2
-            );
-        }
-        a_params.config_[ngx::casper::broker::Module::k_redis_ip_address_key_lc_]
-            = std::string(reinterpret_cast<char const*>(broker_conf->redis_ip_address.data), broker_conf->redis_ip_address.len);
-        
-        // ... port ...
-        a_params.config_[ngx::casper::broker::Module::k_redis_port_number_key_lc_]
-            = std::to_string(broker_conf->redis_port_number);
-        
-        // ... database ...
-        if ( -1 != broker_conf->redis_database ) {
-            a_params.config_[ngx::casper::broker::Module::k_redis_database_key_lc_]
-                = std::to_string(broker_conf->redis_database);
-        }
-        
-        a_params.config_[ngx::casper::broker::Module::k_redis_max_conn_per_worker_lc_]
-            = std::to_string(broker_conf->redis_max_conn_per_worker);
-        
-        //
-        // ... POSTGRESQL ...
-        //
-        if ( 0 == broker_conf->postgresql_conn_str.len ) {
-            U_ICU_NAMESPACE::Formattable args[] = {
-                "",
-                "nginx_casper_broker_postgresql_connection_string"
-            };
-            http_status_code = NGX_HTTP_INTERNAL_SERVER_ERROR;
-            errors_ptr->Track("config_error", http_status_code,
-                              "BROKER_MODULE_CONFIG_MISSING_OR_INVALID_DIRECTIVE_VALUE_ERROR",
-                              args, 2
-            );
-        }
-        a_params.config_[ngx::casper::broker::Module::k_postgresql_conn_str_key_lc_]
-            = std::string(reinterpret_cast<char const*>(broker_conf->postgresql_conn_str.data), broker_conf->postgresql_conn_str.len);
 
-        a_params.config_[ngx::casper::broker::Module::k_postgresql_statement_timeout_lc_]
-            = std::to_string(broker_conf->postgresql_statement_timeout);
-
-        a_params.config_[ngx::casper::broker::Module::k_postgresql_max_conn_per_worker_lc_]
-            = std::to_string(broker_conf->postgresql_max_conn_per_worker);
-        
-        if ( broker_conf->postgresql_post_connect_queries.len > 0 ) {
-            a_params.config_[ngx::casper::broker::Module::k_postgresql_post_connect_queries_lc_]
-                = std::string(reinterpret_cast<char const*>(broker_conf->postgresql_post_connect_queries.data), broker_conf->postgresql_post_connect_queries.len);
-        }
-        
-        a_params.config_[ngx::casper::broker::Module::k_postgresql_min_queries_per_conn_lc_]
-            = std::to_string(broker_conf->postgresql_min_queries_per_conn);
-        
-        a_params.config_[ngx::casper::broker::Module::k_postgresql_max_queries_per_conn_lc_]
-            = std::to_string(broker_conf->postgresql_max_queries_per_conn);
-        
-        //
-        // ... CURL ...
-        //
-        a_params.config_[ngx::casper::broker::Module::k_curl_max_conn_per_worker_lc_]
-            = std::to_string(broker_conf->curl_max_conn_per_worker);
-        
-        //
-        // ... BEANSTALKD ...
-        //
-        a_params.config_[ngx::casper::broker::Module::k_beanstalkd_host_key_lc_]
-            = std::string(reinterpret_cast<char const*>(broker_conf->beanstalkd.host.data), broker_conf->beanstalkd.host.len);
-        a_params.config_[ngx::casper::broker::Module::k_beanstalkd_port_key_lc_]
-           = std::to_string(broker_conf->beanstalkd.port);
-        a_params.config_[ngx::casper::broker::Module::k_beanstalkd_timeout_key_lc_]
-           = std::to_string(broker_conf->beanstalkd.timeout);
-        const std::map<const char* const, const ngx_str_t*> beanstalk_conf_strings_map = {
-            { ngx::casper::broker::Module::k_beanstalkd_sessionless_tubes_key_lc_, &broker_conf->beanstalkd.tubes.sessionless },
-            { ngx::casper::broker::Module::k_beanstalkd_action_tubes_key_lc_     , &broker_conf->beanstalkd.tubes.action      }
-        };
-        for ( auto bcsm_it : beanstalk_conf_strings_map ) {
-            if ( bcsm_it.second->len > 0 ) {
-                a_params.config_[bcsm_it.first] = std::string(reinterpret_cast<char const*>(bcsm_it.second->data), bcsm_it.second->len);
-            }
-        }
-        
-        //
-        // ... GATEKEEPER ...
-        //
-        a_params.config_[ngx::casper::broker::Module::k_gatekeeper_config_file_uri_key_lc_]
-            = std::string(reinterpret_cast<char const*>(broker_conf->gatekeeper.config_file_uri.data), broker_conf->gatekeeper.config_file_uri.len);
-        
-        //
-        // ... THEADING ...
-        //
-        try {
-            ngx::casper::broker::Initializer::GetInstance().Startup(a_config.ngx_ptr_, a_params.config_);
-        } catch (const ngx::casper::broker::Exception& a_broker_exception) {
-            errors_ptr->Track("config_error", http_status_code,
-                              a_broker_exception.code(), a_broker_exception.what()
-            );
-        }
-        
-        //
-        // ... CLEANUP ...
-        //
-        // ... after initialization, config map only needs resources dir ....
-        const auto keys_to_erase = {
-            ngx::casper::broker::Module::k_redis_ip_address_key_lc_,
-            ngx::casper::broker::Module::k_redis_port_number_key_lc_,
-            ngx::casper::broker::Module::k_redis_database_key_lc_,
-            ngx::casper::broker::Module::k_postgresql_conn_str_key_lc_
-        };
-        for ( auto key : keys_to_erase ) {
-            const auto it = a_params.config_.find(key);
-            if ( a_params.config_.end() != it ) {
-                a_params.config_.erase(it);
-            }
-        }
-    }
-    
     //
     // ... SESSION COOKIE ...
     //
-    if ( broker_conf->session_cookie_name.len > 0 ) {
+    if ( broker_conf->session.cookie_name.len > 0 ) {
         a_params.config_[ngx::casper::broker::Module::k_session_cookie_name_key_lc_]
-            = std::string(reinterpret_cast<char const*>(broker_conf->session_cookie_name.data), broker_conf->session_cookie_name.len);
+            = std::string(reinterpret_cast<char const*>(broker_conf->session.cookie_name.data), broker_conf->session.cookie_name.len);
     }
-    if ( broker_conf->session_cookie_domain.len > 0 ) {
+    if ( broker_conf->session.cookie_domain.len > 0 ) {
         a_params.config_[ngx::casper::broker::Module::k_session_cookie_domain_key_lc_]
-            = std::string(reinterpret_cast<char const*>(broker_conf->session_cookie_domain.data), broker_conf->session_cookie_domain.len);
+            = std::string(reinterpret_cast<char const*>(broker_conf->session.cookie_domain.data), broker_conf->session.cookie_domain.len);
     }
-    if ( broker_conf->session_cookie_path.len > 0 ) {
+    if ( broker_conf->session.cookie_path.len > 0 ) {
         a_params.config_[ngx::casper::broker::Module::k_session_cookie_path_key_lc_]
-            = std::string(reinterpret_cast<char const*>(broker_conf->session_cookie_path.data), broker_conf->session_cookie_path.len);
+            = std::string(reinterpret_cast<char const*>(broker_conf->session.cookie_path.data), broker_conf->session.cookie_path.len);
     }
     
     //
@@ -2226,36 +2064,6 @@ ngx_int_t ngx::casper::broker::Module::WarmUp (ngx_module_t& a_module_t, ngx_htt
     const std::string log_token = std::string(reinterpret_cast<char*>(a_log_token.data), a_log_token.len);
 
     ngx_int_t ngx_return_code = NGX_OK;
-
-    //
-    // i18n
-    //
-    if ( false == ngx::casper::broker::I18N::GetInstance().IsInitialized() ) {
-        
-        if ( 0 == broker_conf->resources_dir.len  ) {
-            NGX_BROKER_MODULE_ERROR_LOG(a_module_t, a_r, log_token.c_str(),
-                                        "WU", "INITIALIZING",
-                                        "%s", "failure: i18n initialization failure - resources dir not set!"
-            );
-            ngx_return_code = NGX_HTTP_INTERNAL_SERVER_ERROR;
-        } else {
-            
-            const std::string resources_dir = std::string(reinterpret_cast<char*>(broker_conf->resources_dir.data), broker_conf->resources_dir.len);
-            
-            ngx::casper::broker::I18N::GetInstance().Startup(resources_dir,
-                                                             [&a_module_t, &a_r, &log_token, &ngx_return_code]
-                                                             (const char* const /* a_i18_key */, const std::string& /* a_file */, const std::string& a_reason) {
-                                                                 NGX_BROKER_MODULE_ERROR_LOG(a_module_t, a_r, log_token.c_str(),
-                                                                                             "WU", "INITIALIZING",
-                                                                                             "failure: i18n initialization failure - %s!",
-                                                                                             a_reason.c_str()
-                                                                 );
-                                                                 ngx_return_code = NGX_HTTP_INTERNAL_SERVER_ERROR;
-                                                             }
-            );
-        }
-        
-    }    
     
     //
     // SET LOCALE

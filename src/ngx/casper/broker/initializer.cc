@@ -24,7 +24,11 @@
 
 #include "ngx/version.h"
 
+#include "ngx/casper/broker/module/types.h"
 #include "ngx/casper/broker/module/config.h"
+#include "ngx/casper/broker/module.h"
+#include "ngx/casper/broker/module/ngx_http_casper_broker_module.h"
+
 #include "ngx/casper/broker/i18.h"
 
 #include "ngx/casper/broker/exception.h"
@@ -79,16 +83,282 @@ bool ngx::casper::broker::Initializer::s_initialized_ = false;
 /**
  * @brief One-shot initializer.
  *
- * @param a_r
- * @param a_configs
+ * param a_cycle
  */
-void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const std::map<std::string, std::string>& a_configs)
+void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
 {
-    ngx::casper::ev::Glue::Callbacks glue_callbacks = { nullptr, nullptr };
+    // ... mark as 'main' thread ...
+    CC_DEBUG_SET_MAIN_THREAD_ID();
 
+    //
+    // READ NGINX CORE CONFIG
+    //
+    const ngx_core_conf_t* config = (ngx_core_conf_t *) ngx_get_conf(a_cycle->conf_ctx, ngx_core_module);
+    {
+
+        const bool standalone = ( 0 == config->master && 0 == config->daemon );
+        const bool master     = false;
+
+        // ... reset 'forked' instances ...
+        if ( false == master ) {
+            Shutdown(/* a_sig_no */ -1, /* a_for_cleanup_only */ true);
+        }
+        
+        //
+        // ... set process configuration dependent paths ...
+        //..
+        std::string alt_process_name;
+        if ( nullptr != a_cycle && 0 != a_cycle->conf_file.len ) {
+            
+            const std::string conf_uri = std::string(reinterpret_cast<const char* const>(a_cycle->conf_file.data), a_cycle->conf_file.len);
+            std::string conf_path;
+            std::string conf_parent_path;
+            
+            ::cc::fs::File::Path(conf_uri, conf_path);
+            ::cc::fs::Dir::Parent(conf_path, conf_parent_path);
+            
+            alt_process_name = std::string(conf_path.c_str() + conf_parent_path.length());
+            alt_process_name = alt_process_name.substr(0, alt_process_name.length() - 1);
+            
+        }
+        
+        // ... other debug tokens ...
+        CC_IF_DEBUG_DECLARE_VAR(std::set<std::string>, debug_tokens);
+        CC_IF_DEBUG(
+            //    debug_tokens.insert("ev_scheduler");
+            //    debug_tokens.insert("ev_glue");
+            //    debug_tokens.insert("ev_hub");
+            //    debug_tokens.insert("ev_shared_glue");
+            //    debug_tokens.insert("ev_hub_read_error");
+            //    debug_tokens.insert("ev_hub_stats");
+            //    debug_tokens.insert("ev_ngx_shared_handler");
+            //    debug_tokens.insert("ev_subscriptions");
+            //    debug_tokens.insert("PQsendQuery");
+            //    debug_tokens.insert("ngx_casper_broker_module");
+
+            //     debug_tokens.insert("oauth");
+            //     debug_tokens.insert("auth");
+                    
+                debug_tokens.insert("curl");
+                debug_tokens.insert("exceptions");
+        );
+        //
+        // ... initialize casper-connectors // third party libraries ...
+        //
+        ::cc::global::Initializer::GetInstance().WarmUp(
+            /* a_process */
+            {
+                /* name_       */ NGX_NAME,
+                /* alt_name_   */ alt_process_name.c_str(),
+                /* abbr_       */ NGX_NAME,
+                /* version_    */ NGX_VERSION,
+                /* rel_date_   */ NGX_REL_DATE,
+                /* rel_branch_ */ NGX_REL_BRANCH,
+                /* rel_hash_   */ NGX_REL_HASH,
+                /* rel_target_ */ NGX_REL_TARGET,
+                /* info_       */ NGX_INFO,
+                /* banner_     */ NGX_BANNER,
+                /* pid_        */ getpid(),
+                /* standalone_ */ standalone,
+                /* is_master_  */ master
+            },
+            /* a_directories */
+            nullptr, /* using defaults */
+            /* a_logs */
+            {
+                // ... v1 ...
+                // .. mandatory logs ...
+                { /* token_ */ "libpq"                    , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ true, /* version */ 1 },
+                { /* token_ */ "libpq-connections"        , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ true, /* version */ 2 },
+                // ... v2 ...
+                // .. mandatory logs ...
+                { /* token_ */ "signals"                  , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ true, /* version */ 2 },
+                { /* token_ */ "cc-modules"               , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ true, /* version */ 2 },
+                // .. optional logs ...
+                { /* token_ */ "gatekeeper"               , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ NRS_NGX_CASPER_BROKER_MODULE_CC_MODULES_LOGS_ENABLED, /* version */ 2 },
+                // .. optional ( trace ) logs ...
+                { /* token_ */ "redis_subscriptions_trace", /* uri_ */ "", /* conditional_ */ true, /* enabled_ */ true, /* version */ 2 },
+                { /* token_ */ "redis_trace"              , /* uri_ */ "", /* conditional_ */ true, /* enabled_ */ true, /* version */ 2 }
+            },
+            /* a_v8 */
+            {
+                /* required_            */ false,
+                /* runs_on_main_thread_ */ true
+            },
+            /* a_next_step */ {
+                /* function_ */ std::bind(&ngx::casper::broker::Initializer::OnGlobalInitializationCompleted, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4),
+                /* args_     */ (void*)(config)
+            },
+            /* a_present */ [] (std::vector<::cc::global::Initializer::Present>& o_values) {
+    #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
+                {
+                    o_values.push_back({
+                        /* title_  */ "CASPER-HSM",
+                        /* values_ */ {}
+                    });
+                    auto& skia = o_values.back();
+                    skia.values_["VERSION"       ] = ::casper::hsm::VERSION();
+                    skia.values_["RELEASE NAME"  ] = ::casper::hsm::REL_NAME();
+                    skia.values_["RELEASE DATE"  ] = ::casper::hsm::REL_DATE();
+                    skia.values_["RELEASE BRANCH"] = ::casper::hsm::REL_BRANCH();
+                    skia.values_["RELEASE HASH"  ] = ::casper::hsm::REL_HASH();
+                    skia.values_["INFO"          ] = ::casper::hsm::INFO();
+                }
+    #endif
+                o_values.push_back({
+                    /* title_  */ "OWN MODULES",
+                    /* values_ */ {}
+                });
+                auto& modules = o_values.back();
+                for ( ngx_uint_t idx = 0; ngx_modules[idx]; idx++ ) {
+                    if ( nullptr == strstr(ngx_modules[idx]->name, "casper")  ) {
+                        if ( nullptr == strstr(ngx_modules[idx]->name, "ngx_http_named_imports_filter_module") ) {
+                            continue;
+                        }
+                    }
+                    modules.values_["ngx_modules[" + std::to_string(idx) + "]"] = ngx_modules[idx]->name;
+                }
+            },
+           /* a_debug_tokens */
+           CC_IF_DEBUG_ELSE(&debug_tokens, nullptr)
+       );
+
+    }
+    
+    //
+    // READ NGINX BROKER SERVICE CONFIG
+    //
+    std::map<std::string, std::string> configs;
+    
+    const nginx_broker_service_conf_t* service_conf = (const nginx_broker_service_conf_t*)ngx_http_cycle_get_module_main_conf(a_cycle, ngx_http_casper_broker_module);
+    {
+        // ... resources dir ...
+        if ( 0 == service_conf->resources_dir.len ) {
+            throw ngx::casper::broker::Exception("BROKER_INTERNAL_ERROR",
+                                                 "Invalid or missing '%s' directive value!", "nginx_casper_broker_resources_dir!");
+        }
+        configs[ngx::casper::broker::Initializer::k_resources_dir_key_lc_]
+            = std::string(reinterpret_cast<char const*>(service_conf->resources_dir.data), service_conf->resources_dir.len);
+        
+        //
+        // ... CONNECTION ...
+        //
+        configs[ngx::casper::broker::Module::k_connection_validity_key_lc_]
+            = std::to_string(service_conf->connection_validity);
+                
+        //
+        // ... SERVICE ...
+        //
+        configs[ngx::casper::broker::Module::k_service_id_key_lc_]
+            = std::string(reinterpret_cast<char const*>(service_conf->service_id.data), service_conf->service_id.len);
+        
+        //
+        // ... REDIS ....
+        //
+        
+        // ... host ...
+        if ( 0 == service_conf->redis.ip_address.len ) {
+            throw ngx::casper::broker::Exception("BROKER_INTERNAL_ERROR",
+                                                 "Invalid or missing '%s' directive value!", "nginx_casper_broker_redis_ip_address");
+        }
+        configs[ngx::casper::broker::Module::k_redis_ip_address_key_lc_]
+            = std::string(reinterpret_cast<char const*>(service_conf->redis.ip_address.data), service_conf->redis.ip_address.len);
+        
+        // ... port ...
+        configs[ngx::casper::broker::Module::k_redis_port_number_key_lc_]
+            = std::to_string(service_conf->redis.port_number);
+        
+        // ... database ...
+        if ( -1 != service_conf->redis.database ) {
+            configs[ngx::casper::broker::Module::k_redis_database_key_lc_]
+                = std::to_string(service_conf->redis.database);
+        }
+        
+        configs[ngx::casper::broker::Module::k_redis_max_conn_per_worker_lc_]
+            = std::to_string(service_conf->redis.max_conn_per_worker);
+        
+        //
+        // ... POSTGRESQL ...
+        //
+        if ( 0 == service_conf->postgresql.conn_str.len ) {
+            throw ngx::casper::broker::Exception("BROKER_INTERNAL_ERROR",
+                                                 "Invalid or missing '%s' directive value!", "nginx_casper_broker_postgresql_connection_string");
+        }
+        configs[ngx::casper::broker::Module::k_postgresql_conn_str_key_lc_]
+            = std::string(reinterpret_cast<char const*>(service_conf->postgresql.conn_str.data), service_conf->postgresql.conn_str.len);
+
+        configs[ngx::casper::broker::Module::k_postgresql_statement_timeout_lc_]
+            = std::to_string(service_conf->postgresql.statement_timeout);
+
+        configs[ngx::casper::broker::Module::k_postgresql_max_conn_per_worker_lc_]
+            = std::to_string(service_conf->postgresql.max_conn_per_worker);
+        
+        if ( service_conf->postgresql.post_connect_queries.len > 0 ) {
+            configs[ngx::casper::broker::Module::k_postgresql_post_connect_queries_lc_]
+                = std::string(reinterpret_cast<char const*>(service_conf->postgresql.post_connect_queries.data), service_conf->postgresql.post_connect_queries.len);
+        }
+        
+        configs[ngx::casper::broker::Module::k_postgresql_min_queries_per_conn_lc_]
+            = std::to_string(service_conf->postgresql.min_queries_per_conn);
+        
+        configs[ngx::casper::broker::Module::k_postgresql_max_queries_per_conn_lc_]
+            = std::to_string(service_conf->postgresql.max_queries_per_conn);
+        
+        //
+        // ... CURL ...
+        //
+        configs[ngx::casper::broker::Module::k_curl_max_conn_per_worker_lc_]
+            = std::to_string(service_conf->curl.max_conn_per_worker);
+        
+        //
+        // ... BEANSTALKD ...
+        //
+        configs[ngx::casper::broker::Module::k_beanstalkd_host_key_lc_]
+            = std::string(reinterpret_cast<char const*>(service_conf->beanstalkd.host.data), service_conf->beanstalkd.host.len);
+        configs[ngx::casper::broker::Module::k_beanstalkd_port_key_lc_]
+           = std::to_string(service_conf->beanstalkd.port);
+        configs[ngx::casper::broker::Module::k_beanstalkd_timeout_key_lc_]
+           = std::to_string(service_conf->beanstalkd.timeout);
+        const std::map<const char* const, const ngx_str_t*> beanstalk_conf_strings_map = {
+            { ngx::casper::broker::Module::k_beanstalkd_sessionless_tubes_key_lc_, &service_conf->beanstalkd.tubes.sessionless },
+            { ngx::casper::broker::Module::k_beanstalkd_action_tubes_key_lc_     , &service_conf->beanstalkd.tubes.action      }
+        };
+        for ( auto bcsm_it : beanstalk_conf_strings_map ) {
+            if ( bcsm_it.second->len > 0 ) {
+                configs[bcsm_it.first] = std::string(reinterpret_cast<char const*>(bcsm_it.second->data), bcsm_it.second->len);
+            }
+        }
+        
+        //
+        // ... GATEKEEPER ...
+        //
+        configs[ngx::casper::broker::Module::k_gatekeeper_config_file_uri_key_lc_]
+            = std::string(reinterpret_cast<char const*>(service_conf->gatekeeper.config_file_uri.data), service_conf->gatekeeper.config_file_uri.len);
+    }    
+
+    //
+    // ... ev // cc ...
+    //
+    ngx::casper::ev::Glue::Callbacks glue_callbacks = { nullptr, nullptr };
     try {
-          // ... all other stuff ...
-          ngx::casper::ev::Glue::GetInstance().Startup(::cc::global::Initializer::GetInstance().loggable_data(), a_configs, glue_callbacks);
+        // ... all other stuff ...
+        ngx::casper::ev::Glue::GetInstance().Startup(::cc::global::Initializer::GetInstance().loggable_data(), configs, glue_callbacks);
+        //
+        // ... CLEANUP ...
+        //
+        // ... after initialization, config map only needs resources dir ....
+        const auto keys_to_erase = {
+            ngx::casper::broker::Module::k_redis_ip_address_key_lc_,
+            ngx::casper::broker::Module::k_redis_port_number_key_lc_,
+            ngx::casper::broker::Module::k_redis_database_key_lc_,
+            ngx::casper::broker::Module::k_postgresql_conn_str_key_lc_
+        };
+        for ( auto key : keys_to_erase ) {
+            const auto it = configs.find(key);
+            if ( configs.end() != it ) {
+                configs.erase(it);
+            }
+        }
     } catch (const ngx::casper::broker::Exception& a_broker_exception) {
         CC_BROKER_INITIALIZER_LOG("cc-status", "\nBROKER_MODULE_INITIALIZATION_ERROR: %s\n", a_broker_exception.what());
         throw a_broker_exception;
@@ -129,32 +399,30 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
          }
      );
           
-    // ... tracker ...
+    // ... error(s) tracker ...
     ngx::casper::broker::Tracker::GetInstance().Startup();
     
+    // ... i18n ...
     if ( false == ngx::casper::broker::I18N::GetInstance().IsInitialized() ) {
-        ngx::casper::broker::I18N::GetInstance().Startup(a_configs.find(k_resources_dir_key_lc_)->second,
-                                                        [a_r](const char* const a_i18_key, const std::string& a_file, const std::string& a_reason) {
-                                                            U_ICU_NAMESPACE::Formattable args[] = {
-                                                                a_file.c_str()
-                                                            };
-                                                            ngx::casper::broker::Tracker::GetInstance().errors_ptr(a_r)->Track("server_error", NGX_HTTP_INTERNAL_SERVER_ERROR,
-                                                                                                                               a_i18_key, args, 1, a_reason.c_str()
-                                                            );
+        std::string reason;
+        ngx::casper::broker::I18N::GetInstance().Startup(configs.find(k_resources_dir_key_lc_)->second,
+                                                        [&reason](const char* const /* a_i18_key */, const std::string& /* a_file */, const std::string& a_reason) {
+                                                            reason = a_reason;
                                                         }
         );
+        if ( 0 != reason.length() ) {
+            throw ngx::casper::broker::Exception("BROKER_INTERNAL_ERROR",
+                                                 "%s", reason.c_str());
+        }
     }
     
+    //
     // ... HSM ...
+    //
 #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
-    ngx_http_casper_broker_hsm_module_loc_conf_t* hsm_conf = (ngx_http_casper_broker_hsm_module_loc_conf_t*)ngx_http_get_module_loc_conf(a_r, ngx_http_casper_broker_hsm_module);
-    if ( NULL != hsm_conf && 1 == hsm_conf->enable ) {
-        ::casper::hsm::Singleton::GetInstance().Startup(
-#ifdef __APPLE__
-            "/usr/local/share/nginx-hsm/",
-#else
-            "/usr/share/nginx-hsm/",
-#endif
+    const nginx_hsm_service_conf_t* hsm_conf = (const nginx_hsm_service_conf_t*)ngx_http_cycle_get_module_main_conf(a_cycle, ngx_http_casper_broker_hsm_module);
+    if ( nullptr != hsm_conf && 1 == hsm_conf->enabled ) {
+        ::casper::hsm::Singleton::GetInstance().Startup(NGX_SHARED_DIR,
         {
             [&hsm_conf] () -> ::casper::hsm::API* {
                 const std::string application = std::string(NGX_NAME) + "(" + std::to_string(getpid()) + ")";
@@ -186,18 +454,6 @@ void ngx::casper::broker::Initializer::Startup (ngx_http_request_t* a_r, const s
         });
     }
 #endif
-    
-    // ... errors set?
-    if ( true == ngx::casper::broker::Tracker::GetInstance().ContainsErrors(a_r) ) {
-        
-        const std::string msg = ngx::casper::broker::Tracker::GetInstance().errors_ptr(a_r)->Serialize2JSON();
-        
-        CC_BROKER_INITIALIZER_LOG("cc-status", "\nBROKER_MODULE_INITIALIZATION_ERROR: %s\n", msg.c_str());
-        
-        throw ngx::casper::broker::Exception("BROKER_MODULE_INITIALIZATION_ERROR",
-                                             "Unable to initialize i18!"
-        );
-    }
       
     // ... mark as initialized ...
     s_initialized_ = true;
@@ -225,143 +481,6 @@ void ngx::casper::broker::Initializer::Shutdown (const int a_sig_no, const bool 
 
     // ... reset initialized flag ...
     s_initialized_ = false;
-}
-
-/**
- * @brief This method should be called prior to main event loop startup.
- *
- * @param a_config
- * @param a_cycle
- * @param a_master
- * @param a_standalone
- */
-void ngx::casper::broker::Initializer::PreStartup (const ngx_core_conf_t* a_config, const ngx_cycle_t* a_cycle, const bool a_master,
-                                                   const bool a_standalone)
-{
-    // ... reset 'forked' instances ...
-    if ( false == a_master ) {
-        Shutdown(/* a_sig_no */ -1, /* a_for_cleanup_only */ true);
-    }
-    
-    //
-    // ... set process configuration dependent paths ...
-    //..
-    std::string alt_process_name;
-    if ( nullptr != a_cycle && 0 != a_cycle->conf_file.len ) {
-        
-        const std::string conf_uri = std::string(reinterpret_cast<const char* const>(a_cycle->conf_file.data), a_cycle->conf_file.len);
-        std::string conf_path;
-        std::string conf_parent_path;
-        
-        ::cc::fs::File::Path(conf_uri, conf_path);
-        ::cc::fs::Dir::Parent(conf_path, conf_parent_path);
-        
-        alt_process_name = std::string(conf_path.c_str() + conf_parent_path.length());
-        alt_process_name = alt_process_name.substr(0, alt_process_name.length() - 1);
-        
-    }
-    
-    // ... other debug tokens ...
-    CC_IF_DEBUG_DECLARE_VAR(std::set<std::string>, debug_tokens);
-    CC_IF_DEBUG(
-        //    debug_tokens.insert("ev_scheduler");
-        //    debug_tokens.insert("ev_glue");
-        //    debug_tokens.insert("ev_hub");
-        //    debug_tokens.insert("ev_shared_glue");
-        //    debug_tokens.insert("ev_hub_read_error");
-        //    debug_tokens.insert("ev_hub_stats");
-        //    debug_tokens.insert("ev_ngx_shared_handler");
-        //    debug_tokens.insert("ev_subscriptions");
-        //    debug_tokens.insert("PQsendQuery");
-        //    debug_tokens.insert("ngx_casper_broker_module");
-
-        //     debug_tokens.insert("oauth");
-        //     debug_tokens.insert("auth");
-
-            debug_tokens.insert("curl");
-            debug_tokens.insert("exceptions");
-    );
-        //
-    // ... initialize casper-connectors // third party libraries ...
-    //
-    ::cc::global::Initializer::GetInstance().WarmUp(
-        /* a_process */
-        {
-            /* name_       */ NGX_NAME,
-            /* alt_name_   */ alt_process_name.c_str(),
-            /* abbr_       */ NGX_NAME,
-            /* version_    */ NGX_VERSION,
-            /* rel_date_   */ NGX_REL_DATE,
-            /* rel_branch_ */ NGX_REL_BRANCH,
-            /* rel_hash_   */ NGX_REL_HASH,
-            /* rel_target_ */ NGX_REL_TARGET,
-            /* info_       */ NGX_INFO,
-            /* banner_     */ NGX_BANNER,
-            /* pid_        */ getpid(),
-            /* standalone_ */ a_standalone,
-            /* is_master_  */ a_master
-        },
-        /* a_directories */
-        nullptr, /* using defaults */
-        /* a_logs */
-        {
-            // ... v1 ...
-            // .. mandatory logs ...
-            { /* token_ */ "libpq"                    , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ true, /* version */ 1 },
-            { /* token_ */ "libpq-connections"        , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ true, /* version */ 2 },
-            // ... v2 ...
-            // .. mandatory logs ...
-            { /* token_ */ "signals"                  , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ true, /* version */ 2 },
-            { /* token_ */ "cc-modules"               , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ true, /* version */ 2 },
-            // .. optional logs ...
-            { /* token_ */ "gatekeeper"               , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ NRS_NGX_CASPER_BROKER_MODULE_CC_MODULES_LOGS_ENABLED, /* version */ 2 },
-            // .. optional ( trace ) logs ...
-            { /* token_ */ "redis_subscriptions_trace", /* uri_ */ "", /* conditional_ */ true, /* enabled_ */ true, /* version */ 2 },
-            { /* token_ */ "redis_trace"              , /* uri_ */ "", /* conditional_ */ true, /* enabled_ */ true, /* version */ 2 }
-        },
-        /* a_v8 */
-        {
-            /* required_            */ false,
-            /* runs_on_main_thread_ */ true
-        },
-        /* a_next_step */ {
-            /* function_ */ std::bind(&ngx::casper::broker::Initializer::OnGlobalInitializationCompleted, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4),
-            /* args_     */ (void*)(a_config)
-        },
-        /* a_present */ [] (std::vector<::cc::global::Initializer::Present>& o_values) {
-#if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
-            {
-                o_values.push_back({
-                    /* title_  */ "CASPER-HSM",
-                    /* values_ */ {}
-                });
-                auto& skia = o_values.back();
-                skia.values_["VERSION"       ] = ::casper::hsm::VERSION();
-                skia.values_["RELEASE NAME"  ] = ::casper::hsm::REL_NAME();
-                skia.values_["RELEASE DATE"  ] = ::casper::hsm::REL_DATE();
-                skia.values_["RELEASE BRANCH"] = ::casper::hsm::REL_BRANCH();
-                skia.values_["RELEASE HASH"  ] = ::casper::hsm::REL_HASH();
-                skia.values_["INFO"          ] = ::casper::hsm::INFO();
-            }
-#endif
-            o_values.push_back({
-                /* title_  */ "OWN MODULES",
-                /* values_ */ {}
-            });
-            auto& modules = o_values.back();
-            for ( ngx_uint_t idx = 0; ngx_modules[idx]; idx++ ) {
-                if ( nullptr == strstr(ngx_modules[idx]->name, "casper")  ) {
-                    if ( nullptr == strstr(ngx_modules[idx]->name, "ngx_http_named_imports_filter_module") ) {
-                        continue;                        
-                    }
-                }
-                modules.values_["ngx_modules[" + std::to_string(idx) + "]"] = ngx_modules[idx]->name;
-            }
-        },
-       /* a_debug_tokens */
-       CC_IF_DEBUG_ELSE(&debug_tokens, nullptr)
-   );
-
 }
 
 #ifdef __APPLE__
@@ -418,19 +537,14 @@ extern "C" void ngx_http_casper_broker_signal_handler (int a_sig_no)
     (void)::ev::Signals::GetInstance().OnSignal(a_sig_no);
 }
 
-extern "C" void ngx_http_casper_broker_main_hook (const ngx_core_conf_t* a_config, const ngx_cycle_t* a_cycle)
+extern "C" void ngx_http_casper_broker_main_hook (const ngx_core_conf_t* /* a_config */, const ngx_cycle_t* /* a_cycle */)
 {
 #ifdef NGX_CASPER_BROKER_ENABLE_SIGV_HANDLER
     signal(SIGSEGV, ngx_http_casper_broker_sig_segv_handler);
 #endif // NGX_CASPER_BROKER_ENABLE_SIGV_HANDLER
-	ngx::casper::broker::Initializer::GetInstance().PreStartup(a_config, a_cycle, /* a_master*/ true,
-                                                               /* a_standalone */ ( 0 == a_config->master && 0 == a_config->daemon )
-    );
 }
 
-extern "C" void ngx_http_casper_broker_worker_hook (const ngx_core_conf_t* a_config, const ngx_cycle_t* a_cycle)
+extern "C" void ngx_http_casper_broker_worker_hook (const ngx_core_conf_t* /* a_config */, const ngx_cycle_t* /* a_cycle */)
 {
-    ngx::casper::broker::Initializer::GetInstance().PreStartup(a_config, a_cycle, /* a_master*/ false,
-                                                               /* a_standalone */ ( 0 == a_config->master && 0 == a_config->daemon )
-    );
+    /* empty */
 }
