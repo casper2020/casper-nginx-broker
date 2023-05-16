@@ -1221,8 +1221,8 @@ done:
             }
 
             // ... track type ...
-            magic_type = entries[0].value_;
-            magic_desc = entries[1].value_;
+            magic_type = entries[0].value_; // MAGIC_MIME_TYPE
+            magic_desc = entries[1].value_; // MAGIC_NONE
             
             // ... validate?
             if ( 1 == loc_conf->magic_validation ) {
