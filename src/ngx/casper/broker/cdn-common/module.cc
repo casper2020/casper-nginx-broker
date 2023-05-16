@@ -46,7 +46,10 @@ const std::set<std::string> ngx::casper::broker::cdn::common::Module::sk_preserv
     XATTR_ARCHIVE_PREFIX "com.cldware.upload.content-type",
     XATTR_ARCHIVE_PREFIX "com.cldware.upload.content-length",
     XATTR_ARCHIVE_PREFIX "com.cldware.upload.md5",
-    XATTR_ARCHIVE_PREFIX "com.cldware.upload.seal"
+    XATTR_ARCHIVE_PREFIX "com.cldware.upload.seal",
+    XATTR_ARCHIVE_PREFIX "com.cldware.upload.magic.type",
+    XATTR_ARCHIVE_PREFIX "com.cldware.upload.magic.description",
+    XATTR_ARCHIVE_PREFIX "com.cldware.upload.magic.validation"
 };
 
 /**
