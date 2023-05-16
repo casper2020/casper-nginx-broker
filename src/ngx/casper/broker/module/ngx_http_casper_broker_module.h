@@ -103,15 +103,16 @@ typedef struct {
 
 typedef struct {
     // ...
-    ngx_str_t  location;                        //!<
+    ngx_str_t  location;
+    ngx_int_t  connection_validity;
     ngx_str_t  supported_content_types;         //!< JSON array of strings with supported Content-Type prefix / values.
 
     // ... session cookie ...
     ngx_http_casper_broker_session_conf_t session;
     // ... JWT ...
-    ngx_str_t  jwt_iss;                         //!<
-    ngx_str_t  jwt_rsa_public_key_uri;          //!<
-    ngx_str_t  jwt_allowed_patch_members_set;   //!<
+    ngx_str_t  jwt_iss;
+    ngx_str_t  jwt_rsa_public_key_uri;
+    ngx_str_t  jwt_allowed_patch_members_set;
     // ... redirect ...
     ngx_http_casper_broker_cdn_conf_t cdn;
     // ... awful code ...

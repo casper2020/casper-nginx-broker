@@ -71,14 +71,6 @@ static ngx_command_t ngx_http_casper_broker_module_commands[] = {
         offsetof(nginx_broker_service_conf_t, resources_dir),
         NULL
     },
-    {
-        ngx_string("nginx_casper_broker_connection_validity"),
-        NGX_HTTP_MAIN_CONF | NGX_CONF_TAKE1,
-        ngx_conf_set_num_slot,
-        NGX_HTTP_MAIN_CONF_OFFSET,
-        offsetof(nginx_broker_service_conf_t, connection_validity),
-        NULL
-    },
     /* redis */
     {
         ngx_string("nginx_casper_broker_redis_ip_address"),
@@ -229,6 +221,14 @@ static ngx_command_t ngx_http_casper_broker_module_commands[] = {
        NGX_HTTP_LOC_CONF_OFFSET,
        offsetof(ngx_http_casper_broker_module_loc_conf_t, location),
        NULL
+    },
+    {
+        ngx_string("nginx_casper_broker_connection_validity"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_num_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_module_loc_conf_t, connection_validity),
+        NULL
     },
     {
         ngx_string("nginx_casper_broker_supported_content_types"),
@@ -472,7 +472,6 @@ static void* ngx_http_casper_broker_module_create_main_conf (ngx_conf_t* a_cf)
     // ... service ...
     conf->service_id                       = ngx_null_string;
     conf->resources_dir                    = ngx_null_string;
-    conf->connection_validity              = NGX_CONF_UNSET;
     // ... redis ...
     conf->redis.ip_address                 = ngx_null_string;
     conf->redis.port_number                = NGX_CONF_UNSET;
@@ -520,7 +519,6 @@ static char* ngx_http_casper_broker_module_init_main_conf (ngx_conf_t* a_cf, voi
     /* service */
     nrs_conf_init_str_value (conf->service_id                     , "development" );
     nrs_conf_init_str_value (conf->resources_dir                  ,            "" );
-    ngx_conf_init_value     (conf->connection_validity            ,           300 );
     // ... redis ...
     nrs_conf_init_str_value (conf->redis.ip_address               ,            "" );
     ngx_conf_init_value     (conf->redis.port_number              ,          6379 );
@@ -562,6 +560,7 @@ static void* ngx_http_casper_broker_module_create_loc_conf (ngx_conf_t* a_cf)
     }
 
     conf->location                         = ngx_null_string;
+    conf->connection_validity              = NGX_CONF_UNSET;
     conf->supported_content_types          = ngx_null_string;
     // ... session cookie ...
     conf->session.cookie_name              = ngx_null_string;
@@ -608,6 +607,7 @@ static char* ngx_http_casper_broker_module_merge_loc_conf (ngx_conf_t* /* a_cf *
     ngx_http_casper_broker_module_loc_conf_t* conf = (ngx_http_casper_broker_module_loc_conf_t*) a_child;
     
     ngx_conf_merge_str_value (conf->location                       , prev->location                       ,            "" );
+    ngx_conf_merge_value     (conf->connection_validity            , prev->connection_validity            ,           300 );
     ngx_conf_merge_str_value (conf->supported_content_types        , prev->supported_content_types,
                               "[\"application/json\",\"application/vnd.api+json\",\"application/text\",\"application/x-www-form-urlencoded\"]"
     );

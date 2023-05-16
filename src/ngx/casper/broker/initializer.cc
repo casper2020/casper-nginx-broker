@@ -241,12 +241,6 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
             = std::string(reinterpret_cast<char const*>(service_conf->resources_dir.data), service_conf->resources_dir.len);
         
         //
-        // ... CONNECTION ...
-        //
-        configs[ngx::casper::broker::Module::k_connection_validity_key_lc_]
-            = std::to_string(service_conf->connection_validity);
-                
-        //
         // ... SERVICE ...
         //
         configs[ngx::casper::broker::Module::k_service_id_key_lc_]

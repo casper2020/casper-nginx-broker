@@ -624,6 +624,12 @@ ngx_int_t ngx::casper::broker::Module::Initialize (const ngx::casper::broker::Mo
     uint16_t  http_status_code = NGX_HTTP_BAD_REQUEST;
 
     //
+    // ... CONNECTION ...
+    //
+    a_params.config_[ngx::casper::broker::Module::k_connection_validity_key_lc_]
+        = std::to_string(broker_conf->connection_validity);
+
+    //
     // ... SESSION COOKIE ...
     //
     if ( broker_conf->session.cookie_name.len > 0 ) {
