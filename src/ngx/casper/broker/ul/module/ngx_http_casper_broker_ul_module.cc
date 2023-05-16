@@ -175,7 +175,15 @@ static ngx_command_t ngx_http_casper_broker_ul_module_commands[] = {
     },
     // ...
     {
-        ngx_string("nginx_casper_broker_ul_allow_magic_type"),
+        ngx_string("nginx_casper_broker_ul_validation"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_flag_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, magic_validation),
+        NULL
+    },
+    {
+        ngx_string("nginx_casper_broker_ul_validation_allow_type"),
         NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
         ngx_conf_set_str_array_slot,
         NGX_HTTP_LOC_CONF_OFFSET,
@@ -183,7 +191,7 @@ static ngx_command_t ngx_http_casper_broker_ul_module_commands[] = {
         NULL
     },
     {
-        ngx_string("nginx_casper_broker_ul_allow_magic_desc"),
+        ngx_string("nginx_casper_broker_ul_validation_allow_desc"),
         NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
         ngx_conf_set_str_array_slot,
         NGX_HTTP_LOC_CONF_OFFSET,
@@ -255,8 +263,9 @@ static void* ngx_http_casper_broker_ul_module_create_loc_conf (ngx_conf_t* a_cf)
     conf->authorization_url     = ngx_null_string;
     conf->authorization_ct      = NGX_CONF_UNSET_UINT;
     conf->authorization_tt      = NGX_CONF_UNSET_UINT;
-    conf->allowed_magic_types  = (ngx_array_t*)NGX_CONF_UNSET_PTR;
-    conf->allowed_magic_desc   = (ngx_array_t*)NGX_CONF_UNSET_PTR;
+    conf->magic_validation      = NGX_CONF_UNSET;
+    conf->allowed_magic_types   = (ngx_array_t*)NGX_CONF_UNSET_PTR;
+    conf->allowed_magic_desc    = (ngx_array_t*)NGX_CONF_UNSET_PTR;
 
     return conf;
 }
@@ -283,6 +292,7 @@ static char* ngx_http_casper_broker_ul_module_merge_loc_conf (ngx_conf_t* /* a_c
     ngx_conf_merge_str_value (conf->authorization_url    , prev->authorization_url    ,          "" ); /* not set */
     ngx_conf_merge_uint_value(conf->authorization_ct     , prev->authorization_ct     ,          30 ); /* 30 seconds */
     ngx_conf_merge_uint_value(conf->authorization_tt     , prev->authorization_tt     ,          60 ); /* 60 seconds */
+    ngx_conf_merge_value     (conf->magic_validation     , prev->magic_validation     ,           1 ); /* 1 - enabled */
     ngx_conf_merge_ptr_value (conf->allowed_magic_types  , prev->allowed_magic_types  ,      nullptr);
     ngx_conf_merge_ptr_value (conf->allowed_magic_desc   , prev->allowed_magic_desc   ,      nullptr);
             
@@ -1178,90 +1188,126 @@ done:
             }
         }
         
-        const std::string uri  = context->file_.uri_;
-        std::string       type = "";
-
-        // ... magic validation ...
+        const std::string uri        = context->file_.uri_;
+              std::string magic_type;
+              std::string magic_desc;
+        
+        // ... magic fetch / validation ...
+        const ngx_http_casper_broker_ul_module_loc_conf_t* loc_conf = (const ngx_http_casper_broker_ul_module_loc_conf_t*) ngx_http_get_module_loc_conf(a_r, ngx_http_casper_broker_ul_module);
         try {
             
-            const ngx_http_casper_broker_ul_module_loc_conf_t* loc_conf = (const ngx_http_casper_broker_ul_module_loc_conf_t*) ngx_http_get_module_loc_conf(a_r, ngx_http_casper_broker_ul_module);
-            if ( nullptr != loc_conf->allowed_magic_types || nullptr != loc_conf->allowed_magic_desc ) {
+            // ...
+            typedef struct {
+                const int          flags_;
+                const char* const  via_;
+                const ngx_array_t* array_;
+                std::string        match_;
+                std::string        value_;
+            } _Entry;
+            std::vector<_Entry> entries = {
+                { MAGIC_MIME_TYPE, "MIME Type"  , nullptr, "", "" },
+                { MAGIC_NONE     , "Description", nullptr , "", "" }
+            };
+
+            // ... magic fetch ...
+            {
+                cc::magic::MIMEType magic; magic.Initialize(std::string(NGX_SHARED_DIR));
+                for ( size_t idx = 0 ; idx < entries.size() ; ++idx ) {
+                    // ... reset ...
+                    magic.Reset(entries[idx].flags_);
+                    // ... test ...
+                    entries[idx].value_ = magic.WithoutCharsetOf(uri);
+                }
+            }
+
+            // ... track type ...
+            magic_type = entries[0].value_;
+            magic_desc = entries[1].value_;
+            
+            // ... validate?
+            if ( 1 == loc_conf->magic_validation ) {
+                // ... yes ...
+                entries[0].array_ = loc_conf->allowed_magic_types; // MAGIC_MIME_TYPE
+                entries[1].array_ = loc_conf->allowed_magic_desc;  // MAGIC_NONE
                 // ... log ...
                 NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
                                         "CH", "VALIDATION",
                                         "Magically validating: %s", uri.c_str()
                 );
-                typedef struct {
-                    const int          flags_;
-                    const char* const  via_;
-                    const ngx_array_t* array_;
-                    std::string        match_;
-                } _Entry;
-                ssize_t allowed = -1;
-                std::vector<_Entry> entries = {
-                    { MAGIC_MIME_TYPE, "MIME Type"  , loc_conf->allowed_magic_types, "" },
-                    { MAGIC_NONE     , "Description", loc_conf->allowed_magic_desc , "" }
-                };
-                cc::magic::MIMEType magic; magic.Initialize(std::string(NGX_SHARED_DIR));
-                for ( size_t idx = 0 ; idx < entries.size() && -1 == allowed ; ++idx ) {
-                    // ... no data?
-                    auto entry = entries[idx];
-                    if ( nullptr == entry.array_ ) {
-                        // ... next ...
-                        continue;
-                    }
-                    // ... reset ...
-                    magic.Reset(entry.flags_);
-                    // ... test ...
-                    type = magic.WithoutCharsetOf(uri);
-                    const ngx_str_t* array = ((ngx_str_t*) entry.array_->elts);
-                    for ( ngx_uint_t idx2 = 0; idx2 < entry.array_->nelts; idx2++ ) {
-                        const ngx_str_t value = array[idx2];
-                        if ( 0 == value.len ) {
-                            continue;
-                        }
-                        if ( 0 == strncasecmp((const char*)(value.data), type.c_str(), std::min(value.len, type.length())) ) {
-                            entry.match_ = type;
-                            allowed = static_cast<ssize_t>(idx);
-                            break;
-                        }
-                    }
-                }
                 // ... log ...
                 NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
                                         "CH", "VALIDATION",
-                                        "Magically translated to '%s'", type.c_str()
+                                        "Magically translated to '%s' ( %s )", magic_type.c_str(), magic_desc.c_str()
                 );
-                // ... allowed?
-                if ( -1 != allowed ) {
-                    // ... yes, log it ...
-                    NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
-                                            "CH", "VALIDATION",
-                                            "Magically allowed via '%s' rule",
-                                            ( MAGIC_MIME_TYPE == entries[static_cast<size_t>(allowed)].flags_ ? "MIME Type" : "Description" )
-                    );
+                // ... validate ...
+                if ( nullptr != loc_conf->allowed_magic_types || nullptr != loc_conf->allowed_magic_desc ) {
+                    ssize_t allowed = -1;
+                    for ( size_t idx = 0 ; idx < entries.size() && -1 == allowed ; ++idx ) {
+                        // ... no data?
+                        auto entry = entries[idx];
+                        if ( nullptr == entry.array_ ) {
+                            // ... next ...
+                            continue;
+                        }
+                        // ... test ...
+                        const ngx_str_t* array = ((ngx_str_t*) entry.array_->elts);
+                        for ( ngx_uint_t idx2 = 0; idx2 < entry.array_->nelts; idx2++ ) {
+                            const ngx_str_t value = array[idx2];
+                            if ( 0 == value.len ) {
+                                continue;
+                            }
+                            if ( 0 == strncasecmp((const char*)(value.data), entry.value_.c_str(), std::min(value.len, entry.value_.length())) ) {
+                                entries[idx].match_ = entry.value_;
+                                allowed = static_cast<ssize_t>(idx);
+                                break;
+                            }
+                        }
+                    }
+                    // ... allowed?
+                    if ( -1 != allowed ) {
+                        // ... yes, log it ...
+                        NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
+                                                "CH", "VALIDATION",
+                                                "Magically allowed via '%s' rule '%s'",
+                                                ( MAGIC_MIME_TYPE == entries[static_cast<size_t>(allowed)].flags_ ? "MIME Type" : "Description" ), entries[static_cast<size_t>(allowed)].match_.c_str()
+                        );
+                    } else {
+                        // ... no ...
+                        http_status_code = NGX_HTTP_FORBIDDEN;
+                        // ... log it ...
+                        NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
+                                                "CH", "VALIDATION",
+                                                "Magically %s!", "DENIED"
+                        );
+                    }
                 } else {
-                    // ... no ...
+                    // ... no rules specified, denied by default ...
                     http_status_code = NGX_HTTP_FORBIDDEN;
-                    context->error_tracker_->Track("BROKER_FORBIDDEN_ERROR", NGX_HTTP_FORBIDDEN, "BROKER_FORBIDDEN_ERROR",
-                                                   ( "The uploaded data MIME-Type '" + type + "' is not allowed!" ).c_str()
-                    );
                     // ... log it ...
                     NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
                                             "CH", "VALIDATION",
-                                            "Magically %s!", "DENIED"
+                                            "Magically %s!", "DENIED - no rules provided"
+                    );
+                }
+                // ... track error?
+                if ( NGX_HTTP_FORBIDDEN == http_status_code ) {
+                    context->error_tracker_->Track("BROKER_FORBIDDEN_ERROR", NGX_HTTP_FORBIDDEN, "BROKER_FORBIDDEN_ERROR",
+                                                   ( "The uploaded data MIME-Type '" + magic_type + "' ( " + magic_desc  + " ) is not allowed!" ).c_str()
                     );
                 }
             }
-
         } catch (const cc::Exception& a_cc_exception) {
-            ss.str("");
-            ss << "Error while magically validating file '" << uri << "': " << a_cc_exception.what();
-            msg = ss.str();
-            http_status_code = NGX_HTTP_INTERNAL_SERVER_ERROR;
-            context->error_tracker_->Track("UL_AN_ERROR_OCCURRED_MESSAGE", NGX_HTTP_INTERNAL_SERVER_ERROR, "UL_AN_ERROR_OCCURRED_MESSAGE",
-                                           msg.c_str()
-            );
+            // ... if validation is madatory ...
+            if ( 1 == loc_conf->magic_validation ) {
+                // ... report error ...
+                ss.str("");
+                ss << "Error while magically validating file '" << uri << "': " << a_cc_exception.what();
+                msg = ss.str();
+                http_status_code = NGX_HTTP_INTERNAL_SERVER_ERROR;
+                context->error_tracker_->Track("UL_AN_ERROR_OCCURRED_MESSAGE", NGX_HTTP_INTERNAL_SERVER_ERROR, "UL_AN_ERROR_OCCURRED_MESSAGE",
+                                               msg.c_str()
+                );
+            }
         }
         
         // ... write xattrs ...
@@ -1303,10 +1349,14 @@ done:
                 );
             }
             
-            // ... magic type ...
-            if ( type.length() > 0 ) {
-                xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.magic-type", type);
+            // ... magic type and desc ...
+            if ( magic_type.length() > 0 ) {
+                xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.magic.type", magic_type);
             }
+            if ( magic_desc.length() > 0 ) {
+                xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.magic.description", magic_desc);
+            }
+            xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.magic.validation", ( 1 == loc_conf->magic_validation ? "yes" : "no" ));
             
             // ... module & timestamp info ...
             xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.created.by", NGX_CASPER_BROKER_UL_MODULE_INFO);
