@@ -40,6 +40,8 @@
 #include <algorithm> // std::min
 #include <vector>
 
+#include "cc/modsecurity/processor.h"
+
 #ifdef __APPLE__
 #pragma mark -
 #pragma mark - Module - Forward declarations
@@ -1223,9 +1225,47 @@ done:
             // ... track type ...
             magic_type = entries[0].value_; // MAGIC_MIME_TYPE
             magic_desc = entries[1].value_; // MAGIC_NONE
-            
+
+            // ... validate non-binary data ...
+            if ( 0 == strstr(magic_type.c_str(), "text/") || 0 == strstr(magic_type.c_str(), "/xml") || 0 == strstr(magic_type.c_str(), "/html")  ) {
+                // ... always a POST request ...
+                ::cc::modsecurity::Processor::POSTRequest request = {
+                    /* content_type_  */ magic_type,         // TODO: MODSECURITY FIX THIS - "application/html" - no longer needed ?
+                    /* from_          */ "127.0.0.1:12345",  // TODO: MODSECURITY FIX THIS
+                    /* to_            */ "127.0.0.1:123456", // TODO: MODSECURITY FIX THIS
+                    /* uri_           */ "<undefied>",       // TODO: MODSECURITY FIX THIS
+                    /* protocol_      */ "http",             // TODO: MODSECURITY FIX THIS
+                    /* version_       */ "1.2",              // TODO: MODSECURITY FIX THIS
+                    /* body_file_uri_ */ uri,
+                    /* query_         */ ""                  // TODO: MODSECURITY FIX THIS
+                };
+                // ... allowed by modsecurity?
+                ::cc::modsecurity::Processor::Rule rule;
+                if ( 200 != ::cc::modsecurity::Processor::GetInstance().SimulateHTTPRequest(request, rule) ) {
+                    // ... no ...
+                    http_status_code = NGX_HTTP_FORBIDDEN;
+                    // ... log it ...
+                    NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
+                                            "CH", "VALIDATION",
+                                            "modsecurity DENIED by rule #%s - %s", rule.id_.c_str(), rule.msg_.c_str()
+                    );
+                    NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
+                                            "CH", "VALIDATION",
+                                            "modsecurity DENIED by rule %s ", rule.data_.c_str()
+                    );
+                    NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
+                                            "CH", "VALIDATION",
+                                            "modsecurity DENIED by rule @ %s:%d", rule.file_.c_str(), rule.line_
+                    );
+                    // ... track error ...
+                    context->error_tracker_->Track("BROKER_FORBIDDEN_ERROR", NGX_HTTP_FORBIDDEN, "BROKER_FORBIDDEN_ERROR",
+                                                   ( "DENIED due to security rule #" + rule.id_ + ": " + rule.msg_ + "!").c_str()
+                    );
+                }
+            }
+
             // ... validate?
-            if ( 1 == loc_conf->magic_validation ) {
+            if ( 200 == http_status_code && 1 == loc_conf->magic_validation ) {
                 // ... yes ...
                 entries[0].array_ = loc_conf->allowed_magic_types; // MAGIC_MIME_TYPE
                 entries[1].array_ = loc_conf->allowed_magic_desc;  // MAGIC_NONE

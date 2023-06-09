@@ -49,6 +49,10 @@
 
 #include "ngx/casper/config.h"
 
+#if defined(NGX_HAS_MODSECURITY_MODULE) && 1 == NGX_HAS_MODSECURITY_MODULE
+    #include "cc/modsecurity/processor.h"
+#endif
+
 #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
   #include "casper/hsm/about.h"
   #include "casper/hsm/singleton.h"
@@ -363,6 +367,16 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
         );
     }
     
+#if defined(NGX_HAS_MODSECURITY_MODULE) && 1 == NGX_HAS_MODSECURITY_MODULE
+    try {
+        cc::modsecurity::Processor::GetInstance().Startup(NGX_ETC_DIR "/conf.d/");
+    } catch (const ::cc::Exception& a_cc_exception) {
+        throw ngx::casper::broker::Exception("BROKER_MODULE_INITIALIZATION_ERROR",
+                                             "Unable to initialize modsecurity: %s!", a_cc_exception.what()
+        );
+    }
+#endif
+    
     // ... casper-connectors // third party libraries ...
     ::cc::global::Initializer::GetInstance().Startup(
          /* a_signals */
@@ -374,6 +388,9 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
                                      case SIGTTIN:
 #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
                                          ::casper::hsm::Singleton::GetInstance().Recycle();
+#endif
+#if defined(NGX_HAS_MODSECURITY_MODULE) && 1 == NGX_HAS_MODSECURITY_MODULE
+                                         cc::modsecurity::Processor::GetInstance().Recycle();
 #endif
                                          return false;
                                      case SIGQUIT:
@@ -474,6 +491,10 @@ void ngx::casper::broker::Initializer::Shutdown (const int a_sig_no, const bool 
     // ... HSM ...
 #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
     ::casper::hsm::Singleton::GetInstance().Shutdown();
+#endif
+    // ... MODSECURITY ...
+#if defined(NGX_HAS_MODSECURITY_MODULE) && 1 == NGX_HAS_MODSECURITY_MODULE
+    cc::modsecurity::Processor::GetInstance().Shutdown();
 #endif
     // ... casper-connectors // third party libraries cleanup ...
     ::cc::global::Initializer::GetInstance().Shutdown(a_sig_no, a_for_cleanup_only);
