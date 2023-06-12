@@ -180,6 +180,7 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
                 { /* token_ */ "cc-modules"               , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ true, /* version */ 2 },
                 // .. optional logs ...
                 { /* token_ */ "gatekeeper"               , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ NRS_NGX_CASPER_BROKER_MODULE_CC_MODULES_LOGS_ENABLED, /* version */ 2 },
+                { /* token_ */ "cc-modsecurity"           , /* uri_ */ "", /* conditional_ */ false, /* enabled_ */ NRS_NGX_CASPER_BROKER_MODULE_CC_MODULES_LOGS_ENABLED, /* version */ 2 },
                 // .. optional ( trace ) logs ...
                 { /* token_ */ "redis_subscriptions_trace", /* uri_ */ "", /* conditional_ */ true, /* enabled_ */ true, /* version */ 2 },
                 { /* token_ */ "redis_trace"              , /* uri_ */ "", /* conditional_ */ true, /* enabled_ */ true, /* version */ 2 }
@@ -367,9 +368,13 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
         );
     }
     
+    // ... modsecurity ...
 #if defined(NGX_HAS_MODSECURITY_MODULE) && 1 == NGX_HAS_MODSECURITY_MODULE
     try {
-        cc::modsecurity::Processor::GetInstance().Startup(NGX_ETC_DIR "/conf.d/");
+        cc::modsecurity::Processor::GetInstance().Startup(
+            ::cc::global::Initializer::GetInstance().loggable_data(),
+            ::cc::global::Initializer::GetInstance().directories().etc_ + "conf.d/mod-security/", "modsec_includes.conf"
+        );
     } catch (const ::cc::Exception& a_cc_exception) {
         throw ngx::casper::broker::Exception("BROKER_MODULE_INITIALIZATION_ERROR",
                                              "Unable to initialize modsecurity: %s!", a_cc_exception.what()
@@ -386,12 +391,6 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
                                  // ... is a 'shutdown' signal?
                                  switch(a_sig_no) {
                                      case SIGTTIN:
-#if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
-                                         ::casper::hsm::Singleton::GetInstance().Recycle();
-#endif
-#if defined(NGX_HAS_MODSECURITY_MODULE) && 1 == NGX_HAS_MODSECURITY_MODULE
-                                         cc::modsecurity::Processor::GetInstance().Recycle();
-#endif
                                          return false;
                                      case SIGQUIT:
                                      case SIGTERM:
@@ -409,7 +408,57 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
              /* call_on_main_thread_ */ std::move(glue_callbacks.call_on_main_thread_)
          }
      );
-          
+    
+    // ... HSM signals ...
+#if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
+    ::ev::Signals::GetInstance().Append({
+        {
+            /* signal_      */ SIGTTIN,
+            /* description_ */ "HSM reload",
+            /* callback_    */ [] () -> std::string {
+                try {
+                    // ... recycle HSM ...
+                    ::casper::hsm::Singleton::GetInstance().Recycle();
+                    // ... done ...
+                    return "HSM reloaded";
+                } catch (...) {
+                    try {
+                        CC_EXCEPTION_RETHROW(/* a_unhandled */ false);
+                    } catch (const ::cc::Exception& a_cc_exception) {
+                        return "HSM reload failed: " +  std::string(a_cc_exception.what()) + "!";
+                    }
+                    return "HSM reload failed!";
+                }
+            }
+        }
+    });
+#endif
+    
+#if defined(NGX_HAS_MODSECURITY_MODULE) && 1 == NGX_HAS_MODSECURITY_MODULE
+    ::ev::Signals::GetInstance().Append({
+        {
+            /* signal_      */ SIGTTIN,
+            /* description_ */ "Modsecurity reload",
+            /* callback_    */ [] () -> std::string {
+                try {
+                    // ... recycle Modsecurity ...
+                    cc::modsecurity::Processor::GetInstance().Recycle();
+                    // ... done ...
+                    return "Modsecurity reloaded";
+                } catch (...) {
+                    try {
+                        CC_EXCEPTION_RETHROW(/* a_unhandled */ false);
+                    } catch (const ::cc::Exception& a_cc_exception) {
+                        return "Modsecurity reload failed: " +  std::string(a_cc_exception.what()) + "!";
+                    }
+                    return "Modsecurity reload failed!";
+                }
+            }
+        }
+    });
+#endif
+
+    
     // ... error(s) tracker ...
     ngx::casper::broker::Tracker::GetInstance().Startup();
     
@@ -498,7 +547,6 @@ void ngx::casper::broker::Initializer::Shutdown (const int a_sig_no, const bool 
 #endif
     // ... casper-connectors // third party libraries cleanup ...
     ::cc::global::Initializer::GetInstance().Shutdown(a_sig_no, a_for_cleanup_only);
-
     // ... reset initialized flag ...
     s_initialized_ = false;
 }

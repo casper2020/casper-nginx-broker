@@ -56,6 +56,7 @@ static void      ngx_http_casper_broker_ul_module_read_body_callback (ngx_http_r
 static void      ngx_http_casper_broker_ul_module_cleanup_handler    (void*);
 
 static ngx_uint_t ngx_http_casper_broker_ul_ensure_output             (ngx_http_casper_broker_ul_module_context_t* a_context, std::string& o_uri);
+static void       ngx_http_casper_broker_ul_addr_to_hr                (struct sockaddr* a_addr, const socklen_t a_len, ::cc::modsecurity::Processor::Addr& o_addr);
 
 static const ngx_str_t  NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOW_ORIGIN  = ngx_string("Access-Control-Allow-Origin");
 static const ngx_str_t  NGX_HTTP_CASPER_BROKER_UL_MODULE_ALLOW_METHODS = ngx_string("Access-Control-Allow-Methods");
@@ -201,6 +202,31 @@ static ngx_command_t ngx_http_casper_broker_ul_module_commands[] = {
         NULL
     },
     // ...
+    {
+        ngx_string("nginx_casper_broker_ul_scan"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_flag_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, scan_magic),
+        NULL
+    },
+    {
+        ngx_string("nginx_casper_broker_ul_scan_magic_type"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_str_array_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, scan_magic_types),
+        NULL
+    },
+    {
+        ngx_string("nginx_casper_broker_ul_scan_magic_desc"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_str_array_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, scan_magic_desc),
+        NULL
+    },
+    // ...
     ngx_null_command
 };
 
@@ -268,6 +294,9 @@ static void* ngx_http_casper_broker_ul_module_create_loc_conf (ngx_conf_t* a_cf)
     conf->magic_validation      = NGX_CONF_UNSET;
     conf->allowed_magic_types   = (ngx_array_t*)NGX_CONF_UNSET_PTR;
     conf->allowed_magic_desc    = (ngx_array_t*)NGX_CONF_UNSET_PTR;
+    conf->scan_magic            = NGX_CONF_UNSET;
+    conf->scan_magic_types      = (ngx_array_t*)NGX_CONF_UNSET_PTR;
+    conf->scan_magic_desc       = (ngx_array_t*)NGX_CONF_UNSET_PTR;
 
     return conf;
 }
@@ -297,6 +326,9 @@ static char* ngx_http_casper_broker_ul_module_merge_loc_conf (ngx_conf_t* /* a_c
     ngx_conf_merge_value     (conf->magic_validation     , prev->magic_validation     ,           1 ); /* 1 - enabled */
     ngx_conf_merge_ptr_value (conf->allowed_magic_types  , prev->allowed_magic_types  ,      nullptr);
     ngx_conf_merge_ptr_value (conf->allowed_magic_desc   , prev->allowed_magic_desc   ,      nullptr);
+    ngx_conf_merge_value     (conf->scan_magic           , prev->scan_magic           ,           1 ); /* 1 - enabled */
+    ngx_conf_merge_ptr_value (conf->scan_magic_types     , prev->scan_magic_types     ,      nullptr);
+    ngx_conf_merge_ptr_value (conf->scan_magic_desc      , prev->scan_magic_desc      ,      nullptr);
             
     NGX_BROKER_MODULE_LOC_CONF_MERGED();    
     
@@ -1226,44 +1258,6 @@ done:
             magic_type = entries[0].value_; // MAGIC_MIME_TYPE
             magic_desc = entries[1].value_; // MAGIC_NONE
 
-            // ... validate non-binary data ...
-            if ( 0 == strstr(magic_type.c_str(), "text/") || 0 == strstr(magic_type.c_str(), "/xml") || 0 == strstr(magic_type.c_str(), "/html")  ) {
-                // ... always a POST request ...
-                ::cc::modsecurity::Processor::POSTRequest request = {
-                    /* content_type_  */ magic_type,         // TODO: MODSECURITY FIX THIS - "application/html" - no longer needed ?
-                    /* from_          */ "127.0.0.1:12345",  // TODO: MODSECURITY FIX THIS
-                    /* to_            */ "127.0.0.1:123456", // TODO: MODSECURITY FIX THIS
-                    /* uri_           */ "<undefied>",       // TODO: MODSECURITY FIX THIS
-                    /* protocol_      */ "http",             // TODO: MODSECURITY FIX THIS
-                    /* version_       */ "1.2",              // TODO: MODSECURITY FIX THIS
-                    /* body_file_uri_ */ uri,
-                    /* query_         */ ""                  // TODO: MODSECURITY FIX THIS
-                };
-                // ... allowed by modsecurity?
-                ::cc::modsecurity::Processor::Rule rule;
-                if ( 200 != ::cc::modsecurity::Processor::GetInstance().SimulateHTTPRequest(request, rule) ) {
-                    // ... no ...
-                    http_status_code = NGX_HTTP_FORBIDDEN;
-                    // ... log it ...
-                    NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
-                                            "CH", "VALIDATION",
-                                            "modsecurity DENIED by rule #%s - %s", rule.id_.c_str(), rule.msg_.c_str()
-                    );
-                    NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
-                                            "CH", "VALIDATION",
-                                            "modsecurity DENIED by rule %s ", rule.data_.c_str()
-                    );
-                    NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
-                                            "CH", "VALIDATION",
-                                            "modsecurity DENIED by rule @ %s:%d", rule.file_.c_str(), rule.line_
-                    );
-                    // ... track error ...
-                    context->error_tracker_->Track("BROKER_FORBIDDEN_ERROR", NGX_HTTP_FORBIDDEN, "BROKER_FORBIDDEN_ERROR",
-                                                   ( "DENIED due to security rule #" + rule.id_ + ": " + rule.msg_ + "!").c_str()
-                    );
-                }
-            }
-
             // ... validate?
             if ( 200 == http_status_code && 1 == loc_conf->magic_validation ) {
                 // ... yes ...
@@ -1271,12 +1265,12 @@ done:
                 entries[1].array_ = loc_conf->allowed_magic_desc;  // MAGIC_NONE
                 // ... log ...
                 NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
-                                        "CH", "VALIDATION",
+                                        "CH", "VALIDATING",
                                         "Magically validating: %s", uri.c_str()
                 );
                 // ... log ...
                 NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
-                                        "CH", "VALIDATION",
+                                        "CH", "VALIDATING",
                                         "Magically translated to '%s' ( %s )", magic_type.c_str(), magic_desc.c_str()
                 );
                 // ... validate ...
@@ -1307,7 +1301,7 @@ done:
                     if ( -1 != allowed ) {
                         // ... yes, log it ...
                         NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
-                                                "CH", "VALIDATION",
+                                                "CH", "VALIDATING",
                                                 "Magically allowed via '%s' rule '%s'",
                                                 ( MAGIC_MIME_TYPE == entries[static_cast<size_t>(allowed)].flags_ ? "MIME Type" : "Description" ), entries[static_cast<size_t>(allowed)].match_.c_str()
                         );
@@ -1316,7 +1310,7 @@ done:
                         http_status_code = NGX_HTTP_FORBIDDEN;
                         // ... log it ...
                         NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
-                                                "CH", "VALIDATION",
+                                                "CH", "VALIDATING",
                                                 "Magically %s!", "DENIED"
                         );
                     }
@@ -1325,7 +1319,7 @@ done:
                     http_status_code = NGX_HTTP_FORBIDDEN;
                     // ... log it ...
                     NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
-                                            "CH", "VALIDATION",
+                                            "CH", "VALIDATING",
                                             "Magically %s!", "DENIED - no rules provided"
                     );
                 }
@@ -1336,6 +1330,79 @@ done:
                     );
                 }
             }
+            
+            // ... 'scan magic'?
+            if ( NGX_HTTP_OK == http_status_code && 1 == loc_conf->scan_magic ) {
+                // ... use 'scan magic' arrays
+                entries[0].array_ = loc_conf->scan_magic_types; // MAGIC_MIME_TYPE
+                entries[1].array_ = loc_conf->scan_magic_desc;  // MAGIC_NONE
+                // ...
+                ssize_t scan = -1;
+                for ( size_t idx = 0 ; idx < entries.size() && -1 == scan ; ++idx ) {
+                    // ... no data?
+                    auto entry = entries[idx];
+                    if ( nullptr == entry.array_ ) {
+                        // ... next ...
+                        continue;
+                    }
+                    // ... test ...
+                    const ngx_str_t* array = ((ngx_str_t*) entry.array_->elts);
+                    for ( ngx_uint_t idx2 = 0; idx2 < entry.array_->nelts; idx2++ ) {
+                        const ngx_str_t value = array[idx2];
+                        if ( 0 == value.len ) {
+                            continue;
+                        }
+                        if ( 0 == strncasecmp((const char*)(value.data), entry.value_.c_str(), std::min(value.len, entry.value_.length())) ) {
+                            entries[idx].match_ = entry.value_;
+                            scan = static_cast<ssize_t>(idx);
+                            break;
+                        }
+                    }
+                }
+                // ... scan using libmodsecurity=
+                if ( -1 != scan ) {
+                    // ... yes ... this always a POST request ...
+                    ::cc::modsecurity::Processor::POSTRequest request = {
+                        /* id_             */ "",
+                        /* content_type_   */ magic_type,
+                        /* content_length_ */ context->file_.bytes_written_,
+                        /* client_         */ { "", 0 },
+                        /* server_         */ { "", 0 },
+                        /* uri_            */ std::string(reinterpret_cast<char const*>(a_r->uri.data), a_r->uri.len),
+                        /* version_        */ std::to_string(a_r->http_major) + '.' + std::to_string(a_r->http_minor),
+                        /* body_file_uri_  */ uri,
+                        /* tag_            */ "ul_module"
+                    };
+                    cc::fs::File::Name(request.body_file_uri_, request.id_);
+                    ngx_http_casper_broker_ul_addr_to_hr(a_r->connection->sockaddr, a_r->connection->socklen, request.client_);
+                    ngx_http_casper_broker_ul_addr_to_hr(a_r->connection->local_sockaddr, a_r->connection->local_socklen, request.server_);
+                    // ... allowed by modsecurity?
+                    ::cc::modsecurity::Processor::Rule rule;
+                    // ... log it ...
+                    const auto logger = [&] (const std::string& a_line) {
+                        NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
+                                                "CH", "SCANNING",
+                                                "%s", a_line.c_str()
+                        );
+                    };
+                    // ... scan ...
+                    if ( 200 != ::cc::modsecurity::Processor::GetInstance().SimulateHTTPRequest(request, rule, logger) ) {
+                        // ... provided data is NOT allowed ...
+                        http_status_code = NGX_HTTP_FORBIDDEN;
+                        // ... track error ...
+                        if ( 0 != rule.id_.length() ) {
+                            context->error_tracker_->Track("BROKER_FORBIDDEN_ERROR", NGX_HTTP_FORBIDDEN, "BROKER_FORBIDDEN_ERROR",
+                                                           ( "DENIED due to security rule #" + rule.id_ + ": " + rule.msg_ + "!").c_str()
+                            );
+                        } else {
+                            context->error_tracker_->Track("BROKER_FORBIDDEN_ERROR", NGX_HTTP_FORBIDDEN, "BROKER_FORBIDDEN_ERROR",
+                                                           ( "DENIED due to " + rule.data_ ).c_str()
+                            );
+                        }
+                    }
+                }
+            }
+            
         } catch (const cc::Exception& a_cc_exception) {
             // ... if validation is madatory ...
             if ( 1 == loc_conf->magic_validation ) {
@@ -1686,4 +1753,63 @@ static ngx_uint_t ngx_http_casper_broker_ul_ensure_output (ngx_http_casper_broke
 
     // ... we're good to go ...
     return NGX_HTTP_OK;
+}
+
+/**
+ * @brief Translate a sockaddr to a human readable string.
+ *
+ * @param a_addr  addr data.
+ * @param a_len   addr len.
+ * @param o_addr  Translated human readable addr.
+ */
+void ngx_http_casper_broker_ul_addr_to_hr (struct sockaddr* a_addr, const socklen_t a_len, ::cc::modsecurity::Processor::Addr& o_addr)
+{
+    o_addr = { "", 0 };
+    // ...
+    if ( nullptr == a_addr ) {
+        // ... nothing to do here ...
+        return;
+    }
+    // ... based on ngx_connection_local_sockaddr, ngx_sock_ntop ...
+    ngx_uint_t addr;
+    in_port_t  port;
+    // ... translate address to IP and port number.
+    switch (a_addr->sa_family) {
+#if (NGX_HAVE_INET6)
+        case AF_INET6:
+        {
+            const struct sockaddr_in6 * sin6 = (const struct sockaddr_in6 *)a_addr;
+            for ( ngx_uint_t i = 0; addr == 0 && i < 16; i++ ) {
+                addr |= sin6->sin6_addr.s6_addr[i];
+            }
+            port = sin6->sin6_port;
+        }
+            break;
+#endif
+#if (NGX_HAVE_UNIX_DOMAIN)
+        case AF_UNIX:
+            return;
+#endif
+        default: /* AF_INET */
+        {
+            const struct sockaddr_in* sin = (const struct sockaddr_in *)a_addr;
+            addr = sin->sin_addr.s_addr;
+            port = sin->sin_port;
+        }
+            break;
+    }
+    // ... sockaddr to string
+    ngx_str_t  str;
+    u_char     buffer[NGX_SOCKADDR_STRLEN];
+    str.data = buffer;
+    str.len = ngx_sock_ntop(a_addr, a_len, str.data, NGX_SOCKADDR_STRLEN, port);
+    // ... to string ...
+    if ( 0 != str.len ) {
+        const std::string s = std::string(reinterpret_cast<char const*>(str.data), static_cast<size_t>(str.len  ));
+        const char* p = strchr(s.c_str(), ':');
+        if ( nullptr != p ) {
+            o_addr.ip_   = std::string(s.c_str(), static_cast<size_t>(p - s.c_str()));
+            o_addr.port_ = static_cast<int>(std::stoull(p + sizeof(char)));
+        }
+    }
 }

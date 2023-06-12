@@ -61,6 +61,9 @@ typedef struct {
     ngx_flag_t                magic_validation;      //!<
     ngx_array_t*              allowed_magic_types;   //!<
     ngx_array_t*              allowed_magic_desc;    //!<
+    ngx_flag_t                scan_magic;            //!<
+    ngx_array_t*              scan_magic_types;      //!<
+    ngx_array_t*              scan_magic_desc;       //!<
 } ngx_http_casper_broker_ul_module_loc_conf_t;
 
 typedef struct {
