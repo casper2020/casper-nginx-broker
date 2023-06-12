@@ -195,6 +195,16 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
                 /* args_     */ (void*)(config)
             },
             /* a_present */ [] (std::vector<::cc::global::Initializer::Present>& o_values) {
+    #if defined(NGX_HAS_MODSECURITY_MODULE) && 1 == NGX_HAS_MODSECURITY_MODULE
+                {
+                    o_values.push_back({
+                        /* title_  */ "MODSECURITY",
+                        /* values_ */ {}
+                    });
+                    auto& skia = o_values.back();
+                    skia.values_["VERSION"] = MODSECURITY_VERSION;
+                }
+    #endif
     #if defined(NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE) && 1 == NGX_HAS_CASPER_NGINX_BROKER_HSM_MODULE
                 {
                     o_values.push_back({
