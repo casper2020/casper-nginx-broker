@@ -227,6 +227,23 @@ static ngx_command_t ngx_http_casper_broker_ul_module_commands[] = {
         NULL
     },
     // ...
+    {
+        ngx_string("nginx_casper_broker_ul_scan_conf_dir"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_str_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, scan_conf_dir),
+        NULL
+    },
+    {
+        ngx_string("nginx_casper_broker_ul_scan_conf_file"),
+        NGX_HTTP_LOC_CONF | NGX_CONF_TAKE1,
+        ngx_conf_set_str_slot,
+        NGX_HTTP_LOC_CONF_OFFSET,
+        offsetof(ngx_http_casper_broker_ul_module_loc_conf_t, scan_conf_file),
+        NULL
+    },
+    // ...
     ngx_null_command
 };
 
@@ -297,6 +314,8 @@ static void* ngx_http_casper_broker_ul_module_create_loc_conf (ngx_conf_t* a_cf)
     conf->scan_magic            = NGX_CONF_UNSET;
     conf->scan_magic_types      = (ngx_array_t*)NGX_CONF_UNSET_PTR;
     conf->scan_magic_desc       = (ngx_array_t*)NGX_CONF_UNSET_PTR;
+    conf->scan_conf_dir         = ngx_null_string;
+    conf->scan_conf_file        = ngx_null_string;
 
     return conf;
 }
@@ -329,7 +348,9 @@ static char* ngx_http_casper_broker_ul_module_merge_loc_conf (ngx_conf_t* /* a_c
     ngx_conf_merge_value     (conf->scan_magic           , prev->scan_magic           ,           1 ); /* 1 - enabled */
     ngx_conf_merge_ptr_value (conf->scan_magic_types     , prev->scan_magic_types     ,      nullptr);
     ngx_conf_merge_ptr_value (conf->scan_magic_desc      , prev->scan_magic_desc      ,      nullptr);
-            
+    ngx_conf_merge_str_value (conf->scan_conf_dir        , prev->scan_conf_dir        ,           "" );
+    ngx_conf_merge_str_value (conf->scan_conf_file       , prev->scan_conf_file       ,           "" );
+    
     NGX_BROKER_MODULE_LOC_CONF_MERGED();    
     
     return (char*) NGX_CONF_OK;
@@ -1361,9 +1382,11 @@ done:
                 }
                 // ... scan using libmodsecurity=
                 if ( -1 != scan ) {
+                    ::cc::modsecurity::Processor& processor = ::cc::modsecurity::Processor::GetInstance();
                     // ... yes ... this always a POST request ...
-                    ::cc::modsecurity::Processor::POSTRequest request = {
+                    ::cc::modsecurity::Processor::HTTPPOSTRequest request = {
                         /* id_             */ "",
+                        /* module_         */ "ul_module",
                         /* content_type_   */ magic_type,
                         /* content_length_ */ context->file_.bytes_written_,
                         /* client_         */ { "", 0 },
@@ -1371,22 +1394,26 @@ done:
                         /* uri_            */ std::string(reinterpret_cast<char const*>(a_r->uri.data), a_r->uri.len),
                         /* version_        */ std::to_string(a_r->http_major) + '.' + std::to_string(a_r->http_minor),
                         /* body_file_uri_  */ uri,
-                        /* tag_            */ "ul_module"
+                        /* logger_         */ [&] (const std::string& a_line) {
+                            NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
+                                                    "CH", "SCANNING",
+                                                    "%s", a_line.c_str()
+                            );
+                        }
                     };
                     cc::fs::File::Name(request.body_file_uri_, request.id_);
                     ngx_http_casper_broker_ul_addr_to_hr(a_r->connection->sockaddr, a_r->connection->socklen, request.client_);
                     ngx_http_casper_broker_ul_addr_to_hr(a_r->connection->local_sockaddr, a_r->connection->local_socklen, request.server_);
                     // ... allowed by modsecurity?
                     ::cc::modsecurity::Processor::Rule rule;
-                    // ... log it ...
-                    const auto logger = [&] (const std::string& a_line) {
-                        NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
-                                                "CH", "SCANNING",
-                                                "%s", a_line.c_str()
-                        );
-                    };
                     // ... scan ...
-                    if ( 200 != ::cc::modsecurity::Processor::GetInstance().SimulateHTTPRequest(request, rule, logger) ) {
+                    if ( false == processor.IsEnabled(request.module_) ) {
+                        processor.Enable(request.module_,
+                                         /* a_path */ std::string(reinterpret_cast<const char* const>(loc_conf->scan_conf_dir.data), static_cast<size_t>(loc_conf->scan_conf_dir.len)),
+                                         /* a_file */ std::string(reinterpret_cast<const char* const>(loc_conf->scan_conf_file.data), static_cast<size_t>(loc_conf->scan_conf_file.len))
+                        );
+                    }
+                    if ( 200 != processor.Validate(request, rule) ) {
                         // ... provided data is NOT allowed ...
                         http_status_code = NGX_HTTP_FORBIDDEN;
                         // ... track error ...

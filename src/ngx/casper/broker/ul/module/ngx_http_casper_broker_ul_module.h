@@ -64,6 +64,8 @@ typedef struct {
     ngx_flag_t                scan_magic;            //!<
     ngx_array_t*              scan_magic_types;      //!<
     ngx_array_t*              scan_magic_desc;       //!<
+    ngx_str_t                 scan_conf_dir;         //!<
+    ngx_str_t                 scan_conf_file;        //!<
 } ngx_http_casper_broker_ul_module_loc_conf_t;
 
 typedef struct {

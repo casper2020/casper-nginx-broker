@@ -382,12 +382,14 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
 #if defined(NGX_HAS_MODSECURITY_MODULE) && 1 == NGX_HAS_MODSECURITY_MODULE
     try {
         cc::modsecurity::Processor::GetInstance().Startup(
-            ::cc::global::Initializer::GetInstance().loggable_data(),
-            ::cc::global::Initializer::GetInstance().directories().etc_ + "conf.d/mod-security/", "modsec_includes.conf"
+            ::cc::global::Initializer::GetInstance().loggable_data()
         );
     } catch (const ::cc::Exception& a_cc_exception) {
+        // ... log ...
+        CC_BROKER_INITIALIZER_LOG("cc-status", "\nBROKER_MODULE_INITIALIZATION_ERROR: %s\n", a_cc_exception.what());
+        // ... notify ...
         throw ngx::casper::broker::Exception("BROKER_MODULE_INITIALIZATION_ERROR",
-                                             "Unable to initialize modsecurity: %s!", a_cc_exception.what()
+                                             "Unable to initialize modsecurity!"
         );
     }
 #endif
