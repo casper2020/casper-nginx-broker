@@ -383,6 +383,7 @@ void ngx::casper::broker::Initializer::Startup (const ngx_cycle_t* a_cycle)
     try {
         cc::modsecurity::Processor::GetInstance().Startup(
             ::cc::global::Initializer::GetInstance().loggable_data()
+            CC_IF_DEBUG(, ::cc::global::Initializer::GetInstance().directories().log_)
         );
     } catch (const ::cc::Exception& a_cc_exception) {
         // ... log ...
