@@ -456,7 +456,7 @@ ngx_int_t ngx::casper::broker::ext::Job::Submit (const Json::Value& a_object,
                 );
                 
                 if ( status < 0 ) {
-                    throw ::ev::Exception("Beanstalk producer returned with error code ( " +  std::to_string(status) + " ) " + ev::beanstalk::Producer::ErrorCodeToString(status) + ", while adding job '"
+                    throw ::ev::Exception("Beanstalk producer returned with error code ( " +  std::to_string(status) + " ) " + ::ev::beanstalk::Producer::ErrorCodeToString(status) + ", while adding job '"
                                             +
                                            job_object_["id"].asString() + "' to '" + job_tube_ + "' tube!"
                     );
