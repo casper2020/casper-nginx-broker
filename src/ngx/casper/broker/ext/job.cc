@@ -734,7 +734,7 @@ EV_REDIS_SUBSCRIPTIONS_DATA_POST_NOTIFY_CALLBACK ngx::casper::broker::ext::Job::
                     if ( status < 0 ) {
                         // ... an error must be set ...
                         NGX_BROKER_MODULE_SET_INTERNAL_SERVER_ERROR(ctx_,
-                                                                    ( "Beanstalk producer returned with error code ( " + std::to_string(status) + " ) " + ev::beanstalk::Producer::ErrorCodeToString(status) + ", while adding job '" +
+                                                                    ( "Beanstalk producer returned with error code ( " + std::to_string(status) + " ) " + ::ev::beanstalk::Producer::ErrorCodeToString(status) + ", while adding job '" +
                                                                      job_object_["id"].asString() + "' to '" + tube + "' tube!"
                                                                     ).c_str()
                         );

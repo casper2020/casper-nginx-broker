@@ -70,3 +70,8 @@ src/ngx/casper/broker/cdn-api/router.cc
 # nb-xattr
 ############
 src/xattr/version.h
+
+#########
+# macOS
+########
+.DS_Store
