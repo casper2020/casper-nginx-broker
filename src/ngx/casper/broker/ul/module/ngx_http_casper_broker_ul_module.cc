@@ -734,6 +734,7 @@ ngx_int_t ngx_http_casper_broker_ul_module_content_handler (ngx_http_request_t* 
     context->multipart_body_.done_                     = 0;
     context->multipart_body_.last_                     = 0;
     context->multipart_body_.enabled_                  = ( 1 == loc_conf->accept_multipart_body ) ? 1 : 0;
+    context->file_.offset_                             = 0;
     context->file_.writer_                             = nullptr;
     context->file_.bytes_written_                      = 0;
     context->file_.expires_in_                         = static_cast<int64_t>(loc_conf->expires_in);
@@ -1243,13 +1244,15 @@ done:
             }
         }
         
-        const std::string uri        = context->file_.uri_;
-              std::string magic_type;
-              std::string magic_desc;
+        std::string magic_type;
+        std::string magic_desc;
         
         // ... magic fetch / validation ...
         const ngx_http_casper_broker_ul_module_loc_conf_t* loc_conf = (const ngx_http_casper_broker_ul_module_loc_conf_t*) ngx_http_get_module_loc_conf(a_r, ngx_http_casper_broker_ul_module);
         try {
+            
+            // ... calculate md5 ...
+            context->file_.md5_value_ = context->file_.md5_.Finalize();
             
             // ...
             typedef struct {
@@ -1258,10 +1261,11 @@ done:
                 const ngx_array_t* array_;
                 std::string        match_;
                 std::string        value_;
+                size_t             offset_;
             } _Entry;
             std::vector<_Entry> entries = {
-                { MAGIC_MIME_TYPE, "MIME Type"  , nullptr, "", "" },
-                { MAGIC_NONE     , "Description", nullptr , "", "" }
+                { MAGIC_MIME_TYPE, "MIME Type"  , nullptr,  "", "", 0 },
+                { MAGIC_NONE     , "Description", nullptr , "", "", 0 }
             };
 
             // ... magic fetch ...
@@ -1271,7 +1275,24 @@ done:
                     // ... reset ...
                     magic.Reset(entries[idx].flags_);
                     // ... test ...
-                    entries[idx].value_ = magic.WithoutCharsetOf(uri);
+                    entries[idx].value_ = magic.WithoutCharsetOf(context->file_.uri_, entries[idx].offset_);
+                    // ... f'ed up PDF?
+                    if ( 0 != entries[0].offset_ ) {
+                        std::string tmp;
+                        // ... new temporary file ...
+                        http_status_code = ngx_http_casper_broker_ul_ensure_output(context, tmp);
+                        if ( NGX_HTTP_OK == http_status_code ) {
+                            // ... copy file ( from offset ) and calculate new MD5 value ...
+                            ::cc::fs::File::Copy(context->file_.uri_, tmp, /* a_overwrite */ true, entries[idx].offset_, context->file_.md5_value_);
+                            // ... adjust other info ...
+                            context->file_.offset_         = entries[idx].offset_;
+                            context->file_.bytes_written_ -= entries[idx].offset_;
+                            context->content_length_      -= entries[idx].offset_;
+                            context->file_.uri_            = tmp;
+                            // ... again ...
+                            entries[idx].value_ = magic.WithoutCharsetOf(context->file_.uri_, entries[0].offset_);
+                        }
+                    }
                 }
             }
 
@@ -1287,7 +1308,7 @@ done:
                 // ... log ...
                 NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
                                         "CH", "VALIDATING",
-                                        "Magically validating: %s", uri.c_str()
+                                        "Magically validating: %s", context->file_.uri_.c_str()
                 );
                 // ... log ...
                 NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
@@ -1393,7 +1414,7 @@ done:
                         /* server_         */ { "", 0 },
                         /* uri_            */ std::string(reinterpret_cast<char const*>(a_r->uri.data), a_r->uri.len),
                         /* version_        */ std::to_string(a_r->http_major) + '.' + std::to_string(a_r->http_minor),
-                        /* body_file_uri_  */ uri,
+                        /* body_file_uri_  */ context->file_.uri_,
                         /* logger_         */ [&] (const std::string& a_line) {
                             NGX_BROKER_MODULE_LOG(ngx_http_casper_broker_ul_module, a_r, NGX_LOG_DEBUG, "ul_module",
                                                     "CH", "SCANNING",
@@ -1435,7 +1456,7 @@ done:
             if ( 1 == loc_conf->magic_validation ) {
                 // ... report error ...
                 ss.str("");
-                ss << "Error while magically validating file '" << uri << "': " << a_cc_exception.what();
+                ss << "Error while magically validating file '" << context->file_.uri_ << "': " << a_cc_exception.what();
                 msg = ss.str();
                 http_status_code = NGX_HTTP_INTERNAL_SERVER_ERROR;
                 context->error_tracker_->Track("UL_AN_ERROR_OCCURRED_MESSAGE", NGX_HTTP_INTERNAL_SERVER_ERROR, "UL_AN_ERROR_OCCURRED_MESSAGE",
@@ -1448,10 +1469,10 @@ done:
         try {
                             
             // ... and write xattrs ...
-            ::cc::fs::file::XAttr xattrs(uri);
+            ::cc::fs::file::XAttr xattrs(context->file_.uri_);
             
             // ... upload id is same as file name ...
-            std::string id;  ::cc::fs::File::Name(uri, id);
+            std::string id;  ::cc::fs::File::Name(context->file_.uri_, id);
 
             // ... set upload id ...
             xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.id", id);
@@ -1497,14 +1518,18 @@ done:
             xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.created.at", cc::UTCTime::NowISO8601WithTZ());
             
             // ... content info ...
-            xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.uri", "file://" + uri);
+            xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.uri", "file://" + context->file_.uri_);
             if ( nullptr != a_r->headers_in.content_type && a_r->headers_in.content_type->value.len > 0 ) {
                 xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.content-type",
                            std::string(reinterpret_cast<char const*>(a_r->headers_in.content_type->value.data), a_r->headers_in.content_type->value.len)
                 );
             }
             xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.content-length", std::to_string(context->file_.bytes_written_));
-            xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.md5"           ,  context->file_.md5_.Finalize());
+            xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.md5"           , context->file_.md5_value_);
+            if ( 0 != context->file_.offset_ ) {
+                xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.suspicious.type"        , magic_type);
+                xattrs.Set(XATTR_ARCHIVE_PREFIX "com.cldware.upload.suspicious.offsetted.by", std::to_string(context->file_.offset_));
+            }
             xattrs.Seal(XATTR_ARCHIVE_PREFIX "com.cldware.upload.seal"         ,
                         reinterpret_cast<const unsigned char*>(NGX_CASPER_BROKER_UL_MODULE_INFO), strlen(NGX_CASPER_BROKER_UL_MODULE_INFO),
                         /* a_excluding_attrs */ nullptr
@@ -1512,7 +1537,7 @@ done:
             
         } catch (const cc::Exception& a_cc_exception) {
             ss.str("");
-            ss << "Error while writting xattrs '" << uri << "': " << a_cc_exception.what();
+            ss << "Error while writting xattrs '" << context->file_.uri_ << "': " << a_cc_exception.what();
             msg = ss.str();
             http_status_code = NGX_HTTP_INTERNAL_SERVER_ERROR;
             context->error_tracker_->Track("UL_AN_ERROR_OCCURRED_MESSAGE", NGX_HTTP_INTERNAL_SERVER_ERROR, "UL_AN_ERROR_OCCURRED_MESSAGE",

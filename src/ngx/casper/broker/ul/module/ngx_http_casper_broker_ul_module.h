@@ -73,6 +73,8 @@ typedef struct {
     std::string           name_;
     std::string           uri_;
     cc::hash::MD5         md5_;
+    std::string           md5_value_;
+    size_t                offset_;
     cc::fs::file::Writer* writer_;
     size_t                bytes_written_;
     int64_t               expires_in_;
