@@ -198,7 +198,6 @@ void ngx::casper::broker::api::Module::OnSessionFetchSucceeded (const bool /* a_
     json_api_.SetUserId(a_session.GetValue("user_id", ""));
     json_api_.SetEntityId(a_session.GetValue("entity_id", ""));
     json_api_.SetEntitySchema(a_session.GetValue("entity_schema", ""));
-    json_api_.SetShardedSchema(a_session.GetValue("sharded_schema", ""));
     json_api_.SetSubentitySchema(a_session.GetValue("subentity_schema", ""));
     json_api_.SetSubentityPrefix(a_session.GetValue("subentity_prefix", ""));
     
